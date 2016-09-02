@@ -23,24 +23,23 @@ void logic::Leap_Gestures(GestureList Gestures)
 {
     for(Leap::GestureList::const_iterator gl = Gestures.begin(); gl != Gestures.end(); gl++)
     {
-        Gesture gesture = *gl;
-        switch(gesture.type())
+        switch((*gl).type())
         {
             case Gesture::TYPE_CIRCLE:
                 {
-                    CircleGesture cGesture = CircleGesture(gesture);
-                    QString direction = cGesture.pointable().direction().angleTo(cGesture.normal()) <= Leap::PI/2 ? "clockwise" : "counterclockwise";
-                    qDebug() << "Gesture Circle, Duration: " << cGesture.duration()
+                    CircleGesture gesture = CircleGesture(*gl);
+                    QString direction = gesture.pointable().direction().angleTo(gesture.normal()) <= Leap::PI/2 ? "clockwise" : "counterclockwise";
+                    qDebug() << "Gesture Circle, Duration: " << gesture.duration()
                         << ", Direction: " << direction;
                 }
                 break;
 
             case Gesture::TYPE_SWIPE:
                 {
-                    SwipeGesture sGesture = SwipeGesture(gesture);
-                    qDebug() << "Gesture Swipe, Duration: " << sGesture.duration()
-                        << ", Direction: " << sGesture.direction().toString().c_str()
-                        << ", Speed: " << sGesture.speed();
+                    SwipeGesture gesture = SwipeGesture(*gl);
+                    qDebug() << "Gesture Swipe, Duration: " << gesture.duration()
+                        << ", Direction: " << gesture.direction().toString().c_str()
+                        << ", Speed: " << gesture.speed();
                 }
                 break;
 
@@ -48,6 +47,8 @@ void logic::Leap_Gestures(GestureList Gestures)
                 break;
 
             case Gesture::TYPE_SCREEN_TAP:
+                break;
+            case Gesture::TYPE_INVALID:
                 break;
         }
     }
