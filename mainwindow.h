@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <QtConcurrent/QtConcurrent>
 #include <QMetaType>
+#include <QTimer>
 
 #include "listener.h"
 #include "Leap.h"
@@ -27,7 +28,8 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    listener Listener;
+    listener * Listener;
+    QTimer * Leap_Poller;
 };
 
 #endif // MAINWINDOW_H

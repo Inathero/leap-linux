@@ -3,16 +3,18 @@
 listener::listener(QObject *parent) : QObject(parent)
 {
     Logic = new logic;
+    Leap_Controller = new Controller;
+
+    Leap_Controller->setPolicy(Leap::Controller::POLICY_BACKGROUND_FRAMES);
 }
 
-void listener::onConnect(const Controller &)
+void listener::onPoll()
 {
-    qDebug() << "listener::onConnect";
-}
+    Leap::Frame frame = Leap_Controller->frame();
 
-void listener::onFrame(const Controller & controller)
-{
-    const Frame frame = controller.frame();
+    if (iPreviousFrameID == frame.id())
+        return;
 
+    iPreviousFrameID = frame.id();
     Logic->Leap_Hands(frame.hands());
 }
