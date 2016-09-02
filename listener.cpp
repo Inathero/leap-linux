@@ -21,13 +21,20 @@ void listener::onPoll()
 
     // Process Hands
     Logic->Leap_Hands(frame.hands());
+
+    // Process Gestures
+    Logic->Leap_Gestures(frame.gestures());
 }
 
 void listener::Leap_ControllerStatus()
 {
+    // If not ready, check again
     if(!Leap_Controller->isConnected())
         QTimer::singleShot(1, this, SLOT(Leap_ControllerStatus()));
 
+    // Ready, stop checking and start polling
     Leap_Controller->setPolicy(Leap::Controller::POLICY_BACKGROUND_FRAMES);
+    Leap_Controller->enableGesture(Gesture::TYPE_SWIPE);
+    Leap_Controller->enableGesture(Gesture::TYPE_CIRCLE);
     emit StartPolling();
 }

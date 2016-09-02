@@ -17,7 +17,8 @@ public:
 signals:
 
 public slots:
-    void Leap_Hands(Leap::HandList Hands);
+    void Leap_Hands     (Leap::HandList Hands);
+    void Leap_Gestures  (Leap::GestureList Gestures);
 };
 
 #endif // LOGIC_H

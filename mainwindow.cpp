@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    Leap_Poller = new QTimer(this);
+    Leap_Poller = new QTimer;
     Listener = new listener;
 
     connect(Listener, &listener::StartPolling, this, &MainWindow::Leap_StartPolling);

@@ -19,7 +19,6 @@ public:
     void onPoll();
 
 signals:
-
     void StartPolling();
 
 public slots:
