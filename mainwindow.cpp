@@ -10,12 +10,16 @@ MainWindow::MainWindow(QWidget *parent) :
     Leap_Poller = new QTimer(this);
     Listener = new listener;
 
+    connect(Listener, &listener::StartPolling, this, &MainWindow::Leap_StartPolling);
     connect(Leap_Poller, &QTimer::timeout, Listener, &listener::onPoll);
-
-    Leap_Poller->start(1);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::Leap_StartPolling()
+{
+    Leap_Poller->start(1);
 }

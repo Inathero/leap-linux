@@ -23,8 +23,10 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    void Leap_ControllerThread();
     ~MainWindow();
+public slots:
+
+    void Leap_StartPolling();
 
 private:
     Ui::MainWindow *ui;

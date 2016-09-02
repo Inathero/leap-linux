@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDebug>
+#include <QTimer>
 
 #include "Leap.h"
 #include "logic.h"
@@ -19,9 +20,11 @@ public:
 
 signals:
 
+    void StartPolling();
 
 public slots:
-
+private slots:
+    void Leap_ControllerStatus();
 private:
     logic * Logic;
     Controller * Leap_Controller;
