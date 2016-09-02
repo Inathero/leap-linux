@@ -15,10 +15,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    listener.cpp
+    listener.cpp \
+    logic.cpp
 
 HEADERS  += mainwindow.h \
-    listener.h
+    listener.h \
+    logic.h
 FORMS    += mainwindow.ui
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/leap/lib/x64/release/ -lLeap

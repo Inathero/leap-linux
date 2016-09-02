@@ -5,6 +5,7 @@
 #include <QMainWindow>
 #include <QDebug>
 #include <QtConcurrent/QtConcurrent>
+#include <QMetaType>
 
 #include "listener.h"
 #include "Leap.h"
