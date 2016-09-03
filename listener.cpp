@@ -2,6 +2,7 @@
 
 listener::listener(QObject *parent) : QObject(parent)
 {
+
     Logic = new logic;
     Leap_Controller = new Controller;
 

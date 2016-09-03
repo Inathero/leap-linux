@@ -18,13 +18,15 @@ SOURCES += main.cpp\
     listener.cpp \
     logic.cpp \
     xkeys.cpp \
-    macro.cpp
+    macro.cpp \
+    scriptengine.cpp
 
 HEADERS  += mainwindow.h \
     listener.h \
     logic.h \
     xkeys.h \
-    macro.h
+    macro.h \
+    scriptengine.h
 
 FORMS    += mainwindow.ui
 

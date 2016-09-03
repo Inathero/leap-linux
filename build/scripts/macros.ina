@@ -1,0 +1,35 @@
+# Use comments to ignore
+# current limitations:
+# key_send and launch do not handle arguments with spaces
+# i.e. 'key_send this is a test' will only send 'this' and ignore the rest
+# is in work to get this fixed
+
+# mode_lock = how long (in miliseconds) till mode is available again
+# key_down  = presses down 1 key
+# key_up    = releases 1 key
+# key_send  = sends a string of keys
+# launch    = launches an application
+
+mode swipe_left
+    mode_lock 1000
+    key_press Left 
+mode swipe_right
+    mode_lock 1000
+    key_press Right 
+mode swipe_up
+    mode_lock 500
+    key_down Up 
+    key_up   Up 
+mode swipe_down
+    mode_lock 500
+    key_down Down 
+    key_up   Down 
+mode circle_clockwise
+mode circle_counterclockwise
+mode finger_tap
+    mode_lock 150
+    key_press Right
+mode alms_giver
+    mode_lock 3000
+    key_send yy
+    launch   /home/inathero/Scripts/bin/ecv_mod

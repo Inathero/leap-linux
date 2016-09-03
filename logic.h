@@ -4,10 +4,11 @@
 #include <QObject>
 #include <QDebug>
 #include <QProcess>
+#include <QApplication>
 
 #include "Leap.h"
 #include "macro.h"
-#include "xkeys.h"
+#include "scriptengine.h"
 
 using namespace Leap;
 
@@ -23,8 +24,8 @@ public slots:
     void Leap_Hands     (Leap::HandList Hands);
     void Leap_Gestures  (Leap::GestureList Gestures);
 private:
-    xkeys * XKeys;
     macro * Macro;
+    scriptengine * ScriptEngine;
 };
 
 #endif // LOGIC_H

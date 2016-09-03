@@ -2,8 +2,11 @@
 
 logic::logic(QObject *parent) : QObject(parent)
 {
-    XKeys = new xkeys(this);
+
     Macro = new macro(this);
+    ScriptEngine = new scriptengine;
+    ScriptEngine->setDefinitions(QApplication::applicationDirPath().append("/scripts/defines.ina"));
+    ScriptEngine->setScriptFile(QApplication::applicationDirPath().append("/scripts/macros.ina"));
 }
 
 void logic::Leap_Hands(Leap::HandList Hands)
@@ -11,34 +14,18 @@ void logic::Leap_Hands(Leap::HandList Hands)
     if(!Hands.isEmpty())
     {
         Hand hand = Hands.frontmost();
-        qDebug() << hand.palmVelocity().magnitude() <<  ", " << hand.palmNormal().toString().c_str();
+//        qDebug() << hand.palmVelocity().magnitude() <<  ", " << hand.palmNormal().toString().c_str();
 
+        // alms_giver
         if (hand.palmVelocity().magnitude() < 30 && hand.palmNormal().y > 0.1)
         {
             if(Macro->isMacroAvailable())
             {
-                qDebug() << "Launch Macro";
-                Macro->macroLock(3000);
-
-                    XKeys->key_down(XK_y);
-                    XKeys->key_up(XK_y);
-
-                    XKeys->key_down(XK_y);
-                    XKeys->key_up(XK_y);
-
-                    QProcess::startDetached("/home/inathero/Scripts/bin/ecv_mod");
-
-
+                int iModeLock = ScriptEngine->runScript("alms_giver");
+                Macro->macroLock(iModeLock);
             }
         }
-//        std::cout  << ", hands: " << Hands.count()
-//            << ", fingers: " << Hands.frontmost().fingers().count()
-//            << ", tools: " << Hands.frontmost().tools().count()
-//            << ", grab strength: " << Hands.frontmost().grabStrength()
-//            << ", pinch strength: " << Hands.frontmost().pinchStrength() << std::endl;
     }
-//    else
-//        qDebug() << "No Hands";
 }
 
 void logic::Leap_Gestures(GestureList Gestures)
@@ -49,10 +36,22 @@ void logic::Leap_Gestures(GestureList Gestures)
         {
             case Gesture::TYPE_CIRCLE:
                 {
-                    CircleGesture gesture = CircleGesture(*gl);
-                    QString direction = gesture.pointable().direction().angleTo(gesture.normal()) <= Leap::PI/2 ? "clockwise" : "counterclockwise";
-                    qDebug() << "Gesture Circle, Duration: " << gesture.duration()
-                        << ", Direction: " << direction;
+                    if(Macro->isMacroAvailable())
+                    {
+                        CircleGesture gesture = CircleGesture(*gl);
+                        bool bDirection = gesture.pointable().direction().angleTo(gesture.normal()) <= Leap::PI/2;// ? "clockwise" : "counterclockwise";
+                        int iModeLock;
+
+                        if(bDirection) // clockwise
+                        {
+                            iModeLock = ScriptEngine->runScript("circle_clockwise");
+                        }
+                        else // counterclockwise
+                        {
+                            iModeLock = ScriptEngine->runScript("circle_counterclockwise");
+                        }
+                        Macro->macroLock(iModeLock);
+                    }
                 }
                 break;
 
@@ -61,19 +60,18 @@ void logic::Leap_Gestures(GestureList Gestures)
                     SwipeGesture gesture = SwipeGesture(*gl);
                     if(Macro->isMacroAvailable())
                     {
-                        Macro->macroLock(500);
+                        int iModeLock;
                         switch(gesture.direction().x > 0)
                         {
-//                        case 1: // Right
-//                            XKeys->key_down(XK_Right);
-//                            XKeys->key_up(XK_Right);
-//                            break;
-//                        case 0: //  Left
-//                            XKeys->key_down(XK_Left);
-//                            XKeys->key_up(XK_Left);
-//                            break;
-                         }
 
+                        case 1: // Right
+                            iModeLock = ScriptEngine->runScript("swipe_right");
+                            break;
+                        case 0: //  Left
+                            iModeLock = ScriptEngine->runScript("swipe_left");
+                            break;
+                         }
+                        Macro->macroLock(iModeLock);
                     }
                 }
                 break;
@@ -81,17 +79,12 @@ void logic::Leap_Gestures(GestureList Gestures)
             case Gesture::TYPE_KEY_TAP:
                 {
                     KeyTapGesture gesture = KeyTapGesture(*gl);
-        //                    qDebug() << "Gesture Swipe, Duration: " << gesture.duration()
-        //                        << ", Direction: " << gesture.direction().toString().c_str()
-        //                        << ", Speed: " << gesture.speed();
 
                     if(Macro->isMacroAvailable())
                     {
-                        qDebug() << "Launch Macro";
-                        Macro->macroLock(500);
+                        int iModeLock = ScriptEngine->runScript("finger_tap");
+                        Macro->macroLock(iModeLock);
 
-                        XKeys->key_down(XK_Right);
-                        XKeys->key_up(XK_Right);
                     }
                 }
                 break;
