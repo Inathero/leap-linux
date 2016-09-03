@@ -8,14 +8,35 @@ logic::logic(QObject *parent) : QObject(parent)
 
 void logic::Leap_Hands(Leap::HandList Hands)
 {
-//    if(!Hands.isEmpty())
-//    {
+    if(!Hands.isEmpty())
+    {
+        Hand hand = Hands.frontmost();
+        qDebug() << hand.palmVelocity().magnitude() <<  ", " << hand.palmNormal().toString().c_str();
+
+        if (hand.palmVelocity().magnitude() < 30 && hand.palmNormal().y > 0.1)
+        {
+            if(Macro->isMacroAvailable())
+            {
+                qDebug() << "Launch Macro";
+                Macro->macroLock(3000);
+
+                    XKeys->key_down(XK_y);
+                    XKeys->key_up(XK_y);
+
+                    XKeys->key_down(XK_y);
+                    XKeys->key_up(XK_y);
+
+                    QProcess::startDetached("/home/inathero/Scripts/bin/ecv_mod");
+
+
+            }
+        }
 //        std::cout  << ", hands: " << Hands.count()
 //            << ", fingers: " << Hands.frontmost().fingers().count()
 //            << ", tools: " << Hands.frontmost().tools().count()
 //            << ", grab strength: " << Hands.frontmost().grabStrength()
 //            << ", pinch strength: " << Hands.frontmost().pinchStrength() << std::endl;
-//    }
+    }
 //    else
 //        qDebug() << "No Hands";
 }
@@ -38,30 +59,19 @@ void logic::Leap_Gestures(GestureList Gestures)
             case Gesture::TYPE_SWIPE:
                 {
                     SwipeGesture gesture = SwipeGesture(*gl);
-//                    qDebug() << "Gesture Swipe, Duration: " << gesture.duration()
-//                        << ", Direction: " << gesture.direction().toString().c_str()
-//                        << ", Speed: " << gesture.speed();
-
                     if(Macro->isMacroAvailable())
                     {
-                        qDebug() << "Launch Macro";
-                        Macro->macroLock();
-
+                        Macro->macroLock(500);
                         switch(gesture.direction().x > 0)
                         {
-                        case 1: // Right
-                            XKeys->key_down(XK_y);
-                            XKeys->key_up(XK_y);
-
-                            XKeys->key_down(XK_y);
-                            XKeys->key_up(XK_y);
-
-                            QProcess::startDetached("/home/inathero/Scripts/bin/ecv_mod");
-                            break;
-                        case 0: //  Left
-                            XKeys->key_down(XK_Left);
-                            XKeys->key_up(XK_Left);
-                            break;
+//                        case 1: // Right
+//                            XKeys->key_down(XK_Right);
+//                            XKeys->key_up(XK_Right);
+//                            break;
+//                        case 0: //  Left
+//                            XKeys->key_down(XK_Left);
+//                            XKeys->key_up(XK_Left);
+//                            break;
                          }
 
                     }
@@ -78,7 +88,7 @@ void logic::Leap_Gestures(GestureList Gestures)
                     if(Macro->isMacroAvailable())
                     {
                         qDebug() << "Launch Macro";
-                        Macro->macroLock();
+                        Macro->macroLock(500);
 
                         XKeys->key_down(XK_Right);
                         XKeys->key_up(XK_Right);
