@@ -3,6 +3,7 @@
 logic::logic(QObject *parent) : QObject(parent)
 {
     XKeys = new xkeys(this);
+    Macro = new macro(this);
 }
 
 void logic::Leap_Hands(Leap::HandList Hands)
@@ -41,8 +42,12 @@ void logic::Leap_Gestures(GestureList Gestures)
                         << ", Direction: " << gesture.direction().toString().c_str()
                         << ", Speed: " << gesture.speed();
 
-                    XKeys->key_down(XK_a);
-                    XKeys->key_up(XK_a);
+                    if(Macro->isMacroAvailable())
+                    {
+                        Macro->macroLock();
+                        XKeys->key_down(XK_a);
+                        XKeys->key_up(XK_a);
+                    }
                 }
                 break;
 

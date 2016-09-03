@@ -5,6 +5,7 @@
 #include <QDebug>
 
 #include "Leap.h"
+#include "macro.h"
 #include "xkeys.h"
 
 using namespace Leap;
@@ -22,6 +23,7 @@ public slots:
     void Leap_Gestures  (Leap::GestureList Gestures);
 private:
     xkeys * XKeys;
+    macro * Macro;
 };
 
 #endif // LOGIC_H

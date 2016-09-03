@@ -17,12 +17,14 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     listener.cpp \
     logic.cpp \
-    xkeys.cpp
+    xkeys.cpp \
+    macro.cpp
 
 HEADERS  += mainwindow.h \
     listener.h \
     logic.h \
-    xkeys.h
+    xkeys.h \
+    macro.h
 
 FORMS    += mainwindow.ui
 
