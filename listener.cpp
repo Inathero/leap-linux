@@ -36,5 +36,6 @@ void listener::Leap_ControllerStatus()
     Leap_Controller->setPolicy(Leap::Controller::POLICY_BACKGROUND_FRAMES);
     Leap_Controller->enableGesture(Gesture::TYPE_SWIPE);
     Leap_Controller->enableGesture(Gesture::TYPE_CIRCLE);
+    Leap_Controller->enableGesture(Gesture::TYPE_KEY_TAP);
     emit StartPolling();
 }

@@ -47,18 +47,43 @@ void logic::Leap_Gestures(GestureList Gestures)
                         qDebug() << "Launch Macro";
                         Macro->macroLock();
 
-                        XKeys->key_down(XK_y);
-                        XKeys->key_up(XK_y);
+                        switch(gesture.direction().x > 0)
+                        {
+                        case 1: // Right
+                            XKeys->key_down(XK_y);
+                            XKeys->key_up(XK_y);
 
-                        XKeys->key_down(XK_y);
-                        XKeys->key_up(XK_y);
+                            XKeys->key_down(XK_y);
+                            XKeys->key_up(XK_y);
 
-                        QProcess::startDetached("/home/inathero/Scripts/bin/ecv_mod");
+                            QProcess::startDetached("/home/inathero/Scripts/bin/ecv_mod");
+                            break;
+                        case 0: //  Left
+                            XKeys->key_down(XK_Left);
+                            XKeys->key_up(XK_Left);
+                            break;
+                         }
+
                     }
                 }
                 break;
 
             case Gesture::TYPE_KEY_TAP:
+                {
+                    KeyTapGesture gesture = KeyTapGesture(*gl);
+        //                    qDebug() << "Gesture Swipe, Duration: " << gesture.duration()
+        //                        << ", Direction: " << gesture.direction().toString().c_str()
+        //                        << ", Speed: " << gesture.speed();
+
+                    if(Macro->isMacroAvailable())
+                    {
+                        qDebug() << "Launch Macro";
+                        Macro->macroLock();
+
+                        XKeys->key_down(XK_Right);
+                        XKeys->key_up(XK_Right);
+                    }
+                }
                 break;
 
             case Gesture::TYPE_SCREEN_TAP:
