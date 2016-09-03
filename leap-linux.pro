@@ -6,7 +6,7 @@
 
 QT       += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4): QT += widgets x11extras
 
 TARGET = leap-linux
 TEMPLATE = app
@@ -16,16 +16,21 @@ TEMPLATE = app
 SOURCES += main.cpp\
         mainwindow.cpp \
     listener.cpp \
-    logic.cpp
+    logic.cpp \
+    xkeys.cpp
 
 HEADERS  += mainwindow.h \
     listener.h \
-    logic.h
+    logic.h \
+    xkeys.h
+
 FORMS    += mainwindow.ui
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/leap/lib/x64/release/ -lLeap
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/leap/lib/x64/debug/ -lLeap
-else:unix: LIBS += -L$$PWD/leap/lib/x64/ -lLeap
+else:unix: LIBS += -L$$PWD/leap/lib/x64/ -lLeap -L/usr/X11R6/lib -lX11
 
 INCLUDEPATH += $$PWD/leap/lib/x64 $$PWD/leap/include $$PWD/leap/util
 DEPENDPATH += $$PWD/leap/lib/x64
+
+#undef Bool

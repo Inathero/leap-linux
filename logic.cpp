@@ -2,7 +2,7 @@
 
 logic::logic(QObject *parent) : QObject(parent)
 {
-
+    XKeys = new xkeys(this);
 }
 
 void logic::Leap_Hands(Leap::HandList Hands)
@@ -40,6 +40,9 @@ void logic::Leap_Gestures(GestureList Gestures)
                     qDebug() << "Gesture Swipe, Duration: " << gesture.duration()
                         << ", Direction: " << gesture.direction().toString().c_str()
                         << ", Speed: " << gesture.speed();
+
+                    XKeys->key_down(XK_a);
+                    XKeys->key_up(XK_a);
                 }
                 break;
 
