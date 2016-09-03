@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QDebug>
+#include <QProcess>
 
 #include "Leap.h"
 #include "macro.h"

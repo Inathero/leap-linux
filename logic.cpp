@@ -8,16 +8,16 @@ logic::logic(QObject *parent) : QObject(parent)
 
 void logic::Leap_Hands(Leap::HandList Hands)
 {
-    if(!Hands.isEmpty())
-    {
-        std::cout  << ", hands: " << Hands.count()
-            << ", fingers: " << Hands.frontmost().fingers().count()
-            << ", tools: " << Hands.frontmost().tools().count()
-            << ", grab strength: " << Hands.frontmost().grabStrength()
-            << ", pinch strength: " << Hands.frontmost().pinchStrength() << std::endl;
-    }
-    else
-        qDebug() << "No Hands";
+//    if(!Hands.isEmpty())
+//    {
+//        std::cout  << ", hands: " << Hands.count()
+//            << ", fingers: " << Hands.frontmost().fingers().count()
+//            << ", tools: " << Hands.frontmost().tools().count()
+//            << ", grab strength: " << Hands.frontmost().grabStrength()
+//            << ", pinch strength: " << Hands.frontmost().pinchStrength() << std::endl;
+//    }
+//    else
+//        qDebug() << "No Hands";
 }
 
 void logic::Leap_Gestures(GestureList Gestures)
@@ -38,15 +38,22 @@ void logic::Leap_Gestures(GestureList Gestures)
             case Gesture::TYPE_SWIPE:
                 {
                     SwipeGesture gesture = SwipeGesture(*gl);
-                    qDebug() << "Gesture Swipe, Duration: " << gesture.duration()
-                        << ", Direction: " << gesture.direction().toString().c_str()
-                        << ", Speed: " << gesture.speed();
+//                    qDebug() << "Gesture Swipe, Duration: " << gesture.duration()
+//                        << ", Direction: " << gesture.direction().toString().c_str()
+//                        << ", Speed: " << gesture.speed();
 
                     if(Macro->isMacroAvailable())
                     {
+                        qDebug() << "Launch Macro";
                         Macro->macroLock();
-                        XKeys->key_down(XK_a);
-                        XKeys->key_up(XK_a);
+
+                        XKeys->key_down(XK_y);
+                        XKeys->key_up(XK_y);
+
+                        XKeys->key_down(XK_y);
+                        XKeys->key_up(XK_y);
+
+                        QProcess::startDetached("/home/inathero/Scripts/bin/ecv_mod");
                     }
                 }
                 break;

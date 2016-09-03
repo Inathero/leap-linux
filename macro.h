@@ -18,7 +18,7 @@ signals:
 
 public slots:
     bool isMacroAvailable();
-    void macroLock();
+    void macroLock(int iInterval = 1000);
 private slots:
     void macroRelease();
 private:

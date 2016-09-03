@@ -4,7 +4,6 @@ macro::macro(QObject *parent) : QObject(parent)
 {
     MacroDelay = new QTimer(this);
     connect(MacroDelay, &QTimer::timeout, this, &macro::macroRelease);
-    MacroDelay->setInterval(500);
 }
 
 bool macro::isMacroAvailable()
@@ -12,9 +11,9 @@ bool macro::isMacroAvailable()
     return !MacroDelay->isActive();
 }
 
-void macro::macroLock()
+void macro::macroLock( int iInterval )
 {
-    MacroDelay->start();
+    MacroDelay->start(iInterval);
 }
 
 void macro::macroRelease()
