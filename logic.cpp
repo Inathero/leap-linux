@@ -14,10 +14,11 @@ void logic::Leap_Hands(Leap::HandList Hands)
     if(!Hands.isEmpty())
     {
         Hand hand = Hands.frontmost();
+//        qDebug() << hand.grabStrength() << " : " << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius();
 //        qDebug() << hand.palmVelocity().magnitude() <<  ", " << hand.palmNormal().toString().c_str();
 
         // alms_giver
-        if (hand.palmVelocity().magnitude() < 30 && hand.palmNormal().y > 0.1)
+        if (hand.palmVelocity().magnitude() < 30 && hand.palmNormal().y > 0.9)
         {
             if(Macro->isMacroAvailable())
             {
@@ -25,6 +26,25 @@ void logic::Leap_Hands(Leap::HandList Hands)
                 Macro->macroLock(iModeLock);
             }
         }
+        // hand_key
+        if (hand.grabStrength() == 1)
+        {
+            if(Macro->isMacroAvailable())
+            {
+                if (hand.palmNormal().y < -0.85)
+                    bHandKeyRot = true;
+                if(hand.palmNormal().y > 0.4 && bHandKeyRot)
+                {
+                    int iModeLock = ScriptEngine->runScript("hand_key");
+                    Macro->macroLock(iModeLock);
+                }
+            }
+        }
+
+    }
+    else
+    {
+        bHandKeyRot = false;
     }
 }
 
@@ -42,12 +62,15 @@ void logic::Leap_Gestures(GestureList Gestures)
                         bool bDirection = gesture.pointable().direction().angleTo(gesture.normal()) <= Leap::PI/2;// ? "clockwise" : "counterclockwise";
                         int iModeLock;
 
+//                        qDebug()<<gesture.progress();
                         if(bDirection) // clockwise
                         {
+                            if (gesture.progress() > 1.)
                             iModeLock = ScriptEngine->runScript("circle_clockwise");
                         }
                         else // counterclockwise
                         {
+                            if (gesture.progress() > 1.)
                             iModeLock = ScriptEngine->runScript("circle_counterclockwise");
                         }
                         Macro->macroLock(iModeLock);
@@ -57,20 +80,20 @@ void logic::Leap_Gestures(GestureList Gestures)
 
             case Gesture::TYPE_SWIPE:
                 {
-                    SwipeGesture gesture = SwipeGesture(*gl);
-                    if(Macro->isMacroAvailable())
-                    {
+                        SwipeGesture gesture = SwipeGesture(*gl);
                         int iModeLock;
-                        switch(gesture.direction().x > 0)
+                        qDebug() << gesture.direction().x;
+                        if(Macro->isMacroAvailable())
                         {
-
-                        case 1: // Right
+                        if(gesture.direction().x > 0.85)
                             iModeLock = ScriptEngine->runScript("swipe_right");
-                            break;
-                        case 0: //  Left
+                        if (gesture.direction().x < -0.85)
                             iModeLock = ScriptEngine->runScript("swipe_left");
-                            break;
-                         }
+                        if(gesture.direction().y > 0.85)
+                            iModeLock = ScriptEngine->runScript("swipe_up");
+                        if (gesture.direction().y < -0.85)
+                            iModeLock = ScriptEngine->runScript("swipe_down");
+
                         Macro->macroLock(iModeLock);
                     }
                 }

@@ -10,6 +10,7 @@ scriptengine::scriptengine()
     slModeList << "circle_counterclockwise";
     slModeList << "finger_tap";
     slModeList << "alms_giver";
+    slModeList << "hand_key";
 
     slCommandList << "key_down";
     slCommandList << "key_up";

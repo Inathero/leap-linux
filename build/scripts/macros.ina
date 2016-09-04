@@ -25,6 +25,9 @@ mode swipe_down
     key_down Down 
     key_up   Down 
 mode circle_clockwise
+    mode_lock 500
+    key_press q
+    key_press q
 mode circle_counterclockwise
 mode finger_tap
     mode_lock 150
@@ -33,3 +36,7 @@ mode alms_giver
     mode_lock 3000
     key_send yy
     launch   /home/inathero/Scripts/bin/ecv_mod
+mode hand_key
+    mode_lock 500
+    key_press q
+    key_press q

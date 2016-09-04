@@ -26,6 +26,7 @@ public slots:
 private:
     macro * Macro;
     scriptengine * ScriptEngine;
+    bool bHandKeyRot = false;
 };
 
 #endif // LOGIC_H
