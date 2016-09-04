@@ -142,7 +142,15 @@ int scriptengine::runScript(QString mode_id)
                     else
                     {
                         qDebug() <<"key_down: "<<baScript.at(0);
-                        XKeys->key_down (baScript.at(0));
+                        if (baScript.at(0) < 90)
+                        {
+                            XKeys->key_down(XK_Shift_L);
+                            XKeys->key_down(baScript.at(0));
+                        }
+                        else
+                        {
+                        XKeys->key_down(baScript.at(0));
+                        }
                     }
 
                 }
@@ -161,7 +169,13 @@ int scriptengine::runScript(QString mode_id)
                     else
                     {
                         qDebug() <<"key_up: "<<baScript.at(0);
-                        XKeys->key_up (baScript.at(0));
+                        if (baScript.at(0) < 90)
+                        {
+                            XKeys->key_up(XK_Shift_L);
+                            XKeys->key_up(baScript.at(0));
+                        }
+                        else
+                        XKeys->key_up(baScript.at(0));
                     }
                 }
                 if(bCommand[com_key_send])
@@ -173,10 +187,10 @@ int scriptengine::runScript(QString mode_id)
                     {
                         if (cChar.unicode() < 90)
                         {
-//                            qDebug() << "shift - "<< ShiftMask;
+                            qDebug() << "shift - "<< ShiftMask;
                             XKeys->key_down(XK_Shift_L);
-                            XKeys->key_down(cChar.unicode() | ShiftMask , ShiftMask);
-                            XKeys->key_up(cChar.unicode() | ShiftMask, ShiftMask);
+                            XKeys->key_down(cChar.unicode());
+                            XKeys->key_up(cChar.unicode());
                             XKeys->key_up(XK_Shift_L);
                         }
                         else
@@ -215,9 +229,20 @@ int scriptengine::runScript(QString mode_id)
                     // No values, single key statement instead
                     else
                     {
+
                         qDebug() <<"key_press: "<<baScript.at(0);
-                        XKeys->key_down (baScript.at(0));
-                        XKeys->key_up (baScript.at(0));
+                        if (baScript.at(0) < 90)
+                        {
+                            XKeys->key_down(XK_Shift_L);
+                            XKeys->key_down(baScript.at(0));
+                            XKeys->key_up(baScript.at(0));
+                            XKeys->key_up(XK_Shift_L);
+                        }
+                        else
+                        {
+                        XKeys->key_down(baScript.at(0));
+                        XKeys->key_up(baScript.at(0));
+                        }
                     }
                 }
             }

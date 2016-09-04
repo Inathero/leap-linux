@@ -33,7 +33,7 @@ void logic::Leap_Hands(Leap::HandList Hands)
             {
                 if (hand.palmNormal().y < -0.85)
                     bHandKeyRot = true;
-                if(hand.palmNormal().y > 0.4 && bHandKeyRot)
+                if(hand.palmNormal().y > 0.2 && bHandKeyRot)
                 {
                     int iModeLock = ScriptEngine->runScript("hand_key");
                     Macro->macroLock(iModeLock);

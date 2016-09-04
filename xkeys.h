@@ -9,6 +9,7 @@
 
 #include <QX11Info>
 #include <X11/Xlib.h>
+#include <X11/extensions/XTest.h>
 
 #undef Bool
 #ifdef None
@@ -25,13 +26,13 @@ class xkeys : public QObject
     Q_OBJECT
 public:
     explicit xkeys(QObject *parent = 0);
-    XKeyEvent createKeyEvent(bool press, int keycode, int modifiers);
+    XKeyEvent createKeyEvent(bool press, int keycode);
 
 signals:
 
 public slots:
-    void key_down( int iKeyCode, int iModifiers = 0);
-    void key_up( int iKeyCode, int iModifiers = 0);
+    void key_down(int iKeyCode);
+    void key_up(int iKeyCode);
 private slots:
     void key_setup();
 

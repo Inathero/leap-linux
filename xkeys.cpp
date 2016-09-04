@@ -5,24 +5,24 @@ xkeys::xkeys(QObject *parent) : QObject(parent)
 
 }
 
-void xkeys::key_down(int iKeyCode, int iModifiers)
+void xkeys::key_down(int iKeyCode)
 {
     key_setup();
 
     // Send a fake key press event to the window.
-    XKeyEvent event = createKeyEvent(true, iKeyCode, iModifiers);
-    XSendEvent(event.display, event.window, True, KeyPressMask | iModifiers, (XEvent *)&event);
+    XKeyEvent event = createKeyEvent(true, iKeyCode);
+    XTestFakeKeyEvent(event.display, event.keycode , True, 0);
 
     XCloseDisplay(xDisplay);
 }
 
-void xkeys::key_up(int iKeyCode, int iModifiers)
+void xkeys::key_up(int iKeyCode)
 {
     key_setup();
 
     // Send a fake key release event to the window.
-    XKeyEvent event = createKeyEvent(false, iKeyCode, iModifiers);
-    XSendEvent(event.display, event.window, True, KeyPressMask | iModifiers, (XEvent *)&event);
+    XKeyEvent event = createKeyEvent(false, iKeyCode);
+    XTestFakeKeyEvent(event.display, event.keycode , False, 0);
 
     XCloseDisplay(xDisplay);
 }
@@ -40,7 +40,7 @@ void xkeys::key_setup()
     XGetInputFocus(xDisplay, &xWinFocus, &xRevert);
 }
 
-XKeyEvent xkeys::createKeyEvent( bool press, int keycode, int modifiers)
+XKeyEvent xkeys::createKeyEvent( bool press, int keycode)
 {
        XKeyEvent event;
 
@@ -55,7 +55,7 @@ XKeyEvent xkeys::createKeyEvent( bool press, int keycode, int modifiers)
        event.y_root      = 1;
        event.same_screen = True;
        event.keycode     = XKeysymToKeycode(xDisplay, keycode);
-       event.state       =  modifiers;
+       event.state       = 0;
 
        if(press)
           event.type = KeyPress;

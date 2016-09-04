@@ -31,11 +31,21 @@ mode circle_clockwise
 mode circle_counterclockwise
 mode finger_tap
     mode_lock 150
+    key_press F
+    key_press f 
+mode finger_tap
+    mode_lock 150
     key_press Right
 mode alms_giver
     mode_lock 3000
     key_send yy
     launch   /home/inathero/Scripts/bin/ecv_mod
+mode hand_key
+    mode_lock 500
+    key_down Super
+    key_down f
+    key_up f 
+    key_up Super 
 mode hand_key
     mode_lock 500
     key_press q

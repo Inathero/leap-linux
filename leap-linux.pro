@@ -32,7 +32,7 @@ FORMS    += mainwindow.ui
 
 win32:CONFIG(release, debug|release): LIBS += -L$$PWD/leap/lib/x64/release/ -lLeap
 else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/leap/lib/x64/debug/ -lLeap
-else:unix: LIBS += -L$$PWD/leap/lib/x64/ -lLeap -L/usr/X11R6/lib -lX11
+else:unix: LIBS += -L$$PWD/leap/lib/x64/ -lLeap -L/usr/X11R6/lib -lX11 -lXtst
 
 INCLUDEPATH += $$PWD/leap/lib/x64 $$PWD/leap/include $$PWD/leap/util
 DEPENDPATH += $$PWD/leap/lib/x64
