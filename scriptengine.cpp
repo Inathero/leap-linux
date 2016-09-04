@@ -190,9 +190,15 @@ int scriptengine::runScript(QString mode_id, int modifiers)
                 }
                 if(bCommand[com_key_send])
                 {
-
-                    qDebug() <<"key_send:"<<baScript;
-//                    bCommand[com_key_send] = false;
+                    if(hDefines.contains(baScript))
+                    {
+                        qDebug() <<"key_send: Definitions:"<<baScript<<":"<<hDefines.value(baScript);
+                        XKeys->key_down (hDefines.value(baScript));
+                        XKeys->key_up (hDefines.value(baScript));
+                    }
+                    else
+                    {
+                        qDebug() <<"key_send:"<<baScript;
                     foreach(QChar cChar, baScript)
                     {
                         if (cChar.unicode() < 90)
@@ -207,6 +213,7 @@ int scriptengine::runScript(QString mode_id, int modifiers)
                         XKeys->key_down(cChar.unicode());
                         XKeys->key_up(cChar.unicode());
                         }
+                    }
                     }
                 }
                 if(bCommand[com_launch])
