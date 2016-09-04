@@ -17,12 +17,12 @@ mode swipe_right_1
     mode_lock 1500
     key_press Left 
 mode swipe_left_2
-    mode_lock 200
+    mode_lock 500
     key_down  Super
     key_press Right 
     key_up  Super
 mode swipe_right_2
-    mode_lock 200
+    mode_lock 500
     key_down  Super
     key_press Left 
     key_up  Super

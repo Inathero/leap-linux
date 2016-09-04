@@ -115,6 +115,7 @@ int scriptengine::runScript(QString mode_id, int modifiers)
     if (!slScriptSection.isEmpty())
     {
         bool bCommand[slCommandList.size()] = {false};
+        bool * bCPointer = bCommand;
 
         foreach(QByteArray baScript, slScriptSection)
         {
@@ -122,7 +123,14 @@ int scriptengine::runScript(QString mode_id, int modifiers)
 
             // Found a command
             if (iCommand != -1)
+            {
+                // Reset previous commands
+                for (int i = 0; i < slCommandList.size(); i++)
+                    *(bCPointer + i) = false;
+
+                // Activate current command
                 bCommand[iCommand] = true;
+            }
 
             // No command found, therefore arguments to command
             // arguments with no command = nothing happens
@@ -130,7 +138,8 @@ int scriptengine::runScript(QString mode_id, int modifiers)
             {
                 if(bCommand[com_key_down])
                 {
-                    bCommand[com_key_down] = false;
+
+//                    bCommand[com_key_down] = false;
 
                     // Check if we use define or not
                     if(hDefines.contains(baScript))
@@ -157,7 +166,7 @@ int scriptengine::runScript(QString mode_id, int modifiers)
                 }
                 if(bCommand[com_key_up])
                 {
-                    bCommand[com_key_up] = false;
+//                    bCommand[com_key_up] = false;
 
                     // Check if we use define or not
                     if(hDefines.contains(baScript))
@@ -183,7 +192,7 @@ int scriptengine::runScript(QString mode_id, int modifiers)
                 {
 
                     qDebug() <<"key_send:"<<baScript;
-                    bCommand[com_key_send] = false;
+//                    bCommand[com_key_send] = false;
                     foreach(QChar cChar, baScript)
                     {
                         if (cChar.unicode() < 90)
@@ -202,20 +211,20 @@ int scriptengine::runScript(QString mode_id, int modifiers)
                 }
                 if(bCommand[com_launch])
                 {
-                    bCommand[com_launch] = false;
+//                    bCommand[com_launch] = false;
 
                     qDebug() <<"launch:"<<baScript;
                     QProcess::startDetached(baScript);
                 }
                 if(bCommand[com_mode_lock])
                 {
-                    bCommand[com_mode_lock] = false;
+//                    bCommand[com_mode_lock] = false;
 
                     iModeLock = baScript.toInt();
                 }
                 if(bCommand[com_key_press])
                 {
-                    bCommand[com_key_press] = false;
+//                    bCommand[com_key_press] = false;
 
                     // Check if we use define or not
                     if(hDefines.contains(baScript))
