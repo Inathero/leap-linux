@@ -1,5 +1,6 @@
 #include "logic.h"
 
+
 logic::logic(QObject *parent) : QObject(parent)
 {
 
@@ -14,11 +15,19 @@ void logic::Leap_Hands(Leap::HandList Hands)
     if(!Hands.isEmpty())
     {
         Hand hand = Hands.frontmost();
+
+        iFingersExtended  = 0;
+        foreach(Finger finger, hand.fingers())
+        {
+            if (finger.isExtended())
+                iFingersExtended ++;
+        }
+
 //        qDebug() << hand.grabStrength() << " : " << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius();
 //        qDebug() << hand.palmVelocity().magnitude() <<  ", " << hand.palmNormal().toString().c_str();
 
         // alms_giver
-        if (hand.palmVelocity().magnitude() < 30 && hand.palmNormal().y > 0.9)
+        if (hand.palmVelocity().magnitude() < 30 && hand.palmNormal().y > 0.6)
         {
             if(Macro->isMacroAvailable())
             {
@@ -82,18 +91,19 @@ void logic::Leap_Gestures(GestureList Gestures)
                 {
                         SwipeGesture gesture = SwipeGesture(*gl);
                         int iModeLock;
-                        qDebug() << gesture.direction().x;
+                        qDebug() << "swiupe: " << gesture.direction().x <<", " << Macro->isMacroAvailable();
                         if(Macro->isMacroAvailable())
                         {
-                        if(gesture.direction().x > 0.85)
-                            iModeLock = ScriptEngine->runScript("swipe_right");
-                        if (gesture.direction().x < -0.85)
-                            iModeLock = ScriptEngine->runScript("swipe_left");
-                        if(gesture.direction().y > 0.85)
-                            iModeLock = ScriptEngine->runScript("swipe_up");
-                        if (gesture.direction().y < -0.85)
-                            iModeLock = ScriptEngine->runScript("swipe_down");
-
+                            ScriptEngine->preScript(iFingersExtended);
+                        if(gesture.direction().x > 0.50)
+                            iModeLock = ScriptEngine->runScript("swipe_right", FINGER_MOD);
+                        if (gesture.direction().x < -0.50)
+                            iModeLock = ScriptEngine->runScript("swipe_left", FINGER_MOD);
+                        if(gesture.direction().y > 0.50)
+                            iModeLock = ScriptEngine->runScript("swipe_up", FINGER_MOD);
+                        if (gesture.direction().y < -0.50)
+                            iModeLock = ScriptEngine->runScript("swipe_down", FINGER_MOD);
+                        qDebug() << "Lock Duration: "<< iModeLock;
                         Macro->macroLock(iModeLock);
                     }
                 }

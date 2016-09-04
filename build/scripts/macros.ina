@@ -10,12 +10,22 @@
 # key_send  = sends a string of keys
 # launch    = launches an application
 
-mode swipe_left
-    mode_lock 1000
-    key_press Left 
-mode swipe_right
-    mode_lock 1000
+mode swipe_left_1
+    mode_lock 600
     key_press Right 
+mode swipe_right_1
+    mode_lock 600
+    key_press Left 
+mode swipe_left_2
+    mode_lock 1000
+    key_down  Super
+    key_press Right 
+    key_up  Super
+mode swipe_right_2
+    mode_lock 1000
+    key_down  Super
+    key_press Left 
+    key_up  Super
 mode swipe_up
     mode_lock 500
     key_down Up 
@@ -25,14 +35,16 @@ mode swipe_down
     key_down Down 
     key_up   Down 
 mode circle_clockwise
-    mode_lock 500
-    key_press q
-    key_press q
+#    mode_lock 500
+#    key_press q
+#    key_press q
 mode circle_counterclockwise
 mode finger_tap
     mode_lock 150
-    key_press F
-    key_press f 
+    key_down Super
+    key_down f
+    key_up f 
+    key_up Super 
 mode finger_tap
     mode_lock 150
     key_press Right
@@ -40,12 +52,6 @@ mode alms_giver
     mode_lock 3000
     key_send yy
     launch   /home/inathero/Scripts/bin/ecv_mod
-mode hand_key
-    mode_lock 500
-    key_down Super
-    key_down f
-    key_up f 
-    key_up Super 
 mode hand_key
     mode_lock 500
     key_press q

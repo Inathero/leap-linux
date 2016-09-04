@@ -12,6 +12,9 @@
 
 #include "xkeys.h"
 
+
+#define FINGER_MOD 1
+
 // if you add more commands. change size of bool in runScript
 enum script_command_enums
 {
@@ -31,7 +34,8 @@ public:
     void setScriptFile(QString sPathToScript);
     void setDefinitions(QString sPathToDefines);
 public slots:
-    int runScript(QString mode_id);
+    int runScript(QString mode_id, int modifiers = 0);
+    void preScript(int iFingersExtended = 0);
 private slots:
     void updateScriptFile();
     QList<QByteArray> getScriptSection(QString mode_id);
@@ -43,6 +47,8 @@ private:
     QStringList slCommandList;
     xkeys * XKeys;
     QTimer * tFileUpdateTimer;
+
+    QString sFingerMod;
 };
 
 #endif // SCRIPTENGINE_H

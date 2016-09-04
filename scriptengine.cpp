@@ -36,6 +36,7 @@ void scriptengine::setScriptFile(QString sPathToScript)
         qDebug() << "Script file located";
         baScriptData = fCheck.readAll();
     }
+
     fCheck.close();
     tFileUpdateTimer->start(10000);
 }
@@ -104,8 +105,11 @@ QList<QByteArray> scriptengine::getScriptSection(QString mode_id)
     return slScriptSection;
 }
 
-int scriptengine::runScript(QString mode_id)
+int scriptengine::runScript(QString mode_id, int modifiers)
 {
+    if (modifiers & FINGER_MOD )
+        mode_id.append(sFingerMod);
+
     qDebug() << "scriptengine::runScript:" << mode_id;
     int iModeLock = 0;
     QList<QByteArray> slScriptSection = getScriptSection(mode_id);
@@ -250,6 +254,25 @@ int scriptengine::runScript(QString mode_id)
     }
 
     return iModeLock;
+}
+
+void scriptengine::preScript(int iFingersExtended)
+{
+    switch (iFingersExtended)
+    {
+        case 0:
+        case 5:
+        sFingerMod = "";
+        break;
+    case 1:
+    case 2:
+    case 3:
+    case 4:
+        sFingerMod = "_";
+        sFingerMod.append(QString::number(iFingersExtended));
+        break;
+
+    }
 }
 
 void scriptengine::updateScriptFile()

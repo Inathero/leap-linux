@@ -10,6 +10,7 @@
 #include "macro.h"
 #include "scriptengine.h"
 
+
 using namespace Leap;
 
 class logic : public QObject
@@ -27,6 +28,7 @@ private:
     macro * Macro;
     scriptengine * ScriptEngine;
     bool bHandKeyRot = false;
+    int iFingersExtended;
 };
 
 #endif // LOGIC_H

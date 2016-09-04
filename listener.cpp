@@ -38,5 +38,12 @@ void listener::Leap_ControllerStatus()
     Leap_Controller->enableGesture(Gesture::TYPE_SWIPE);
     Leap_Controller->enableGesture(Gesture::TYPE_CIRCLE);
     Leap_Controller->enableGesture(Gesture::TYPE_KEY_TAP);
+//    qDebug() << Leap_Controller->config().getFloat("Gesture.Swipe.MinLength");
+    Leap_Controller->config().setFloat("Gesture.Swipe.MinLength", 100);
+    Leap_Controller->config().setFloat("Gesture.Swipe.MinVelocity", 1);
+    Leap_Controller->config().save();
+
+//            controller.config().setFloat("Gesture.Circle.MinRadius", 15);
+//            controller.config().setFloat("Gesture.Circle.MinArc", 1.7);
     emit StartPolling();
 }
