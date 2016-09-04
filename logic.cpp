@@ -16,7 +16,7 @@ void logic::Leap_Hands(Leap::HandList Hands)
     {
         Hand hand = Hands.frontmost();
 
-          qDebug() << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius();
+//          qDebug() << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius();
 
         iFingersExtended  = 0;
         foreach(Finger finger, hand.fingers())
@@ -72,7 +72,7 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
         {
             case Gesture::TYPE_CIRCLE:
                 {
-                    if(Macro->isMacroAvailable())
+                    if(Macro->isMacroAvailable() && iFingersExtended == 1)
                     {
                         CircleGesture gesture = CircleGesture(*gl);
                         bool bDirection = gesture.pointable().direction().angleTo(gesture.normal()) <= Leap::PI/2;// ? "clockwise" : "counterclockwise";

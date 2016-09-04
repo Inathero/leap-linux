@@ -135,14 +135,14 @@ int scriptengine::runScript(QString mode_id, int modifiers)
                     // Check if we use define or not
                     if(hDefines.contains(baScript))
                     {
-                        qDebug() <<"key_down: defines :"<<baScript<<":"<<hDefines.value(baScript);
+                        qDebug() <<"key_down: Definitions:"<<baScript<<":"<<hDefines.value(baScript);
                         XKeys->key_down (hDefines.value(baScript));
                     }
 
                     // No values, single key statement instead
                     else
                     {
-                        qDebug() <<"key_down: "<<baScript.at(0);
+                        qDebug() <<"key_down:"<<baScript.at(0);
                         if (baScript.at(0) < 90)
                         {
                             XKeys->key_down(XK_Shift_L);
@@ -162,14 +162,14 @@ int scriptengine::runScript(QString mode_id, int modifiers)
                     // Check if we use define or not
                     if(hDefines.contains(baScript))
                     {
-                        qDebug() <<"key_up: defines :"<<baScript<<":"<<hDefines.value(baScript);
+                        qDebug() <<"key_up: Definitions:"<<baScript<<":"<<hDefines.value(baScript);
                         XKeys->key_up (hDefines.value(baScript));
                     }
 
                     // No values, single key statement instead
                     else
                     {
-                        qDebug() <<"key_up: "<<baScript.at(0);
+                        qDebug() <<"key_up:"<<baScript.at(0);
                         if (baScript.at(0) < 90)
                         {
                             XKeys->key_up(XK_Shift_L);
@@ -182,13 +182,12 @@ int scriptengine::runScript(QString mode_id, int modifiers)
                 if(bCommand[com_key_send])
                 {
 
-                    qDebug() <<"key_send: "<<baScript;
+                    qDebug() <<"key_send:"<<baScript;
                     bCommand[com_key_send] = false;
                     foreach(QChar cChar, baScript)
                     {
                         if (cChar.unicode() < 90)
                         {
-                            qDebug() << "shift - "<< ShiftMask;
                             XKeys->key_down(XK_Shift_L);
                             XKeys->key_down(cChar.unicode());
                             XKeys->key_up(cChar.unicode());
@@ -205,14 +204,13 @@ int scriptengine::runScript(QString mode_id, int modifiers)
                 {
                     bCommand[com_launch] = false;
 
-                    qDebug() <<"launch: "<<baScript;
+                    qDebug() <<"launch:"<<baScript;
                     QProcess::startDetached(baScript);
                 }
                 if(bCommand[com_mode_lock])
                 {
                     bCommand[com_mode_lock] = false;
 
-                    qDebug() <<"mode_lock: "<<baScript.toInt();
                     iModeLock = baScript.toInt();
                 }
                 if(bCommand[com_key_press])
@@ -222,7 +220,7 @@ int scriptengine::runScript(QString mode_id, int modifiers)
                     // Check if we use define or not
                     if(hDefines.contains(baScript))
                     {
-                        qDebug() <<"key_press: defines :"<<baScript<<":"<<hDefines.value(baScript);
+                        qDebug() <<"key_press: Definitions:"<<baScript<<":"<<hDefines.value(baScript);
                         XKeys->key_down (hDefines.value(baScript));
                         XKeys->key_up (hDefines.value(baScript));
                     }
@@ -231,7 +229,7 @@ int scriptengine::runScript(QString mode_id, int modifiers)
                     else
                     {
 
-                        qDebug() <<"key_press: "<<baScript.at(0);
+                        qDebug() <<"key_press:"<<baScript.at(0);
                         if (baScript.at(0) < 90)
                         {
                             XKeys->key_down(XK_Shift_L);
