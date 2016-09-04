@@ -7,6 +7,7 @@
 #include <QFile>
 #include <QProcess>
 #include <QHash>
+#include <QTimer>
 
 
 #include "xkeys.h"
@@ -29,11 +30,11 @@ public:
     scriptengine();
     void setScriptFile(QString sPathToScript);
     void setDefinitions(QString sPathToDefines);
-private:
-    QList<QByteArray> getScriptSection(QString mode_id);
-
 public slots:
     int runScript(QString mode_id);
+private slots:
+    void updateScriptFile();
+    QList<QByteArray> getScriptSection(QString mode_id);
 private:
     QByteArray baScriptData;
     QHash<QString,int> hDefines;
@@ -41,6 +42,7 @@ private:
     QStringList slModeList;
     QStringList slCommandList;
     xkeys * XKeys;
+    QTimer * tFileUpdateTimer;
 };
 
 #endif // SCRIPTENGINE_H

@@ -21,6 +21,8 @@ scriptengine::scriptengine()
 
 
     XKeys = new xkeys(this);
+    tFileUpdateTimer = new QTimer(this);
+    connect(tFileUpdateTimer, &QTimer::timeout, this, &scriptengine::updateScriptFile);
 }
 
 void scriptengine::setScriptFile(QString sPathToScript)
@@ -35,6 +37,7 @@ void scriptengine::setScriptFile(QString sPathToScript)
         baScriptData = fCheck.readAll();
     }
     fCheck.close();
+    tFileUpdateTimer->start(10000);
 }
 
 void scriptengine::setDefinitions(QString sPathToDefines)
@@ -221,6 +224,11 @@ int scriptengine::runScript(QString mode_id)
         }
     }
 
-return iModeLock;
+    return iModeLock;
+}
+
+void scriptengine::updateScriptFile()
+{
+ setScriptFile(sScriptFile);
 }
 
