@@ -32,13 +32,10 @@ void scriptengine::setScriptFile(QString sPathToScript)
     if (!fCheck.open(QIODevice::ReadOnly | QIODevice::Text))
         qWarning() << "Unable to find script file. Can not load macros";
     else
-    {
-        qDebug() << "Script file located";
         baScriptData = fCheck.readAll();
-    }
 
     fCheck.close();
-    tFileUpdateTimer->start(10000);
+    tFileUpdateTimer->start(5000);
 }
 
 void scriptengine::setDefinitions(QString sPathToDefines)
@@ -252,7 +249,7 @@ int scriptengine::runScript(QString mode_id, int modifiers)
             }
         }
     }
-
+    sFingerMod = "";
     return iModeLock;
 }
 

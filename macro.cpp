@@ -13,10 +13,15 @@ bool macro::isMacroAvailable()
 
 void macro::macroLock( int iInterval )
 {
-    MacroDelay->start(iInterval);
+    if (iInterval > 0)
+    {
+        MacroDelay->start(iInterval);
+        qDebug() << "macro::macroLock:"<<iInterval;
+    }
 }
 
 void macro::macroRelease()
 {
+    qDebug() << "macro::macroRelease";
     MacroDelay->stop();
 }

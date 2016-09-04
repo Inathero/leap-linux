@@ -11,18 +11,18 @@
 # launch    = launches an application
 
 mode swipe_left_1
-    mode_lock 600
+    mode_lock 1500
     key_press Right 
 mode swipe_right_1
-    mode_lock 600
+    mode_lock 1500
     key_press Left 
 mode swipe_left_2
-    mode_lock 1000
+    mode_lock 200
     key_down  Super
     key_press Right 
     key_up  Super
 mode swipe_right_2
-    mode_lock 1000
+    mode_lock 200
     key_down  Super
     key_press Left 
     key_up  Super
@@ -39,15 +39,12 @@ mode circle_clockwise
 #    key_press q
 #    key_press q
 mode circle_counterclockwise
-mode finger_tap
-    mode_lock 150
-    key_down Super
-    key_down f
-    key_up f 
-    key_up Super 
-mode finger_tap
+mode finger_tap_1
     mode_lock 150
     key_press Right
+mode finger_tap_2
+    mode_lock 150
+    key_press Left
 mode alms_giver
     mode_lock 3000
     key_send yy

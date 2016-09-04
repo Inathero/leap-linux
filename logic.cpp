@@ -16,11 +16,16 @@ void logic::Leap_Hands(Leap::HandList Hands)
     {
         Hand hand = Hands.frontmost();
 
+          qDebug() << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius();
+
         iFingersExtended  = 0;
         foreach(Finger finger, hand.fingers())
         {
+            if (finger.type() != 0)
+            {
             if (finger.isExtended())
                 iFingersExtended ++;
+            }
         }
 
 //        qDebug() << hand.grabStrength() << " : " << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius();
@@ -32,19 +37,21 @@ void logic::Leap_Hands(Leap::HandList Hands)
             if(Macro->isMacroAvailable())
             {
                 int iModeLock = ScriptEngine->runScript("alms_giver");
+                qDebug() << "Alms Giver Lock Duration: "<< iModeLock;
                 Macro->macroLock(iModeLock);
             }
         }
         // hand_key
-        if (hand.grabStrength() == 1)
+        if (hand.sphereRadius() < 55. && iFingersExtended == 0)
         {
             if(Macro->isMacroAvailable())
             {
                 if (hand.palmNormal().y < -0.85)
                     bHandKeyRot = true;
-                if(hand.palmNormal().y > 0.2 && bHandKeyRot)
+                if(hand.palmNormal().y > 0 && bHandKeyRot)
                 {
                     int iModeLock = ScriptEngine->runScript("hand_key");
+                    qDebug() << "Hand Key Lock Duration: "<< iModeLock;
                     Macro->macroLock(iModeLock);
                 }
             }
@@ -57,7 +64,7 @@ void logic::Leap_Hands(Leap::HandList Hands)
     }
 }
 
-void logic::Leap_Gestures(GestureList Gestures)
+void logic::Leap_Gestures(GestureList Gestures, Hand hand)
 {
     for(Leap::GestureList::const_iterator gl = Gestures.begin(); gl != Gestures.end(); gl++)
     {
@@ -69,7 +76,7 @@ void logic::Leap_Gestures(GestureList Gestures)
                     {
                         CircleGesture gesture = CircleGesture(*gl);
                         bool bDirection = gesture.pointable().direction().angleTo(gesture.normal()) <= Leap::PI/2;// ? "clockwise" : "counterclockwise";
-                        int iModeLock;
+                        int iModeLock = 0;
 
 //                        qDebug()<<gesture.progress();
                         if(bDirection) // clockwise
@@ -82,6 +89,7 @@ void logic::Leap_Gestures(GestureList Gestures)
                             if (gesture.progress() > 1.)
                             iModeLock = ScriptEngine->runScript("circle_counterclockwise");
                         }
+                        qDebug() << "Circle Lock Duration: "<< iModeLock;
                         Macro->macroLock(iModeLock);
                     }
                 }
@@ -90,20 +98,39 @@ void logic::Leap_Gestures(GestureList Gestures)
             case Gesture::TYPE_SWIPE:
                 {
                         SwipeGesture gesture = SwipeGesture(*gl);
-                        int iModeLock;
-                        qDebug() << "swiupe: " << gesture.direction().x <<", " << Macro->isMacroAvailable();
+                        int iModeLock = 0;
+//                        qDebug() << "swiupe: " << gesture.direction().x <<", " << Macro->isMacroAvailable();
                         if(Macro->isMacroAvailable())
                         {
-                            ScriptEngine->preScript(iFingersExtended);
-                        if(gesture.direction().x > 0.50)
-                            iModeLock = ScriptEngine->runScript("swipe_right", FINGER_MOD);
-                        if (gesture.direction().x < -0.50)
-                            iModeLock = ScriptEngine->runScript("swipe_left", FINGER_MOD);
-                        if(gesture.direction().y > 0.50)
-                            iModeLock = ScriptEngine->runScript("swipe_up", FINGER_MOD);
-                        if (gesture.direction().y < -0.50)
-                            iModeLock = ScriptEngine->runScript("swipe_down", FINGER_MOD);
-                        qDebug() << "Lock Duration: "<< iModeLock;
+                            if (iFingersExtended > 1)
+                            {
+                                if ( fabs(hand.palmNormal().x) < 0.5)
+                                    return;
+                                else
+                                {
+                                    ScriptEngine->preScript(iFingersExtended);
+                                    if(hand.palmNormal().x > 0.30)
+                                        iModeLock = ScriptEngine->runScript("swipe_right", FINGER_MOD);
+                                    if (hand.palmNormal().x < -0.50)
+                                        iModeLock = ScriptEngine->runScript("swipe_left", FINGER_MOD);
+                                    if(gesture.direction().y > 0.50)
+                                        iModeLock = ScriptEngine->runScript("swipe_up", FINGER_MOD);
+                                    if (gesture.direction().y < -0.50)
+                                        iModeLock = ScriptEngine->runScript("swipe_down", FINGER_MOD);
+                                }
+                            }
+                            else
+                            {
+                                if(gesture.direction().x > 0.50)
+                                    iModeLock = ScriptEngine->runScript("swipe_right");
+                                if (gesture.direction().x < -0.50)
+                                    iModeLock = ScriptEngine->runScript("swipe_left");
+                                if(gesture.direction().y > 0.50)
+                                    iModeLock = ScriptEngine->runScript("swipe_up");
+                                if (gesture.direction().y < -0.50)
+                                    iModeLock = ScriptEngine->runScript("swipe_down");
+                            }
+                        qDebug() << "Swipe Lock Duration: "<< iModeLock;
                         Macro->macroLock(iModeLock);
                     }
                 }
@@ -115,7 +142,9 @@ void logic::Leap_Gestures(GestureList Gestures)
 
                     if(Macro->isMacroAvailable())
                     {
-                        int iModeLock = ScriptEngine->runScript("finger_tap");
+                        ScriptEngine->preScript(gesture.pointable().id() % 10);
+                        int iModeLock = ScriptEngine->runScript("finger_tap", FINGER_MOD);
+                        qDebug() << "Tap Lock Duration: "<< iModeLock;
                         Macro->macroLock(iModeLock);
 
                     }

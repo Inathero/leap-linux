@@ -24,7 +24,7 @@ void listener::onPoll()
     Logic->Leap_Hands(frame.hands());
 
     // Process Gestures
-    Logic->Leap_Gestures(frame.gestures());
+    Logic->Leap_Gestures(frame.gestures(), frame.hands().frontmost());
 }
 
 void listener::Leap_ControllerStatus()

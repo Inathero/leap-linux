@@ -23,7 +23,7 @@ signals:
 
 public slots:
     void Leap_Hands     (Leap::HandList Hands);
-    void Leap_Gestures  (Leap::GestureList Gestures);
+    void Leap_Gestures  (Leap::GestureList Gestures, Leap::Hand hand);
 private:
     macro * Macro;
     scriptengine * ScriptEngine;
