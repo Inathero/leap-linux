@@ -1,3 +1,4 @@
+# Used for macros:
 # Label Keycode
 # Lines starting with # are ignored
 Left    0xff51 
@@ -26,3 +27,7 @@ F11     0xffc8
 F12     0xffc9
 Back    0xff08
 Enter   0xff0d 
+
+# Used for mouse simulation -- tablet style
+Leap_Mouse_Width_Range  -90 90
+Leap_Mouse_Height_Range 70 200

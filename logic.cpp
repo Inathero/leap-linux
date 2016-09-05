@@ -19,12 +19,24 @@ void logic::Leap_Hands(Leap::HandList Hands)
 //          qDebug() << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius();
 
         iFingersExtended  = 0;
+        bThumbExtended = false;
         foreach(Finger finger, hand.fingers())
         {
+            if (finger.type() == 0)
+                if (finger.isExtended())
+                {
+//                 qDebug()<<   finger.width();
+                    bThumbExtended = true;
+                }
             if (finger.type() != 0)
             {
             if (finger.isExtended())
                 iFingersExtended ++;
+            if (finger.type() == 1 && finger.isExtended())
+            {
+                // Works jsut fine
+                //ScriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
+            }
             }
         }
 
@@ -32,7 +44,7 @@ void logic::Leap_Hands(Leap::HandList Hands)
 //        qDebug() << hand.palmVelocity().magnitude() <<  ", " << hand.palmNormal().toString().c_str();
 
         // alms_giver
-        if (hand.palmVelocity().magnitude() < 30 && hand.palmNormal().y > 0.6)
+        if (hand.palmVelocity().magnitude() < 30 && hand.palmNormal().y > 0.6 && iFingersExtended > 3)
         {
             if(Macro->isMacroAvailable())
             {
@@ -42,16 +54,45 @@ void logic::Leap_Hands(Leap::HandList Hands)
             }
         }
         // hand_key
-        if (hand.sphereRadius() < 55. && iFingersExtended == 0)
+        if (hand.sphereRadius() < 55. && iFingersExtended == 0 && !bThumbExtended)
         {
             if(Macro->isMacroAvailable())
             {
                 if (hand.palmNormal().y < -0.85)
                     bHandKeyRot = true;
-                if(hand.palmNormal().y > 0 && bHandKeyRot)
+                if(hand.palmNormal().x < -0.60 && bHandKeyRot)
                 {
                     int iModeLock = ScriptEngine->runScript("hand_key");
                     qDebug() << "Hand Key Lock Duration: "<< iModeLock;
+                    Macro->macroLock(iModeLock);
+                }
+            }
+        }
+        // thumbs_up | down
+        if (hand.sphereRadius() < 65. && iFingersExtended == 0 && bThumbExtended)
+        {
+            if(Macro->isMacroAvailable())
+            {
+                if (hand.palmNormal().y < -0.85)
+                    bThumbKeyRot = true;
+
+                int iModeLock = 0;
+                if(hand.palmNormal().x > 0.60 && bThumbKeyRot)
+                {
+                    if (hand.isRight())
+                        iModeLock = ScriptEngine->runScript("thumb_down");
+                    else
+                        iModeLock = ScriptEngine->runScript("thumb_up");
+                    qDebug() << "Thumb Up Lock Duration: "<< iModeLock;
+                    Macro->macroLock(iModeLock);
+                }
+                if(hand.palmNormal().x < -0.60 && bThumbKeyRot)
+                {
+                    if (hand.isRight())
+                        iModeLock = ScriptEngine->runScript("thumb_up");
+                    else
+                        iModeLock = ScriptEngine->runScript("thumb_down");
+                    qDebug() << "Thumb Up Lock Duration: "<< iModeLock;
                     Macro->macroLock(iModeLock);
                 }
             }
@@ -61,6 +102,7 @@ void logic::Leap_Hands(Leap::HandList Hands)
     else
     {
         bHandKeyRot = false;
+        bThumbKeyRot= false;
     }
 }
 

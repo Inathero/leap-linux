@@ -11,6 +11,8 @@ scriptengine::scriptengine()
     slModeList << "finger_tap";
     slModeList << "alms_giver";
     slModeList << "hand_key";
+    slModeList << "thumb_up";
+    slModeList << "thumb_down";
 
     slCommandList << "key_down";
     slCommandList << "key_up";
@@ -18,10 +20,17 @@ scriptengine::scriptengine()
     slCommandList << "launch";
     slCommandList << "mode_lock";
     slCommandList << "key_press";
+    slCommandList << "mouse_click";
+
+    slMouseButtonList << "left";
+    slMouseButtonList << "middle";
+    slMouseButtonList << "right";
 
 
     XKeys = new xkeys(this);
+    XMouse = new xmouse(this);
     tFileUpdateTimer = new QTimer(this);
+    LeapMouseRect = new int[4];
     connect(tFileUpdateTimer, &QTimer::timeout, this, &scriptengine::updateScriptFile);
 }
 
@@ -46,7 +55,7 @@ void scriptengine::setDefinitions(QString sPathToDefines)
         qWarning() << "Unable to find defines file. Can not load defines: " << sPathToDefines;
     else
     {
-        qDebug() << "defines file located";
+        qDebug() << "Defines File Located";
         baDefines = fDefines.readAll();
     }
     fDefines.close();
@@ -57,15 +66,57 @@ void scriptengine::setDefinitions(QString sPathToDefines)
         // Ignore comments
         if (baDefine.at(0) == '#')
             continue;
+
+
         QList<QByteArray> qlTokenize = baDefine.split(' ');
         qlTokenize.removeAll("");
 
+        if (qlTokenize.isEmpty())
+                    continue;
 
+        // Non-Macro defines
+        if (qlTokenize.at(0) == "Leap_Mouse_Width_Range")
+        {
+            // Try-catch doesn't work on mingw Qt, how disappointing
+            if (qlTokenize.size() != 3)
+            {
+                qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Width_Range_Min defined with no value. Using -100 as default";
+                qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Width_Range_Max defined with no value. Using 100 as default";
+                LeapMouseRect[0] = -100;
+                LeapMouseRect[1] = 100;
+            }
+            else
+            {
+                LeapMouseRect[0] = qlTokenize.at(1).toInt();
+                LeapMouseRect[1] = qlTokenize.at(2).toInt();
+            }
+            continue;
+        }
+        if (qlTokenize.at(0) == "Leap_Mouse_Height_Range")
+        {
+
+            // Try-catch doesn't work on mingw Qt, how disappointing
+            if (qlTokenize.size() != 3)
+            {
+                qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Height_Min defined with no value. Using 70 as default";
+                qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Height_Max defined with no value. Using 250 as default";
+                LeapMouseRect[2] = 70;
+                LeapMouseRect[3] = 250;
+
+            }
+            else
+            {
+                LeapMouseRect[2] = qlTokenize.at(1).toInt();
+                LeapMouseRect[3] = qlTokenize.at(2).toInt();
+            }
+            continue;
+        }
         if (qlTokenize.size() > 1)
             hDefines.insert(qlTokenize.at(0), qlTokenize.at(1).toUInt(NULL, 16));
         else
             qWarning() << "Incomplete define. Unable to add to Defines: " << qlTokenize;
     }
+    XMouse->mouse_set_leap_ranges(LeapMouseRect);
 }
 
 QList<QByteArray> scriptengine::getScriptSection(QString mode_id)
@@ -260,7 +311,20 @@ int scriptengine::runScript(QString mode_id, int modifiers)
                         }
                     }
                 }
+                if(bCommand[com_mouse_click])
+                {
+
+                    qDebug() << "mouse_click:" << baScript;
+
+                    int iMouseButtonIndex = slMouseButtonList.indexOf(baScript.toLower());
+
+                    XMouse->mouse_button_click(xmouse_button_type_enum(iMouseButtonIndex+1));
+
+                    }
             }
+
+            // commands that have no arguments
+
         }
     }
     sFingerMod = "";
@@ -284,6 +348,11 @@ void scriptengine::preScript(int iFingersExtended)
         break;
 
     }
+}
+
+void scriptengine::debug(float x, float y)
+{
+    XMouse->mouse_move(x,y);
 }
 
 void scriptengine::updateScriptFile()

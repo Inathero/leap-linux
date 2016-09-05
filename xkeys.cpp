@@ -58,9 +58,9 @@ XKeyEvent xkeys::createKeyEvent( bool press, int keycode)
        event.state       = 0;
 
        if(press)
-          event.type = KeyPress;
+          event.type = 2;
        else
-          event.type = KeyRelease;
+          event.type = 3;
 
        return event;
 }

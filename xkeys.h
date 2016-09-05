@@ -7,7 +7,6 @@
 #include <QObject>
 #include <QDebug>
 
-#include <QX11Info>
 #include <X11/Xlib.h>
 #include <X11/extensions/XTest.h>
 
@@ -18,7 +17,16 @@
 #ifdef FrameFeature
 #undef FrameFeature
 #endif
-#undef None
+//#undef None
+//#ifdef Status
+//#undef Status
+//#endif
+//#ifdef KeyPress
+//#undef KeyPress
+//#endif
+//#ifdef KeyRelease
+//#undef KeyRelease
+//#endif
 
 #include <X11/keysym.h>
 class xkeys : public QObject

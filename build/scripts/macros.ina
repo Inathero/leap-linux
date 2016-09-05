@@ -1,9 +1,16 @@
 # Use comments to ignore
 # current limitations:
 # key_send and launch do not handle arguments with spaces
-# i.e. 'key_send this is a test' will only send 'this' and ignore the rest
-# is in work to get this fixed
-
+# i.e. 'key_send this is a test' will send 'thisisatest' and ignores the spaces
+# you need to manually input 'Space' for it to work, i.e: 'key_send this Space is Space a Space test'
+# # is in work to get this fixed
+#
+# the number following a mode is how many fingers are needed to activate the mode
+# atm numbers are 1, 2, 3, 4
+# swipe_left_1 needs 1 finger
+# swipe_right_3 needs 3 fingers
+# swipe_left uses all fingers or only thumb
+#
 # mode_lock = how long (in miliseconds) till mode is available again
 # key_down  = presses down 1 key
 # key_up    = releases 1 key
@@ -21,6 +28,30 @@ mode swipe_left_2
     key_down  Super Right
     key_up  Right Super
 mode swipe_right_2
+    mode_lock 500
+    key_down  Super Left
+    key_up  Left Super
+mode swipe_left_3
+    mode_lock 500
+    key_down  Super Right
+    key_up  Right Super
+mode swipe_right_3
+    mode_lock 500
+    key_down  Super Left
+    key_up  Left Super
+mode swipe_left_4
+    mode_lock 500
+    key_down  Super Right
+    key_up  Right Super
+mode swipe_right_4
+    mode_lock 500
+    key_down  Super Left
+    key_up  Left Super
+mode swipe_left
+    mode_lock 500
+    key_down  Super Right
+    key_up  Right Super
+mode swipe_right
     mode_lock 500
     key_down  Super Left
     key_up  Left Super
@@ -47,6 +78,14 @@ mode alms_giver
     mode_lock 3000
     key_send yy
     launch   /home/inathero/Scripts/bin/ecv_mod
+mode thumb_up
+    mode_lock 1000
+    key_down Super d 
+    key_up d Super
+mode thumb_down
+    mode_lock 1000
+    key_down    Super n
+    key_up      n Super
 mode hand_key
     mode_lock 500
     key_press q

@@ -28,7 +28,9 @@ private:
     macro * Macro;
     scriptengine * ScriptEngine;
     bool bHandKeyRot = false;
+    bool bThumbKeyRot = false;
     int iFingersExtended;
+    bool bThumbExtended;
 };
 
 #endif // LOGIC_H
