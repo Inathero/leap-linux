@@ -22,13 +22,17 @@ public:
 signals:
 
 public slots:
-    void Leap_Hands     (Leap::HandList Hands);
-    void Leap_Gestures  (Leap::GestureList Gestures, Leap::Hand hand);
+    void Leap_Hands         (Leap::HandList Hands);
+    void Leap_FingerSetup   (Leap::FingerList Fingers);
+    void Leap_Gestures      (Leap::GestureList Gestures, Leap::Hand hand);
 private:
+    inline void logic_hand_debug(Leap::Hand hand);
+
     macro * Macro;
     scriptengine * ScriptEngine;
     bool bHandKeyRot = false;
     bool bThumbKeyRot = false;
+    bool bFingersExtended[4] = {false};
     int iFingersExtended;
     bool bThumbExtended;
 };

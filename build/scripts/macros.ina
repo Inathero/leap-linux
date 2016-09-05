@@ -90,3 +90,7 @@ mode hand_key
     mode_lock 500
     key_press q
     key_press q
+mode shaka_down
+    mode_lock 1000
+    key_down Super F9
+    key_up F9 Super

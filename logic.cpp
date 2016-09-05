@@ -10,38 +10,22 @@ logic::logic(QObject *parent) : QObject(parent)
     ScriptEngine->setScriptFile(QApplication::applicationDirPath().append("/scripts/macros.ina"));
 }
 
+inline void logic::logic_hand_debug(Hand hand)
+{
+//     qDebug() << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius();
+    // qDebug() << hand.grabStrength() << " : " << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius();
+    // qDebug() << hand.palmVelocity().magnitude() <<  ", " << hand.palmNormal().toString().c_str();
+}
+
 void logic::Leap_Hands(Leap::HandList Hands)
 {
     if(!Hands.isEmpty())
     {
         Hand hand = Hands.frontmost();
 
-//          qDebug() << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius();
+        logic_hand_debug(hand);
 
-        iFingersExtended  = 0;
-        bThumbExtended = false;
-        foreach(Finger finger, hand.fingers())
-        {
-            if (finger.type() == 0)
-                if (finger.isExtended())
-                {
-//                 qDebug()<<   finger.width();
-                    bThumbExtended = true;
-                }
-            if (finger.type() != 0)
-            {
-            if (finger.isExtended())
-                iFingersExtended ++;
-            if (finger.type() == 1 && finger.isExtended())
-            {
-                // Works jsut fine
-                //ScriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
-            }
-            }
-        }
-
-//        qDebug() << hand.grabStrength() << " : " << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius();
-//        qDebug() << hand.palmVelocity().magnitude() <<  ", " << hand.palmNormal().toString().c_str();
+        Leap_FingerSetup(hand.fingers());
 
         // alms_giver
         if (hand.palmVelocity().magnitude() < 30 && hand.palmNormal().y > 0.6 && iFingersExtended > 3)
@@ -98,11 +82,64 @@ void logic::Leap_Hands(Leap::HandList Hands)
             }
         }
 
+        // shaka_up | down -- Thumb and pinky extended
+        if (iFingersExtended == 1 && bFingersExtended[3] && bThumbExtended)
+        {
+            if(Macro->isMacroAvailable())
+            {
+                int iModeLock = 0;
+                if(hand.palmNormal().y < -0.9)
+                {
+                    iModeLock = ScriptEngine->runScript("shaka_down");
+                    qDebug() << "Shaka Down Lock Duration: "<< iModeLock;
+                    Macro->macroLock(iModeLock);
+                }
+                if(hand.palmNormal().y > 0.9)
+                {
+                    iModeLock = ScriptEngine->runScript("shaka_up");
+                    qDebug() << "Shaka Down Lock Duration: "<< iModeLock;
+                    Macro->macroLock(iModeLock);
+                }
+            }
+        }
+
     }
     else
     {
         bHandKeyRot = false;
         bThumbKeyRot= false;
+    }
+}
+
+void logic::Leap_FingerSetup(FingerList Fingers)
+{
+    iFingersExtended  = 0;
+
+    foreach(Finger finger, Fingers)
+    {
+        // Get thumb status
+        if (finger.type() == 0)
+            bThumbExtended = finger.isExtended();
+
+        // Get other fingers status
+        if (finger.type() != 0)
+        {
+            // Correlate index to extended state, for gestures
+            bFingersExtended[finger.type()-1] = finger.isExtended();
+
+            // Obtain total number of extended fingers
+            if (finger.isExtended())
+                iFingersExtended ++;
+
+            // This code excerpt here works 100% fine
+            // It tracks index finger (when extended) and maps cursor to it
+            //
+            // Currently not in use, so it is ignored
+            //if (finger.type() == 1 && finger.isExtended())
+            //{
+                //ScriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
+            //}
+        }
     }
 }
 
@@ -120,16 +157,16 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
                         bool bDirection = gesture.pointable().direction().angleTo(gesture.normal()) <= Leap::PI/2;// ? "clockwise" : "counterclockwise";
                         int iModeLock = 0;
 
-//                        qDebug()<<gesture.progress();
+                        //                        qDebug()<<gesture.progress();
                         if(bDirection) // clockwise
                         {
                             if (gesture.progress() > 1.)
-                            iModeLock = ScriptEngine->runScript("circle_clockwise");
+                                iModeLock = ScriptEngine->runScript("circle_clockwise");
                         }
                         else // counterclockwise
                         {
                             if (gesture.progress() > 1.)
-                            iModeLock = ScriptEngine->runScript("circle_counterclockwise");
+                                iModeLock = ScriptEngine->runScript("circle_counterclockwise");
                         }
                         qDebug() << "Circle Lock Duration: "<< iModeLock;
                         Macro->macroLock(iModeLock);
@@ -139,39 +176,39 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
 
             case Gesture::TYPE_SWIPE:
                 {
-                        SwipeGesture gesture = SwipeGesture(*gl);
-                        int iModeLock = 0;
-//                        qDebug() << "swiupe: " << gesture.direction().x <<", " << Macro->isMacroAvailable();
-                        if(Macro->isMacroAvailable())
+                    SwipeGesture gesture = SwipeGesture(*gl);
+                    int iModeLock = 0;
+                    //                        qDebug() << "swiupe: " << gesture.direction().x <<", " << Macro->isMacroAvailable();
+                    if(Macro->isMacroAvailable())
+                    {
+                        if (iFingersExtended > 1)
                         {
-                            if (iFingersExtended > 1)
-                            {
-                                if ( fabs(hand.palmNormal().x) < 0.5)
-                                    return;
-                                else
-                                {
-                                    ScriptEngine->preScript(iFingersExtended);
-                                    if(hand.palmNormal().x > 0.30)
-                                        iModeLock = ScriptEngine->runScript("swipe_right", FINGER_MOD);
-                                    if (hand.palmNormal().x < -0.50)
-                                        iModeLock = ScriptEngine->runScript("swipe_left", FINGER_MOD);
-                                    if(gesture.direction().y > 0.50)
-                                        iModeLock = ScriptEngine->runScript("swipe_up", FINGER_MOD);
-                                    if (gesture.direction().y < -0.50)
-                                        iModeLock = ScriptEngine->runScript("swipe_down", FINGER_MOD);
-                                }
-                            }
+                            if ( fabs(hand.palmNormal().x) < 0.5)
+                                return;
                             else
                             {
-                                if(gesture.direction().x > 0.50)
-                                    iModeLock = ScriptEngine->runScript("swipe_right");
-                                if (gesture.direction().x < -0.50)
-                                    iModeLock = ScriptEngine->runScript("swipe_left");
+                                ScriptEngine->preScript(iFingersExtended);
+                                if(hand.palmNormal().x > 0.30)
+                                    iModeLock = ScriptEngine->runScript("swipe_right", FINGER_MOD);
+                                if (hand.palmNormal().x < -0.50)
+                                    iModeLock = ScriptEngine->runScript("swipe_left", FINGER_MOD);
                                 if(gesture.direction().y > 0.50)
-                                    iModeLock = ScriptEngine->runScript("swipe_up");
+                                    iModeLock = ScriptEngine->runScript("swipe_up", FINGER_MOD);
                                 if (gesture.direction().y < -0.50)
-                                    iModeLock = ScriptEngine->runScript("swipe_down");
+                                    iModeLock = ScriptEngine->runScript("swipe_down", FINGER_MOD);
                             }
+                        }
+                        else
+                        {
+                            if(gesture.direction().x > 0.50)
+                                iModeLock = ScriptEngine->runScript("swipe_right");
+                            if (gesture.direction().x < -0.50)
+                                iModeLock = ScriptEngine->runScript("swipe_left");
+                            if(gesture.direction().y > 0.50)
+                                iModeLock = ScriptEngine->runScript("swipe_up");
+                            if (gesture.direction().y < -0.50)
+                                iModeLock = ScriptEngine->runScript("swipe_down");
+                        }
                         qDebug() << "Swipe Lock Duration: "<< iModeLock;
                         Macro->macroLock(iModeLock);
                     }

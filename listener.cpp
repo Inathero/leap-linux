@@ -39,7 +39,7 @@ void listener::Leap_ControllerStatus()
     Leap_Controller->enableGesture(Gesture::TYPE_CIRCLE);
     Leap_Controller->enableGesture(Gesture::TYPE_KEY_TAP);
 //    qDebug() << Leap_Controller->config().getFloat("Gesture.Swipe.MinLength");
-    Leap_Controller->config().setFloat("Gesture.Swipe.MinLength", 100);
+    Leap_Controller->config().setFloat("Gesture.Swipe.MinLength", 130);
     Leap_Controller->config().setFloat("Gesture.Swipe.MinVelocity", 1);
     Leap_Controller->config().save();
 
