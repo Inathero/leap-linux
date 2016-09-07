@@ -185,10 +185,10 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
                                     iModeLock = ScriptEngine->runScript("swipe_right", FINGER_MOD);
                                 if (hand.palmNormal().x < -0.80)
                                     iModeLock = ScriptEngine->runScript("swipe_left", FINGER_MOD);
-                                if(gesture.direction().y > 0.50)
-                                    iModeLock = ScriptEngine->runScript("swipe_up", FINGER_MOD);
-                                if (gesture.direction().y < -0.50)
-                                    iModeLock = ScriptEngine->runScript("swipe_down", FINGER_MOD);
+//                                if(gesture.direction().y > 0.50)
+//                                    iModeLock = ScriptEngine->runScript("swipe_up", FINGER_MOD);
+//                                if (gesture.direction().y < -0.50)
+//                                    iModeLock = ScriptEngine->runScript("swipe_down", FINGER_MOD);
                             }
                         }
                         else
@@ -197,10 +197,10 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
                                 iModeLock = ScriptEngine->runScript("swipe_right");
                             if (gesture.direction().x < -0.80)
                                 iModeLock = ScriptEngine->runScript("swipe_left");
-                            if(gesture.direction().y > 0.50)
-                                iModeLock = ScriptEngine->runScript("swipe_up");
-                            if (gesture.direction().y < -0.50)
-                                iModeLock = ScriptEngine->runScript("swipe_down");
+//                            if(gesture.direction().y > 0.50)
+//                                iModeLock = ScriptEngine->runScript("swipe_up");
+//                            if (gesture.direction().y < -0.50)
+//                                iModeLock = ScriptEngine->runScript("swipe_down");
                         }
                         Macro->macroLock(iModeLock);
                     }

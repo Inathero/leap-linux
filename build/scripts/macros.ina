@@ -61,14 +61,6 @@ mode swipe_right
     mode_lock 500
     key_down  Super Left
     key_up  Left Super
-mode swipe_up
-    mode_lock 500
-mode swipe_down
-    mode_lock 500
-mode circle_clockwise
-    mode_lock 500
-mode circle_counterclockwise
-    mode_lock 500
 mode finger_tap_1
     mode_lock 150
     key_press Right

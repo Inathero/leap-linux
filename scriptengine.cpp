@@ -159,7 +159,7 @@ int scriptengine::runScript(QString mode_id, int modifiers)
         mode_id.append(sFingerMod);
 
     qDebug() << "scriptengine::runScript:" << mode_id;
-    int iModeLock = 0;
+    int iModeLock = -1;
     QList<QByteArray> slScriptSection = getScriptSection(mode_id);
 
     // We found the mode
