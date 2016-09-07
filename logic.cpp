@@ -188,9 +188,9 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
                             else
                             {
                                 ScriptEngine->preScript(iFingersExtended);
-                                if(hand.palmNormal().x > 0.30)
+                                if(hand.palmNormal().x > 0.50)
                                     iModeLock = ScriptEngine->runScript("swipe_right", FINGER_MOD);
-                                if (hand.palmNormal().x < -0.50)
+                                if (hand.palmNormal().x < -0.80)
                                     iModeLock = ScriptEngine->runScript("swipe_left", FINGER_MOD);
                                 if(gesture.direction().y > 0.50)
                                     iModeLock = ScriptEngine->runScript("swipe_up", FINGER_MOD);
@@ -202,7 +202,7 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
                         {
                             if(gesture.direction().x > 0.50)
                                 iModeLock = ScriptEngine->runScript("swipe_right");
-                            if (gesture.direction().x < -0.50)
+                            if (gesture.direction().x < -0.80)
                                 iModeLock = ScriptEngine->runScript("swipe_left");
                             if(gesture.direction().y > 0.50)
                                 iModeLock = ScriptEngine->runScript("swipe_up");

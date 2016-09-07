@@ -11,3 +11,4 @@ TODO:
 * Perhaps remove gui and make it tray-bound only
 * More gestures, tidy up existing gestures
 * Move macro lock from global to individual?
+* Set thresholds in a .ina file
