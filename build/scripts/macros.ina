@@ -57,17 +57,12 @@ mode swipe_right
     key_up  Left Super
 mode swipe_up
     mode_lock 500
-    key_down Up 
-    key_up   Up 
 mode swipe_down
     mode_lock 500
-    key_down Down 
-    key_up   Down 
 mode circle_clockwise
-#    mode_lock 500
-#    key_press q
-#    key_press q
+    mode_lock 500
 mode circle_counterclockwise
+    mode_lock 500
 mode finger_tap_1
     mode_lock 150
     key_press Right
@@ -80,8 +75,7 @@ mode alms_giver
     launch   /home/inathero/Scripts/bin/ecv_mod
 mode thumb_up
     mode_lock 1000
-    key_down Super d 
-    key_up d Super
+    key_send qq
 mode thumb_down
     mode_lock 1000
     key_down    Super n
