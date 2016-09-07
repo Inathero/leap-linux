@@ -33,7 +33,6 @@ void logic::Leap_Hands(Leap::HandList Hands)
             if(Macro->isMacroAvailable())
             {
                 int iModeLock = ScriptEngine->runScript("alms_giver");
-                qDebug() << "Alms Giver Lock Duration: "<< iModeLock;
                 Macro->macroLock(iModeLock);
             }
         }
@@ -47,7 +46,6 @@ void logic::Leap_Hands(Leap::HandList Hands)
                 if(hand.palmNormal().x < -0.60 && bHandKeyRot)
                 {
                     int iModeLock = ScriptEngine->runScript("hand_key");
-                    qDebug() << "Hand Key Lock Duration: "<< iModeLock;
                     Macro->macroLock(iModeLock);
                 }
             }
@@ -67,7 +65,6 @@ void logic::Leap_Hands(Leap::HandList Hands)
                         iModeLock = ScriptEngine->runScript("thumb_down");
                     else
                         iModeLock = ScriptEngine->runScript("thumb_up");
-                    qDebug() << "Thumb Up Lock Duration: "<< iModeLock;
                     Macro->macroLock(iModeLock);
                 }
                 if(hand.palmNormal().x < -0.60 && bThumbKeyRot)
@@ -76,7 +73,6 @@ void logic::Leap_Hands(Leap::HandList Hands)
                         iModeLock = ScriptEngine->runScript("thumb_up");
                     else
                         iModeLock = ScriptEngine->runScript("thumb_down");
-                    qDebug() << "Thumb Up Lock Duration: "<< iModeLock;
                     Macro->macroLock(iModeLock);
                 }
             }
@@ -91,13 +87,11 @@ void logic::Leap_Hands(Leap::HandList Hands)
                 if(hand.palmNormal().y < -0.9)
                 {
                     iModeLock = ScriptEngine->runScript("shaka_down");
-                    qDebug() << "Shaka Down Lock Duration: "<< iModeLock;
                     Macro->macroLock(iModeLock);
                 }
                 if(hand.palmNormal().y > 0.9)
                 {
                     iModeLock = ScriptEngine->runScript("shaka_up");
-                    qDebug() << "Shaka Down Lock Duration: "<< iModeLock;
                     Macro->macroLock(iModeLock);
                 }
             }
@@ -168,7 +162,6 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
                             if (gesture.progress() > 1.)
                                 iModeLock = ScriptEngine->runScript("circle_counterclockwise");
                         }
-                        qDebug() << "Circle Lock Duration: "<< iModeLock;
                         Macro->macroLock(iModeLock);
                     }
                 }
@@ -209,7 +202,6 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
                             if (gesture.direction().y < -0.50)
                                 iModeLock = ScriptEngine->runScript("swipe_down");
                         }
-                        qDebug() << "Swipe Lock Duration: "<< iModeLock;
                         Macro->macroLock(iModeLock);
                     }
                 }
@@ -223,7 +215,6 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
                     {
                         ScriptEngine->preScript(gesture.pointable().id() % 10);
                         int iModeLock = ScriptEngine->runScript("finger_tap", FINGER_MOD);
-                        qDebug() << "Tap Lock Duration: "<< iModeLock;
                         Macro->macroLock(iModeLock);
 
                     }

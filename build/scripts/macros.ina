@@ -11,10 +11,16 @@
 # swipe_right_3 needs 3 fingers
 # swipe_left uses all fingers or only thumb
 #
+# Optionally prepend 'L' or 'R' to a mode for Left or Right hand specific gestures
+# i.e. 'R_swipe_left_3'
+#       -> Right hand, swipes left with three fingers extended (thumb not included)
+# if swiping with hand but no L/R prepend is detected, script engine will look for non L/R mode
+#
 # mode_lock = how long (in miliseconds) till mode is available again
 # key_down  = presses down 1 key
 # key_up    = releases 1 key
-# key_send  = sends a string of keys
+# key_send  = sends a string of keys/letters
+# key_press = presses down and releases 1 key (functionally same with key_send if key_send is used with 1 key)
 # launch    = launches an application
 
 mode swipe_left_1
