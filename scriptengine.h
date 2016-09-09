@@ -38,7 +38,7 @@ public:
     void setDefinitions(QString sPathToDefines);
 public slots:
     int runScript(QString mode_id, int modifiers = 0);
-    void preScript(int iFingersExtended = 0);
+    void preScript(QString sVarName, int iVar);
     void debug(float x, float y);
 private slots:
     void updateScriptFile();
@@ -51,6 +51,7 @@ private:
     QStringList slModeList;
     QStringList slCommandList;
     QStringList slMouseButtonList;
+    QStringList slPreScriptList;
 
     xkeys * XKeys;
     xmouse * XMouse;
@@ -59,6 +60,7 @@ private:
     int * LeapMouseRect;
 
     QString sFingerMod;
+    QString sHandMod;
 };
 
 #endif // SCRIPTENGINE_H

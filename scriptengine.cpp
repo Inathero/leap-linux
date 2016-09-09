@@ -26,6 +26,9 @@ scriptengine::scriptengine()
     slMouseButtonList << "middle";
     slMouseButtonList << "right";
 
+    slPreScriptList << "FingerMod";
+    slPreScriptList << "HandMod";
+
 
     XKeys = new xkeys(this);
     XMouse = new xmouse(this);
@@ -143,20 +146,33 @@ QList<QByteArray> scriptengine::getScriptSection(QString mode_id)
                 slScriptSection.append(baScriptData);
         }
 
-
         // Found a mode
         if (qlTokenize.size() > 1 && qlTokenize.at(0) == "mode")
+        {
+            int iCut = qlTokenize.at(1).indexOf(mode_id.toLocal8Bit());
             // We have the correct mode
-            if(qlTokenize.at(1).contains(mode_id.toLocal8Bit()))
+//            qDebug() << "ic ut " << iCut;
+//            if(qlTokenize.at(1).contains(mode_id.toLocal8Bit()))
+            if (iCut >= 0)
+            {
+
                 bMode = true;
+            }
+        }
+
     }
     return slScriptSection;
 }
 
 int scriptengine::runScript(QString mode_id, int modifiers)
 {
+
+    // Finger mods are optional
     if (modifiers & FINGER_MOD )
         mode_id.append(sFingerMod);
+
+    // Hand mods are not optional (in code), however are optional in script
+//        mode_id.prepend(sHandMod);
 
     qDebug() << "scriptengine::runScript:" << mode_id;
     int iModeLock = -1;
@@ -328,26 +344,44 @@ int scriptengine::runScript(QString mode_id, int modifiers)
         }
     }
     sFingerMod = "";
+    sHandMod = "";
     return iModeLock;
 }
 
-void scriptengine::preScript(int iFingersExtended)
+void scriptengine::preScript(QString sVarName, int iVar)
 {
-    switch (iFingersExtended)
+    switch(slPreScriptList.indexOf(sVarName))
     {
+        // Finger Mods
         case 0:
-        case 5:
-        sFingerMod = "";
+        {
+            switch (iVar)
+            {
+                case 0:
+                case 5:
+                sFingerMod = "";
+                break;
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+                sFingerMod = "_";
+                sFingerMod.append(QString::number(iVar));
+                break;
+
+            }
+        }
         break;
-    case 1:
-    case 2:
-    case 3:
-    case 4:
-        sFingerMod = "_";
-        sFingerMod.append(QString::number(iFingersExtended));
+        // Hand Mods
+        case 1:
+            // iVar == 1 == right
+            // iVar == 0 == left
+            sHandMod = iVar ? "R_" : "L_";
         break;
 
     }
+
+
 }
 
 void scriptengine::debug(float x, float y)

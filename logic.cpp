@@ -21,7 +21,11 @@ void logic::Leap_Hands(Leap::HandList Hands)
 {
     if(!Hands.isEmpty())
     {
-        Hand hand = Hands.frontmost();
+        for (auto hand : Hands)
+        {
+//        Hand hand = Hands.frontmost();
+
+            ScriptEngine->preScript("HandMod", hand.isRight());
 
         logic_hand_debug(hand);
 
@@ -95,6 +99,7 @@ void logic::Leap_Hands(Leap::HandList Hands)
                     Macro->macroLock(iModeLock);
                 }
             }
+        }
         }
 
     }
@@ -180,13 +185,13 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
                                 return;
                             else
                             {
-                                ScriptEngine->preScript(iFingersExtended);
+                                ScriptEngine->preScript("FingerMod", iFingersExtended);
                                 if(hand.palmNormal().x > 0.50)
                                     iModeLock = ScriptEngine->runScript("swipe_right", FINGER_MOD);
                                 if (hand.palmNormal().x < -0.80)
                                     iModeLock = ScriptEngine->runScript("swipe_left", FINGER_MOD);
 //                                if(gesture.direction().y > 0.50)
-//                                    iModeLock = ScriptEngine->runScript("swipe_up", FINGER_MOD);
+ //                                    iModeLock = ScriptEngine->runScript("swipe_up", FINGER_MOD);
 //                                if (gesture.direction().y < -0.50)
 //                                    iModeLock = ScriptEngine->runScript("swipe_down", FINGER_MOD);
                             }
@@ -213,7 +218,7 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
 
                     if(Macro->isMacroAvailable())
                     {
-                        ScriptEngine->preScript(gesture.pointable().id() % 10);
+                        ScriptEngine->preScript("FingerMod", gesture.pointable().id() % 10);
                         int iModeLock = ScriptEngine->runScript("finger_tap", FINGER_MOD);
                         Macro->macroLock(iModeLock);
 
