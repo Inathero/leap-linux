@@ -15,7 +15,8 @@
 #include "xkeys.h"
 #include "xmouse.h"
 
-#define FINGER_MOD 1
+#define FINGER_MOD  1
+#define HAND_MOD    2
 
 // if you add more commands. change size of bool in runScript
 enum script_command_enums
@@ -42,7 +43,7 @@ public slots:
     void debug(float x, float y);
 private slots:
     void updateScriptFile();
-    QList<QByteArray> getScriptSection(QString mode_id);
+    QList<QByteArray> getScriptSection(QString base_mode_id, int modifiers);
     void getScriptModeIndexes();
 private:
     QByteArray baScriptData;

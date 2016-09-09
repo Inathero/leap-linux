@@ -124,50 +124,83 @@ void scriptengine::setDefinitions(QString sPathToDefines)
     XMouse->mouse_set_leap_ranges(LeapMouseRect);
 }
 
-QList<QByteArray> scriptengine::getScriptSection(QString mode_id)
+QList<QByteArray> scriptengine::getScriptSection(QString base_mode_id, int modifiers)
 {
     QList<QByteArray> slScripts = baScriptData.split('\n');
     QList<QByteArray> slScriptSection;
-    for (int i = 0; i < ilModeIndexes.size(); i++)
+    QString mode_id = base_mode_id;
+
+    if ( modifiers & FINGER_MOD )
+        mode_id.append(sFingerMod);
+
+    if ( modifiers & HAND_MOD )
+        mode_id.prepend(sHandMod);
+
+    qDebug() << "scriptengine::getScriptSection:" << mode_id;
+
+    int xIterate = 2;
+    do
     {
-        // Map cached indexes to actual script
-        QByteArray baScript = slScripts.at(ilModeIndexes.at(i));
-
-        QList<QByteArray> qlTokenize = baScript.split(' ');
-        qlTokenize.removeAll("");
-
-        int iCut = qlTokenize.at(1).indexOf(mode_id.toLocal8Bit());
-        // Found mode of interest
-        if (iCut >= 0)
+        for (int i = 0; i < ilModeIndexes.size(); i++)
         {
-            // Go one line past mode, into section
-            int iIterate = 0;
-            baScript = slScripts.at(ilModeIndexes.at(i) + ++iIterate);
+            // Map cached indexes to actual script
+            QByteArray baScript = slScripts.at(ilModeIndexes.at(i));
 
-            qlTokenize = baScript.split(' ');
+            QList<QByteArray> qlTokenize = baScript.split(' ');
             qlTokenize.removeAll("");
 
-            // While we don't reach the next mode
-            while (qlTokenize.at(0) != "mode")
+            int iCut = qlTokenize.at(1).indexOf(mode_id.toLocal8Bit());
+            // Found mode of interest
+            if (iCut >= 0)
             {
-                // Ignore comments when reading through mode
-                // Rip all information per line for mode
-                if (baScript.at(0) != '#')
-                {
-                    foreach (QByteArray baScriptData, qlTokenize)
-                        slScriptSection.append(baScriptData);
-                }
-
-                // Iterate to next line in section
+                // Go one line past mode, into section
+                int iIterate = 0;
                 baScript = slScripts.at(ilModeIndexes.at(i) + ++iIterate);
 
                 qlTokenize = baScript.split(' ');
                 qlTokenize.removeAll("");
-            }
-            return slScriptSection;
-        }
 
-    }
+                // While we don't reach the next mode
+                while (qlTokenize.at(0) != "mode")
+                {
+                    // Ignore comments when reading through mode
+                    // Rip all information per line for mode
+                    if (baScript.at(0) != '#')
+                    {
+                        foreach (QByteArray baScriptData, qlTokenize)
+                            slScriptSection.append(baScriptData);
+                    }
+
+                    // Iterate to next line in section
+                    baScript = slScripts.at(ilModeIndexes.at(i) + ++iIterate);
+
+                    qlTokenize = baScript.split(' ');
+                    qlTokenize.removeAll("");
+                }
+                return slScriptSection;
+            }
+        }
+        xIterate --;
+        mode_id = base_mode_id;
+        // strip modifiers as a fallback to other mods
+        switch (xIterate)
+        {
+            case 1:
+            if ( modifiers & FINGER_MOD )
+                mode_id.append(sFingerMod);
+            qDebug() << "scriptengine::getScriptSection:" << mode_id;
+            break;
+        case 0:
+            // The previous modifier didn't exist, so we already did a search with no mods and found nothing
+            // Therefore return nothing.
+            // else, if the previous modifier existed, we haven't done a search with no mods
+            // so let loop continue as is
+            if ( !(modifiers & FINGER_MOD) )
+                return slScriptSection;
+            qDebug() << "scriptengine::getScriptSection:" << mode_id;
+            break;
+        }
+    } while (xIterate >= 0);
 return slScriptSection;
 }
 
@@ -196,17 +229,12 @@ void scriptengine::getScriptModeIndexes()
 
 int scriptengine::runScript(QString mode_id, int modifiers)
 {
-
-    // Finger mods are optional
-    if (modifiers & FINGER_MOD )
-        mode_id.append(sFingerMod);
-
-    // Hand mods are not optional (in code), however are optional in script
-//        mode_id.prepend(sHandMod);
+    if (!sHandMod.isEmpty())
+        modifiers = modifiers | HAND_MOD;
 
     qDebug() << "scriptengine::runScript:" << mode_id;
     int iModeLock = -1;
-    QList<QByteArray> slScriptSection = getScriptSection(mode_id);
+    QList<QByteArray> slScriptSection = getScriptSection(mode_id, modifiers);
 
     // We found the mode
     if (!slScriptSection.isEmpty())
