@@ -3,7 +3,7 @@
 # key_send and launch do not handle arguments with spaces
 # i.e. 'key_send this is a test' will send 'thisisatest' and ignores the spaces
 # you need to manually input 'Space' for it to work, i.e: 'key_send this Space is Space a Space test'
-# # is in work to get this fixed
+# is in the works to get this fixed
 #
 # the number following a mode is how many fingers are needed to activate the mode
 # atm numbers are 1, 2, 3, 4

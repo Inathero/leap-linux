@@ -179,8 +179,6 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
                     //                        qDebug() << "swiupe: " << gesture.direction().x <<", " << Macro->isMacroAvailable();
                     if(Macro->isMacroAvailable())
                     {
-                        if (iFingersExtended > 1)
-                        {
                             if ( fabs(hand.palmNormal().x) < 0.5)
                                 return;
                             else
@@ -195,18 +193,6 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
 //                                if (gesture.direction().y < -0.50)
 //                                    iModeLock = ScriptEngine->runScript("swipe_down");
                             }
-                        }
-                        else
-                        {
-                            if(gesture.direction().x > 0.50)
-                                iModeLock = ScriptEngine->runScript("swipe_right");
-                            if (gesture.direction().x < -0.80)
-                                iModeLock = ScriptEngine->runScript("swipe_left");
-//                            if(gesture.direction().y > 0.50)
-//                                iModeLock = ScriptEngine->runScript("swipe_up");
-//                            if (gesture.direction().y < -0.50)
-//                                iModeLock = ScriptEngine->runScript("swipe_down");
-                        }
                         Macro->macroLock(iModeLock);
                     }
                 }
