@@ -61,6 +61,10 @@ mode swipe_right
     mode_lock 500
     key_down  Super Left
     key_up  Left Super
+mode L_shaka_down
+    mode_lock 1000
+    key_down Super F10
+    key_up F10 Super
 mode finger_tap_1
     mode_lock 150
     key_press Right
@@ -86,3 +90,12 @@ mode shaka_down
     mode_lock 1000
     key_down Super F9
     key_up F9 Super
+
+mode L_thumb_up
+    mode_lock 250
+    key_down Super Up
+    key_up Up Super
+mode L_thumb_down
+    mode_lock 250
+    key_down Super Down
+    key_up Down Super

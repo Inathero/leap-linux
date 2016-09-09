@@ -156,7 +156,7 @@ QList<QByteArray> scriptengine::getScriptSection(QString base_mode_id)
 
             int iCut = qlTokenize.at(1).indexOf(mode_id.toLocal8Bit());
             // Found mode of interest
-            if (iCut >= 0)
+            if (iCut == 0)
             {
                 // Go one line past mode, into section
                 int iIterate = 0;
