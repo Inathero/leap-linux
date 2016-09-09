@@ -41,7 +41,7 @@ void logic::Leap_Hands(Leap::HandList Hands)
             }
         }
         // hand_key
-        if (hand.sphereRadius() < 55. && iFingersExtended == 0 && !bThumbExtended)
+        if (iFingersExtended == 0 && !bThumbExtended)
         {
             if(Macro->isMacroAvailable())
             {

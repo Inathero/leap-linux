@@ -130,6 +130,11 @@ QList<QByteArray> scriptengine::getScriptSection(QString base_mode_id)
     QList<QByteArray> slScriptSection;
     QString mode_id = base_mode_id;
 
+    // HACK: Because I don't want to remove my `+ ++iIterate` crazyness
+    // add a blank mode at the of slScripts to prevent crash
+    // Crash is due to checking for next 'mode'. If current mode is last mode, it'll check out of bounds = crash
+    slScripts.append("mode");
+
     if ( iModifiers & FINGER_MOD )
         mode_id.append(sFingerMod);
 
