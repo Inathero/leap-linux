@@ -92,10 +92,10 @@ mode shaka_down
     key_up F9 Super
 
 mode L_thumb_up
-    mode_lock 250
+    mode_lock 100
     key_down Super Up
     key_up Up Super
 mode L_thumb_down
-    mode_lock 250
+    mode_lock 100
     key_down Super Down
     key_up Down Super

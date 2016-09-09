@@ -55,11 +55,11 @@ void logic::Leap_Hands(Leap::HandList Hands)
             }
         }
         // thumbs_up | down
-        if (hand.sphereRadius() < 65. && iFingersExtended == 0 && bThumbExtended)
+        if (iFingersExtended == 0 && bThumbExtended)
         {
             if(Macro->isMacroAvailable())
             {
-                if (hand.palmNormal().y < -0.85)
+                if (hand.palmNormal().y < -0.70)
                     bThumbKeyRot = true;
 
                 int iModeLock = 0;
