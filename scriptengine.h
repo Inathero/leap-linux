@@ -38,12 +38,12 @@ public:
     void setScriptFile(QString sPathToScript);
     void setDefinitions(QString sPathToDefines);
 public slots:
-    int runScript(QString mode_id, int modifiers = 0);
+    int runScript(QString mode_id);
     void preScript(QString sVarName, int iVar);
     void debug(float x, float y);
 private slots:
     void updateScriptFile();
-    QList<QByteArray> getScriptSection(QString base_mode_id, int modifiers);
+    QList<QByteArray> getScriptSection(QString base_mode_id);
     void getScriptModeIndexes();
 private:
     QByteArray baScriptData;
@@ -63,6 +63,7 @@ private:
 
     int * LeapMouseRect;
 
+    int iModifiers;
     QString sFingerMod;
     QString sHandMod;
 };

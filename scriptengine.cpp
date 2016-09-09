@@ -124,16 +124,16 @@ void scriptengine::setDefinitions(QString sPathToDefines)
     XMouse->mouse_set_leap_ranges(LeapMouseRect);
 }
 
-QList<QByteArray> scriptengine::getScriptSection(QString base_mode_id, int modifiers)
+QList<QByteArray> scriptengine::getScriptSection(QString base_mode_id)
 {
     QList<QByteArray> slScripts = baScriptData.split('\n');
     QList<QByteArray> slScriptSection;
     QString mode_id = base_mode_id;
 
-    if ( modifiers & FINGER_MOD )
+    if ( iModifiers & FINGER_MOD )
         mode_id.append(sFingerMod);
 
-    if ( modifiers & HAND_MOD )
+    if ( iModifiers & HAND_MOD )
         mode_id.prepend(sHandMod);
 
     qDebug() << "scriptengine::getScriptSection:" << mode_id;
@@ -182,11 +182,11 @@ QList<QByteArray> scriptengine::getScriptSection(QString base_mode_id, int modif
         }
         xIterate --;
         mode_id = base_mode_id;
-        // strip modifiers as a fallback to other mods
+        // strip iModifiers as a fallback to other mods
         switch (xIterate)
         {
             case 1:
-            if ( modifiers & FINGER_MOD )
+            if ( iModifiers & FINGER_MOD )
                 mode_id.append(sFingerMod);
             qDebug() << "scriptengine::getScriptSection:" << mode_id;
             break;
@@ -195,12 +195,13 @@ QList<QByteArray> scriptengine::getScriptSection(QString base_mode_id, int modif
             // Therefore return nothing.
             // else, if the previous modifier existed, we haven't done a search with no mods
             // so let loop continue as is
-            if ( !(modifiers & FINGER_MOD) )
+            if ( !(iModifiers & FINGER_MOD) )
                 return slScriptSection;
             qDebug() << "scriptengine::getScriptSection:" << mode_id;
             break;
         }
     } while (xIterate >= 0);
+
 return slScriptSection;
 }
 
@@ -211,6 +212,7 @@ void scriptengine::getScriptModeIndexes()
     for (int i = 0; i < slScripts.size(); i++)
     {
         QByteArray baScript = slScripts.at(i);
+
         // Ignore comments
         if (baScript.at(0) == '#')
             continue;
@@ -220,21 +222,17 @@ void scriptengine::getScriptModeIndexes()
         // Found a mode
         if (qlTokenize.size() > 1 && qlTokenize.at(0) == "mode")
             tilModeIndexes << i;
-
     }
 
     // Copy modes over
     ilModeIndexes = tilModeIndexes;
 }
 
-int scriptengine::runScript(QString mode_id, int modifiers)
+int scriptengine::runScript(QString mode_id)
 {
-    if (!sHandMod.isEmpty())
-        modifiers = modifiers | HAND_MOD;
-
     qDebug() << "scriptengine::runScript:" << mode_id;
     int iModeLock = -1;
-    QList<QByteArray> slScriptSection = getScriptSection(mode_id, modifiers);
+    QList<QByteArray> slScriptSection = getScriptSection(mode_id);
 
     // We found the mode
     if (!slScriptSection.isEmpty())
@@ -263,9 +261,6 @@ int scriptengine::runScript(QString mode_id, int modifiers)
             {
                 if(bCommand[com_key_down])
                 {
-
-//                    bCommand[com_key_down] = false;
-
                     // Check if we use define or not
                     if(hDefines.contains(baScript))
                     {
@@ -291,8 +286,6 @@ int scriptengine::runScript(QString mode_id, int modifiers)
                 }
                 if(bCommand[com_key_up])
                 {
-//                    bCommand[com_key_up] = false;
-
                     // Check if we use define or not
                     if(hDefines.contains(baScript))
                     {
@@ -343,21 +336,15 @@ int scriptengine::runScript(QString mode_id, int modifiers)
                 }
                 if(bCommand[com_launch])
                 {
-//                    bCommand[com_launch] = false;
-
                     qDebug() <<"launch:"<<baScript;
                     QProcess::startDetached(baScript);
                 }
                 if(bCommand[com_mode_lock])
                 {
-//                    bCommand[com_mode_lock] = false;
-
                     iModeLock = baScript.toInt();
                 }
                 if(bCommand[com_key_press])
                 {
-//                    bCommand[com_key_press] = false;
-
                     // Check if we use define or not
                     if(hDefines.contains(baScript))
                     {
@@ -403,6 +390,7 @@ int scriptengine::runScript(QString mode_id, int modifiers)
     }
     sFingerMod = "";
     sHandMod = "";
+    iModifiers = 0;
     return iModeLock;
 }
 
@@ -413,6 +401,7 @@ void scriptengine::preScript(QString sVarName, int iVar)
         // Finger Mods
         case 0:
         {
+            iModifiers = iModifiers | FINGER_MOD;
             switch (iVar)
             {
                 case 0:
@@ -432,9 +421,8 @@ void scriptengine::preScript(QString sVarName, int iVar)
         break;
         // Hand Mods
         case 1:
-            // iVar == 1 == right
-            // iVar == 0 == left
             sHandMod = iVar ? "R_" : "L_";
+            iModifiers = iModifiers | HAND_MOD;
         break;
 
     }
