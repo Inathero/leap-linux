@@ -48,6 +48,8 @@ void scriptengine::setScriptFile(QString sPathToScript)
 
     fCheck.close();
     tFileUpdateTimer->start(5000);
+
+    getScriptModeIndexes();
 }
 
 void scriptengine::setDefinitions(QString sPathToDefines)
@@ -126,42 +128,70 @@ QList<QByteArray> scriptengine::getScriptSection(QString mode_id)
 {
     QList<QByteArray> slScripts = baScriptData.split('\n');
     QList<QByteArray> slScriptSection;
-    bool bMode = false;
-    foreach (QByteArray baScript, slScripts)
+    for (int i = 0; i < ilModeIndexes.size(); i++)
     {
+        // Map cached indexes to actual script
+        QByteArray baScript = slScripts.at(ilModeIndexes.at(i));
+
+        QList<QByteArray> qlTokenize = baScript.split(' ');
+        qlTokenize.removeAll("");
+
+        int iCut = qlTokenize.at(1).indexOf(mode_id.toLocal8Bit());
+        // Found mode of interest
+        if (iCut >= 0)
+        {
+            // Go one line past mode, into section
+            int iIterate = 0;
+            baScript = slScripts.at(ilModeIndexes.at(i) + ++iIterate);
+
+            qlTokenize = baScript.split(' ');
+            qlTokenize.removeAll("");
+
+            // While we don't reach the next mode
+            while (qlTokenize.at(0) != "mode")
+            {
+                // Ignore comments when reading through mode
+                // Rip all information per line for mode
+                if (baScript.at(0) != '#')
+                {
+                    foreach (QByteArray baScriptData, qlTokenize)
+                        slScriptSection.append(baScriptData);
+                }
+
+                // Iterate to next line in section
+                baScript = slScripts.at(ilModeIndexes.at(i) + ++iIterate);
+
+                qlTokenize = baScript.split(' ');
+                qlTokenize.removeAll("");
+            }
+            return slScriptSection;
+        }
+
+    }
+return slScriptSection;
+}
+
+void scriptengine::getScriptModeIndexes()
+{
+    QList<QByteArray> slScripts = baScriptData.split('\n');
+    QList<int> tilModeIndexes;
+    for (int i = 0; i < slScripts.size(); i++)
+    {
+        QByteArray baScript = slScripts.at(i);
         // Ignore comments
         if (baScript.at(0) == '#')
             continue;
 
         QList<QByteArray> qlTokenize = baScript.split(' ');
         qlTokenize.removeAll("");
-
-        // We are currently on the mode we want:
-        if (bMode)
-        {
-            // End of current mode, entering another mode
-            if (qlTokenize.size() > 1 && qlTokenize.at(0) == "mode")
-                return slScriptSection;
-            foreach (QByteArray baScriptData, qlTokenize)
-                slScriptSection.append(baScriptData);
-        }
-
         // Found a mode
         if (qlTokenize.size() > 1 && qlTokenize.at(0) == "mode")
-        {
-            int iCut = qlTokenize.at(1).indexOf(mode_id.toLocal8Bit());
-            // We have the correct mode
-//            qDebug() << "ic ut " << iCut;
-//            if(qlTokenize.at(1).contains(mode_id.toLocal8Bit()))
-            if (iCut >= 0)
-            {
-
-                bMode = true;
-            }
-        }
+            tilModeIndexes << i;
 
     }
-    return slScriptSection;
+
+    // Copy modes over
+    ilModeIndexes = tilModeIndexes;
 }
 
 int scriptengine::runScript(QString mode_id, int modifiers)

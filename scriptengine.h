@@ -43,10 +43,13 @@ public slots:
 private slots:
     void updateScriptFile();
     QList<QByteArray> getScriptSection(QString mode_id);
+    void getScriptModeIndexes();
 private:
     QByteArray baScriptData;
     QHash<QString,int> hDefines;
     QString sScriptFile;
+
+    QList<int> ilModeIndexes;
 
     QStringList slModeList;
     QStringList slCommandList;
