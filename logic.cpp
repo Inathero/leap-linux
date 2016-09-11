@@ -13,19 +13,21 @@ logic::logic(QObject *parent) : QObject(parent)
 inline void logic::logic_hand_debug(Hand hand)
 {
 //     qDebug() << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius();
-    // qDebug() << hand.grabStrength() << " : " << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius();
-    // qDebug() << hand.palmVelocity().magnitude() <<  ", " << hand.palmNormal().toString().c_str();
+    // qDebug() << hand.grabStrength() << " : " << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius(); // qDebug() << hand.palmVelocity().magnitude() <<  ", " << hand.palmNormal().toString().c_str(
 }
 
 void logic::Leap_Hands(Leap::HandList Hands)
 {
+
     if(!Hands.isEmpty())
     {
         for (auto hand : Hands)
         {
 //        Hand hand = Hands.frontmost();
 
-            ScriptEngine->preScript("HandMod", hand.isRight());
+            iHandActive = (Hands.count() == LEAP_HAND_BOTH) ? LEAP_HAND_BOTH : hand.isLeft() ? LEAP_HAND_LEFT : LEAP_HAND_RIGHT;
+
+            ScriptEngine->preScript("HandMod", iHandActive);
 
         logic_hand_debug(hand);
 
@@ -45,11 +47,26 @@ void logic::Leap_Hands(Leap::HandList Hands)
         {
             if(Macro->isMacroAvailable())
             {
-                if (hand.palmNormal().y < -0.85)
+                if (hand.palmNormal().y < -0.85 && !bHandKeyRot)
                     bHandKeyRot = true;
-                if(hand.palmNormal().x < -0.60 && bHandKeyRot)
+                else if (bHandKeyRot)
                 {
-                    int iModeLock = ScriptEngine->runScript("hand_key");
+                int iModeLock = -1;
+                if (hand.isRight())
+                {
+                    if(hand.palmNormal().x < -0.60)
+                        iModeLock = ScriptEngine->runScript("hand_key_up");
+                    else if(hand.palmNormal().x > 0.60)
+                        iModeLock = ScriptEngine->runScript("hand_key_down");
+                }
+                else
+                {
+                    if(hand.palmNormal().x < -0.60)
+                        iModeLock = ScriptEngine->runScript("hand_key_down");
+                    else if(hand.palmNormal().x > 0.60)
+                        iModeLock = ScriptEngine->runScript("hand_key_up");
+                }
+                if (iModeLock != -1)
                     Macro->macroLock(iModeLock);
                 }
             }
@@ -105,6 +122,7 @@ void logic::Leap_Hands(Leap::HandList Hands)
     }
     else
     {
+        iHandActive = -1;
         bHandKeyRot = false;
         bThumbKeyRot= false;
     }
@@ -134,10 +152,11 @@ void logic::Leap_FingerSetup(FingerList Fingers)
             // It tracks index finger (when extended) and maps cursor to it
             //
             // Currently not in use, so it is ignored
-            //if (finger.type() == 1 && finger.isExtended())
-            //{
-                //ScriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
-            //}
+//            qDebug() << iHandActive;
+            if (finger.type() == 1 && finger.isExtended() && iHandActive == LEAP_HAND_LEFT)
+            {
+                ScriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
+            }
         }
     }
 }

@@ -29,7 +29,7 @@ scriptengine::scriptengine()
     slPreScriptList << "FingerMod";
     slPreScriptList << "HandMod";
 
-
+    iModifiers = 0;
     XKeys = new xkeys(this);
     XMouse = new xmouse(this);
     tFileUpdateTimer = new QTimer(this);
@@ -426,7 +426,7 @@ void scriptengine::preScript(QString sVarName, int iVar)
         break;
         // Hand Mods
         case 1:
-            sHandMod = iVar ? "R_" : "L_";
+            sHandMod = iVar == 2 ? "B_" : iVar == 1 ? "L_" : "R_";
             iModifiers = iModifiers | HAND_MOD;
         break;
 

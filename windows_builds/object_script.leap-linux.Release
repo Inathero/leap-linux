@@ -1,0 +1,17 @@
+INPUT(
+./release\main.o
+./release\mainwindow.o
+./release\listener.o
+./release\logic.o
+./release\xkeys.o
+./release\macro.o
+./release\scriptengine.o
+./release\xmouse.o
+./release\moc_mainwindow.o
+./release\moc_listener.o
+./release\moc_logic.o
+./release\moc_xkeys.o
+./release\moc_macro.o
+./release\moc_scriptengine.o
+./release\moc_xmouse.o
+);

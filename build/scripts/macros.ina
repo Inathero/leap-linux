@@ -82,10 +82,14 @@ mode thumb_down
     mode_lock 1000
     key_down    Super n
     key_up      n Super
-mode hand_key
-    mode_lock 500
+mode hand_key_up
+    mode_lock 1000
     key_press q
     key_press q
+mode L_hand_key_up
+    mode_lock 1000
+    key_down Super f
+    key_up f Super
 mode shaka_down
     mode_lock 1000
     key_down Super F9
@@ -99,3 +103,11 @@ mode L_thumb_down
     mode_lock 100
     key_down Super Down
     key_up Down Super
+
+mode L_finger_tap_4
+    mode_lock 100
+    mouse_click left
+mode L_finger_tap_3
+    mode_lock 100
+    mouse_click left
+

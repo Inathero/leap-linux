@@ -10,6 +10,9 @@
 #include "macro.h"
 #include "scriptengine.h"
 
+#define LEAP_HAND_RIGHT 0
+#define LEAP_HAND_LEFT  1
+#define LEAP_HAND_BOTH  2
 
 using namespace Leap;
 
@@ -35,6 +38,7 @@ private:
     bool bFingersExtended[4] = {false};
     int iFingersExtended;
     bool bThumbExtended;
+    int iHandActive;
 };
 
 #endif // LOGIC_H

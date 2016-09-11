@@ -1,0 +1,17 @@
+INPUT(
+./debug\main.o
+./debug\mainwindow.o
+./debug\listener.o
+./debug\logic.o
+./debug\xkeys.o
+./debug\macro.o
+./debug\scriptengine.o
+./debug\xmouse.o
+./debug\moc_mainwindow.o
+./debug\moc_listener.o
+./debug\moc_logic.o
+./debug\moc_xkeys.o
+./debug\moc_macro.o
+./debug\moc_scriptengine.o
+./debug\moc_xmouse.o
+);
