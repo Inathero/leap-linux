@@ -4,7 +4,10 @@
 #include <QObject>
 #include <qt_windows.h>
 #include <QPoint>
-
+#include <QRect>
+#include <QDebug>
+#include <QApplication>
+#include <QDesktopWidget>
 enum xmouse_button_type_enum
 {
     xm_left = 1,
@@ -38,3 +41,4 @@ private:
 };
 
 #endif // WINMOUSE_H
+

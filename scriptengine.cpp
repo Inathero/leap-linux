@@ -418,7 +418,11 @@ int scriptengine::runScript(QString mode_id)
         }
 
         if (bCommand != NULL)
+        {
+            qDebug() << "pointer kill";
             delete bCommand;
+            qDebug() << "pointer success";
+        }
     }
 
     sFingerMod = "";

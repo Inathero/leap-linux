@@ -58,7 +58,8 @@ void xmouse::mouse_set_leap_ranges(int *iLeapMouseRect)
 
     // Do shifts for easy mapping
     *(LeapMouseRect+1) -= *LeapMouseRect;
-    *(LeapMouseRect+3) -= *(LeapMouseRect+4);
+//    *(LeapMouseRect+3) -= *(LeapMouseRect+4);
+    *(LeapMouseRect+3) -= *(LeapMouseRect+2);
 
     // Get resolution of default screen
     Screen*  s = DefaultScreenOfDisplay(xDisplay);
