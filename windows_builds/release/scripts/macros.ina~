@@ -63,7 +63,7 @@ mode swipe_right
     key_up  Left Super
 mode L_shaka_down
     mode_lock 1000
-    key_send test?
+    key_send This Space is Space a Space TESting?
 mode finger_tap_1
     mode_lock 150
     key_press Right

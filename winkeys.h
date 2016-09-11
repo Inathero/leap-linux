@@ -3,6 +3,7 @@
 
 #include <qt_windows.h>
 #include <QObject>
+#include <QDebug>
 
 class winkeys : public QObject
 {

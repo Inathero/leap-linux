@@ -16,6 +16,7 @@ void winkeys::key_down(int iKeyCode)
     Input.ki.dwFlags = 0;
 
     Input.ki.wVk = iKeyCode;
+//    qDebug() << "down - " << iKeyCode;
     SendInput(1, &Input, sizeof(INPUT));
 }
 

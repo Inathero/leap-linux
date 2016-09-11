@@ -332,18 +332,36 @@ int scriptengine::runScript(QString mode_id)
                         qDebug() <<"key_send:"<<baScript;
                     foreach(QChar cChar, baScript)
                     {
-                        if (cChar.unicode() < 90)
+                        #if _WIN32
+//                        qDebug()_
+                        qDebug() << "aa -=" << int(cChar.toLatin1());
+                        if ( int(cChar.toLatin1()) >= 65 && int(cChar.toLatin1()) <= 90)
                         {
                             Key_Sim->key_down(XK_Shift_L);
                             Key_Sim->key_down(cChar.unicode());
                             Key_Sim->key_up(cChar.unicode());
                             Key_Sim->key_up(XK_Shift_L);
                         }
-                        else
+                        else if ( int(cChar.toLatin1()) >= 97 && int(cChar.toLatin1()) <= 122)
                         {
+                            cChar = QChar(int(cChar.toLatin1()) - 32);
+                            Key_Sim->key_down(cChar.unicode());
+                            Key_Sim->key_up(cChar.unicode());
+                        }
+                        #elif _LINUX
+                        if (cChar.unicode() < 91)
+                        {
+                            Key_Sim->key_down(XK_Shift_L);
+                            Key_Sim->key_down(cChar.unicode());
+                            Key_Sim->key_up(cChar.unicode());
+                            Key_Sim->key_up(XK_Shift_L);
+                        }
+                        #endif
+                        else
+                            {
                         Key_Sim->key_down(cChar.unicode());
                         Key_Sim->key_up(cChar.unicode());
-                        }
+                            }
                     }
                     }
                 }
