@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#if _LINUX
+#if __unix
 #include <unistd.h>
 #endif
 #include <QMainWindow>

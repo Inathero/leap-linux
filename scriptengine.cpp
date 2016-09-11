@@ -2,7 +2,7 @@
 
 scriptengine::scriptengine()
 {
-#if _LINUX
+#if __unix
     Key_Sim = new xkeys(this);
     Mouse_Sim = new xmouse(this);
 #elif _WIN32
@@ -346,7 +346,7 @@ int scriptengine::runScript(QString mode_id)
                             Key_Sim->key_down(cChar.unicode());
                             Key_Sim->key_up(cChar.unicode());
                         }
-                        #elif _LINUX
+                        #elif __unix
                         if (cChar.unicode() < 91)
                         {
                             Key_Sim->key_down(XK_Shift_L);

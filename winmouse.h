@@ -27,7 +27,7 @@ public slots:
 
     void mouse_set_leap_ranges(int * iLeapMouseRect);
 private:
-#if _LINUX
+#if __unix
     Display * xDisplay ;
     Window xWinRoot;
     Window xWinFocus;

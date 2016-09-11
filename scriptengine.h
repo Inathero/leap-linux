@@ -11,7 +11,7 @@
 #include <QHash>
 #include <QTimer>
 
-#if _LINUX
+#if __unix
 #include "xkeys.h"
 #include "xmouse.h"
 #elif _WIN32
@@ -65,7 +65,7 @@ private:
     QStringList slCommandList;
     QStringList slMouseButtonList;
     QStringList slPreScriptList;
-#if _LINUX
+#if __unix
     xkeys * Key_Sim;
     xmouse * Mouse_Sim;
 #elif _WIN32
