@@ -390,7 +390,7 @@ int scriptengine::runScript(QString mode_id)
 
                     int iMouseButtonIndex = slMouseButtonList.indexOf(baScript.toLower());
 
-                    Mouse_Sim->mouse_button_click(Mouse_Sim_button_type_enum(iMouseButtonIndex+1));
+                    Mouse_Sim->mouse_button_click(xmouse_button_type_enum(iMouseButtonIndex+1));
 
                     }
             }

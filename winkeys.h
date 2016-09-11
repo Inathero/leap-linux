@@ -1,6 +1,7 @@
 #ifndef WINKEYS_H
 #define WINKEYS_H
 
+#include <qt_windows.h>
 #include <QObject>
 
 class winkeys : public QObject

@@ -13,7 +13,7 @@ void winkeys::key_down(int iKeyCode)
     Input.ki.wScan = 0; // hardware scan code for key
     Input.ki.time = 0;
     Input.ki.dwExtraInfo = 0;
-    Input.ki.dwFlags = KEYEVENTF_KEYDOWN;
+    Input.ki.dwFlags = 0;
 
     Input.ki.wVk = iKeyCode;
     SendInput(1, &Input, sizeof(INPUT));

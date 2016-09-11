@@ -15,12 +15,17 @@
 #include "xkeys.h"
 #include "xmouse.h"
 #elif _WIN32
+#include <qt_windows.h>
 #include "winkeys.h"
 #include "winmouse.h"
 #endif
 
 #define FINGER_MOD  1
 #define HAND_MOD    2
+
+#if _WIN32
+#define XK_Shift_L VK_SHIFT
+#endif
 
 // if you add more commands. change size of bool in runScript
 enum script_command_enums

@@ -2,6 +2,8 @@
 #define WINMOUSE_H
 
 #include <QObject>
+#include <qt_windows.h>
+#include <QPoint>
 
 enum xmouse_button_type_enum
 {

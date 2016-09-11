@@ -13,20 +13,20 @@ unix: QT += x11extras
 TARGET = leap-linux
 TEMPLATE = app
 
-CONFIG += c++11
+CONFIG += c++11 release
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     listener.cpp \
     logic.cpp \
     macro.cpp \
-    scriptengine.cpp \
+    scriptengine.cpp
 
 HEADERS  += mainwindow.h \
     listener.h \
     logic.h \ 
     macro.h \
-    scriptengine.h \
+    scriptengine.h
 
 unix: HEADERS += xkeys.h \
                 xmouse.h
@@ -41,10 +41,14 @@ win32: SOURCES += winkeys.cpp \
 
 FORMS    += mainwindow.ui
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/leap/lib/x64/release/ -lLeap
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/leap/lib/x64/debug/ -lLeap
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/leap/lib/x64 -lLeap
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/leap/lib/x64 -lLeap
 #else:unix: LIBS += -L$$PWD/leap/lib/x64/ -lLeap -L/usr/X11R6/lib -lX11 -lXtst
 else:unix: LIBS += -L/usr/lib/Leap -lLeap -L/usr/X11R6/lib -lX11 -lXtst
 
-INCLUDEPATH += /usr/lib/Leap $$PWD/leap/include $$PWD/leap/util
-DEPENDPATH += /usr/lib/Leap
+
+unix: INCLUDEPATH += /usr/lib/Leap $$PWD/leap/include $$PWD/leap/util
+unix: DEPENDPATH += /usr/lib/Leap
+
+win32: INCLUDEPATH += $$PWD/leap/include/orion
+win32: DEPENDPATH += $$PWD/leap/include/orion

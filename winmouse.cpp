@@ -64,10 +64,11 @@ void winmouse::mouse_set_leap_ranges(int *iLeapMouseRect)
     *(LeapMouseRect+3) -= *(LeapMouseRect+4);
 
     // Get resolution of default screen
-    Screen*  s = DefaultScreenOfDisplay(xDisplay);
-    DisplayResolution = new int[1];
+    // TODO: Convert to windows code
+//    Screen*  s = DefaultScreenOfDisplay(xDisplay);
+//    DisplayResolution = new int[1];
 
-    *(DisplayResolution) = s->width;
-    *(DisplayResolution+1) = s->height;
+//    *(DisplayResolution) = s->width;
+//    *(DisplayResolution+1) = s->height;
 
 }
