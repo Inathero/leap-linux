@@ -63,8 +63,7 @@ mode swipe_right
     key_up  Left Super
 mode L_shaka_down
     mode_lock 1000
-    key_down Super F10
-    key_up F10 Super
+    key_send test?
 mode finger_tap_1
     mode_lock 150
     key_press Right

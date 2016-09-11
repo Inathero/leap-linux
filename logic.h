@@ -10,10 +10,6 @@
 #include "macro.h"
 #include "scriptengine.h"
 
-#define LEAP_HAND_RIGHT 0
-#define LEAP_HAND_LEFT  1
-#define LEAP_HAND_BOTH  2
-
 using namespace Leap;
 
 class logic : public QObject
@@ -38,6 +34,7 @@ private:
     bool bFingersExtended[4];
     int iFingersExtended;
     bool bThumbExtended;
+    bool bDebugLeftFist;
     int iHandActive;
 };
 

@@ -458,7 +458,20 @@ void scriptengine::preScript(QString sVarName, int iVar)
         break;
         // Hand Mods
         case 1:
-            sHandMod = iVar == 2 ? "B_" : iVar == 1 ? "L_" : "R_";
+            switch (iVar)
+            {
+            case LEAP_HAND_RIGHT:
+                sHandMod = "R_";
+                break;
+            case LEAP_HAND_LEFT:
+                sHandMod = "L_";
+                break;
+            case LEAP_HAND_BOTH_LEFT:
+                sHandMod = "BL_";
+                break;
+            case LEAP_HAND_BOTH_RIGHT:
+                sHandMod = "BR_";
+            }
             iModifiers = iModifiers | HAND_MOD;
         break;
 
@@ -470,6 +483,16 @@ void scriptengine::preScript(QString sVarName, int iVar)
 void scriptengine::debug(float x, float y)
 {
     Mouse_Sim->mouse_move(x,y);
+}
+
+void scriptengine::debugMouseDown()
+{
+//    Mouse_Sim->mouse_button_down(xm_left);
+}
+
+void scriptengine::debugMouseUp()
+{
+//    Mouse_Sim->mouse_button_up(xm_left);
 }
 
 void scriptengine::updateScriptFile()

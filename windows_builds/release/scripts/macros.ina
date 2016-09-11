@@ -22,91 +22,13 @@
 # key_send  = sends a string of keys/letters
 # key_press = presses down and releases 1 key (functionally same with key_send if key_send is used with 1 key)
 # launch    = launches an application
-
-mode swipe_left_1
-    mode_lock 1500
-    key_press Right 
-mode swipe_right_1
-    mode_lock 1500
-    key_press Left 
-mode swipe_left_2
-    mode_lock 500
-    key_down  Super Right
-    key_up  Right Super
-mode swipe_right_2
-    mode_lock 500
-    key_down  Super Left
-    key_up  Left Super
-mode swipe_left_3
-    mode_lock 500
-    key_down  Super Right
-    key_up  Right Super
-mode swipe_right_3
-    mode_lock 500
-    key_down  Super Left
-    key_up  Left Super
-mode swipe_left_4
-    mode_lock 500
-    key_down  Super Right
-    key_up  Right Super
-mode swipe_right_4
-    mode_lock 500
-    key_down  Super Left
-    key_up  Left Super
-mode swipe_left
-    mode_lock 500
-    key_down  Super Right
-    key_up  Right Super
-mode swipe_right
-    mode_lock 500
-    key_down  Super Left
-    key_up  Left Super
-mode L_shaka_down
-    mode_lock 1000
-    key_send test?
-mode finger_tap_1
-    mode_lock 150
-    key_press Right
-mode finger_tap_2
-    mode_lock 150
-    key_press Left
-mode alms_giver
-    mode_lock 3000
-    key_send yy
-    launch   /home/inathero/Scripts/bin/ecv_mod
-mode thumb_up
-    mode_lock 1000
-    key_send qq
-mode thumb_down
-    mode_lock 1000
-    key_down    Super n
-    key_up      n Super
-mode hand_key_up
-    mode_lock 1000
-    key_press q
-    key_press q
-mode L_hand_key_up
-    mode_lock 1000
-    key_down Super f
-    key_up f Super
-mode shaka_down
-    mode_lock 1000
-    key_down Super F9
-    key_up F9 Super
-
-mode L_thumb_up
-    mode_lock 100
-    key_down Super Up
-    key_up Up Super
-mode L_thumb_down
-    mode_lock 100
-    key_down Super Down
-    key_up Down Super
-
-mode L_finger_tap_4
-    mode_lock 100
-    mouse_click left
-mode L_finger_tap_3
-    mode_lock 100
-    mouse_click left
-
+mode BL_finger_tap_1
+    mouse_click Left
+mode BL_finger_tap_2
+    mouse_click Left
+mode BL_finger_tap_3
+    mouse_click Left
+mode BL_finger_tap_4
+    mouse_click Left
+mode BL_finger_tap
+    mouse_click Left

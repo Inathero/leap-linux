@@ -7,6 +7,7 @@ logic::logic(QObject *parent) : QObject(parent)
     Macro = new macro(this);
     ScriptEngine = new scriptengine;
     bFingersExtended[4] = {false};
+    bDebugLeftFist = false;
     ScriptEngine->setDefinitions(QApplication::applicationDirPath().append("/scripts/defines.ina"));
     ScriptEngine->setScriptFile(QApplication::applicationDirPath().append("/scripts/macros.ina"));
 }
@@ -26,13 +27,28 @@ void logic::Leap_Hands(Leap::HandList Hands)
         {
 //        Hand hand = Hands.frontmost();
 
-            iHandActive = (Hands.count() == LEAP_HAND_BOTH) ? LEAP_HAND_BOTH : hand.isLeft() ? LEAP_HAND_LEFT : LEAP_HAND_RIGHT;
+            if(Hands.count() == LEAP_HAND_BOTH)
+                iHandActive = hand.isLeft() ? LEAP_HAND_BOTH_LEFT : LEAP_HAND_BOTH_RIGHT;
+            else
+                iHandActive = hand.isLeft() ? LEAP_HAND_LEFT : LEAP_HAND_RIGHT;
 
+//            qDebug() << "HAND:" << iHandActive;
             ScriptEngine->preScript("HandMod", iHandActive);
 
         logic_hand_debug(hand);
 
         Leap_FingerSetup(hand.fingers());
+
+        if (hand.isLeft() && iFingersExtended == 0 && !bDebugLeftFist)
+        {
+            bDebugLeftFist = true;
+//            ScriptEngine->debugMouseDown();
+        }
+        if (hand.isLeft() && iFingersExtended == 4 && bDebugLeftFist)
+        {
+            bDebugLeftFist = false;
+//            ScriptEngine->debugMouseUp();
+        }
 
         // alms_giver
         if (hand.palmVelocity().magnitude() < 30 && hand.palmNormal().y > 0.6 && iFingersExtended > 3)
@@ -155,9 +171,12 @@ void logic::Leap_FingerSetup(FingerList Fingers)
             //
             // Currently not in use, so it is ignored
 //            qDebug() << iHandActive;
-            if (finger.type() == 1 && finger.isExtended() && iHandActive == LEAP_HAND_LEFT)
-            {
-                ScriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
+            if (finger.type() == 1  &&
+                finger.isExtended() &&
+                finger.hand().isRight()
+//                iHandActive == LEAP_HAND_RIGHT
+                 ){
+//                ScriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
             }
         }
     }
@@ -167,6 +186,7 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
 {
     for(Leap::GestureList::const_iterator gl = Gestures.begin(); gl != Gestures.end(); gl++)
     {
+
         switch((*gl).type())
         {
             case Gesture::TYPE_CIRCLE:
@@ -195,6 +215,12 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
 
             case Gesture::TYPE_SWIPE:
                 {
+//            if(iHandActive > LEAP_HAND_BOTH)
+//            {
+//             iHandActive = hand.isLeft() ? LEAP_HAND_BOTH_LEFT : LEAP_HAND_BOTH_RIGHT;
+//             qDebug() << "JANMD"<<iHandActive;
+//                ScriptEngine->preScript("HandMod", iHandActive);
+//            }
                     SwipeGesture gesture = SwipeGesture(*gl);
                     int iModeLock = 0;
                     //                        qDebug() << "swiupe: " << gesture.direction().x <<", " << Macro->isMacroAvailable();
@@ -222,6 +248,11 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
             case Gesture::TYPE_KEY_TAP:
                 {
                     KeyTapGesture gesture = KeyTapGesture(*gl);
+                    if(iHandActive > LEAP_HAND_BOTH)
+                    {
+                        iHandActive = gesture.hands().frontmost().isLeft() ? LEAP_HAND_BOTH_LEFT : LEAP_HAND_BOTH_RIGHT;
+                        ScriptEngine->preScript("HandMod", iHandActive);
+                    }
 
                     if(Macro->isMacroAvailable())
                     {

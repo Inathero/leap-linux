@@ -27,6 +27,12 @@
 #define XK_Shift_L VK_SHIFT
 #endif
 
+#define LEAP_HAND_RIGHT         0
+#define LEAP_HAND_LEFT          1
+#define LEAP_HAND_BOTH          2
+#define LEAP_HAND_BOTH_LEFT     3
+#define LEAP_HAND_BOTH_RIGHT    4
+
 // if you add more commands. change size of bool in runScript
 enum script_command_enums
 {
@@ -50,6 +56,8 @@ public slots:
     int runScript(QString mode_id);
     void preScript(QString sVarName, int iVar);
     void debug(float x, float y);
+    void debugMouseDown();
+    void debugMouseUp();
 private slots:
     void updateScriptFile();
     QList<QByteArray> getScriptSection(QString base_mode_id);
