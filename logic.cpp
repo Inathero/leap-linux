@@ -144,6 +144,7 @@ void logic::Leap_FingerSetup(FingerList Fingers)
         {
             // Correlate index to extended state, for gestures
             bFingersExtended[finger.type()-1] = finger.isExtended();
+//            qDebug() << "fin - "  << bFingersExtended[0] << bFingersExtended[1] << bFingersExtended[2] << bFingersExtended[3] << bFingersExtended[4];
 
             // Obtain total number of extended fingers
             if (finger.isExtended())
@@ -224,6 +225,7 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
 
                     if(Macro->isMacroAvailable())
                     {
+                        qDebug() << gesture.pointable().id() ;
                         ScriptEngine->preScript("FingerMod", gesture.pointable().id() % 10);
                         int iModeLock = ScriptEngine->runScript("finger_tap");
                         Macro->macroLock(iModeLock);

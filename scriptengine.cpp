@@ -333,8 +333,6 @@ int scriptengine::runScript(QString mode_id)
                     foreach(QChar cChar, baScript)
                     {
                         #if _WIN32
-//                        qDebug()_
-                        qDebug() << "aa -=" << int(cChar.toLatin1());
                         if ( int(cChar.toLatin1()) >= 65 && int(cChar.toLatin1()) <= 90)
                         {
                             Key_Sim->key_down(XK_Shift_L);
