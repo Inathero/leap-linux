@@ -14,8 +14,6 @@ signals:
 public slots:
     void key_down(int iKeyCode);
     void key_up(int iKeyCode);
-private slots:
-    void key_setup();
 
 private:
 };

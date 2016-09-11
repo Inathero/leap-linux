@@ -248,7 +248,9 @@ int scriptengine::runScript(QString mode_id)
     // We found the mode
     if (!slScriptSection.isEmpty())
     {
-        bool bCommand[slCommandList.size()] = {false};
+        int tSize = slCommandList.size();
+        bool * bCommand = new bool[tSize];
+//        = {false};
         bool * bCPointer = bCommand;
 
         foreach(QByteArray baScript, slScriptSection)

@@ -35,7 +35,7 @@ private:
     scriptengine * ScriptEngine;
     bool bHandKeyRot = false;
     bool bThumbKeyRot = false;
-    bool bFingersExtended[4] = {false};
+    bool bFingersExtended[4];
     int iFingersExtended;
     bool bThumbExtended;
     int iHandActive;

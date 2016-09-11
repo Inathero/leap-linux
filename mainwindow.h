@@ -1,7 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#if _LINUX
 #include <unistd.h>
+#endif
 #include <QMainWindow>
 #include <QDebug>
 #include <QtConcurrent/QtConcurrent>

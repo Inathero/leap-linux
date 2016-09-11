@@ -1,0 +1,35 @@
+# Used for macros:
+# Label Keycode
+# Lines starting with # are ignored
+Left    0x25 
+Right   0x27
+Up      0x26
+Down    0x28
+Home    0x24
+Shift   0x10
+Control 0x11
+Caps    0x14
+Super   0x5b
+Space   0x20 
+Esc     0x1b
+Tab     0x09
+F1      0x70
+F2      0x71
+F3      0x72
+F4      0x73
+F5      0x74
+F6      0x75
+F7      0x76
+F8      0x77
+F9      0x78
+F10     0x79
+F11     0x7a
+F12     0x7b
+Back    0x08
+Enter   0x0D 
+
+# Used for mouse simulation -- tablet style
+Leap_Mouse_Width_Range  -110 110
+#Leap_Mouse_Width_Range  -90 90
+Leap_Mouse_Height_Range 50 250
+#Leap_Mouse_Height_Range 70 200
