@@ -59,6 +59,7 @@ private:
     QHash<QString,int> hDefines;
     QString sScriptFile;
 
+    bool * bCommand;
     QList<int> ilModeIndexes;
 
     QStringList slModeList;
