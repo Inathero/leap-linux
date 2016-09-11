@@ -11,9 +11,13 @@
 #include <QHash>
 #include <QTimer>
 
-
+#if _LINUX
 #include "xkeys.h"
 #include "xmouse.h"
+#elif _WIN32
+#include "winkeys.h"
+#include "winmouse.h"
+#endif
 
 #define FINGER_MOD  1
 #define HAND_MOD    2
@@ -56,9 +60,13 @@ private:
     QStringList slCommandList;
     QStringList slMouseButtonList;
     QStringList slPreScriptList;
-
-    xkeys * XKeys;
-    xmouse * XMouse;
+#if _LINUX
+    xkeys * Key_Sim;
+    xmouse * Mouse_Sim;
+#elif _WIN32
+    winkeys * Key_Sim;
+    winmouse * Mouse_Sim;
+#endif
     QTimer * tFileUpdateTimer;
 
     int * LeapMouseRect;

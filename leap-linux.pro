@@ -13,24 +13,31 @@ unix: QT += x11extras
 TARGET = leap-linux
 TEMPLATE = app
 
-
+CONFIG += c++11
 
 SOURCES += main.cpp\
         mainwindow.cpp \
     listener.cpp \
     logic.cpp \
-    xkeys.cpp \
     macro.cpp \
     scriptengine.cpp \
-    xmouse.cpp
 
 HEADERS  += mainwindow.h \
     listener.h \
-    logic.h \
-    xkeys.h \
+    logic.h \ 
     macro.h \
     scriptengine.h \
-    xmouse.h
+
+unix: HEADERS += xkeys.h \
+                xmouse.h
+
+unix: SOURCES += xkeys.cpp \
+                xmouse.cpp
+
+win32: HEADERS += winkeys.h \
+                  winmouse.h
+win32: SOURCES += winkeys.cpp \
+                  winmouse.cpp
 
 FORMS    += mainwindow.ui
 

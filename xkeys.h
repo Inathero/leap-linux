@@ -7,9 +7,10 @@
 #include <QObject>
 #include <QDebug>
 
+#if _LINUX
 #include <X11/Xlib.h>
 #include <X11/extensions/XTest.h>
-
+#include <X11/keysym.h>
 #undef Bool
 #ifdef None
 #undef None
@@ -17,18 +18,7 @@
 #ifdef FrameFeature
 #undef FrameFeature
 #endif
-//#undef None
-//#ifdef Status
-//#undef Status
-//#endif
-//#ifdef KeyPress
-//#undef KeyPress
-//#endif
-//#ifdef KeyRelease
-//#undef KeyRelease
-//#endif
-
-#include <X11/keysym.h>
+#endif
 class xkeys : public QObject
 {
     Q_OBJECT

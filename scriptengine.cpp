@@ -2,6 +2,13 @@
 
 scriptengine::scriptengine()
 {
+#if _LINUX
+    Key_Sim = new xkeys(this);
+    Mouse_Sim = new xmouse(this);
+#elif _WIN32
+    Key_Sim = new winkeys(this);
+    Mouse_Sim = new winmouse(this);
+#endif
     slModeList << "swipe_left";
     slModeList << "swipe_right";
     slModeList << "swipe_up";
@@ -30,8 +37,7 @@ scriptengine::scriptengine()
     slPreScriptList << "HandMod";
 
     iModifiers = 0;
-    XKeys = new xkeys(this);
-    XMouse = new xmouse(this);
+
     tFileUpdateTimer = new QTimer(this);
     LeapMouseRect = new int[4];
     connect(tFileUpdateTimer, &QTimer::timeout, this, &scriptengine::updateScriptFile);
@@ -121,7 +127,7 @@ void scriptengine::setDefinitions(QString sPathToDefines)
         else
             qWarning() << "Incomplete define. Unable to add to Defines: " << qlTokenize;
     }
-    XMouse->mouse_set_leap_ranges(LeapMouseRect);
+    Mouse_Sim->mouse_set_leap_ranges(LeapMouseRect);
 }
 
 QList<QByteArray> scriptengine::getScriptSection(QString base_mode_id)
@@ -270,7 +276,7 @@ int scriptengine::runScript(QString mode_id)
                     if(hDefines.contains(baScript))
                     {
                         qDebug() <<"key_down: Definitions:"<<baScript<<":"<<hDefines.value(baScript);
-                        XKeys->key_down (hDefines.value(baScript));
+                        Key_Sim->key_down (hDefines.value(baScript));
                     }
 
                     // No values, single key statement instead
@@ -279,12 +285,12 @@ int scriptengine::runScript(QString mode_id)
                         qDebug() <<"key_down:"<<baScript.at(0);
                         if (baScript.at(0) < 90)
                         {
-                            XKeys->key_down(XK_Shift_L);
-                            XKeys->key_down(baScript.at(0));
+                            Key_Sim->key_down(XK_Shift_L);
+                            Key_Sim->key_down(baScript.at(0));
                         }
                         else
                         {
-                        XKeys->key_down(baScript.at(0));
+                        Key_Sim->key_down(baScript.at(0));
                         }
                     }
 
@@ -295,7 +301,7 @@ int scriptengine::runScript(QString mode_id)
                     if(hDefines.contains(baScript))
                     {
                         qDebug() <<"key_up: Definitions:"<<baScript<<":"<<hDefines.value(baScript);
-                        XKeys->key_up (hDefines.value(baScript));
+                        Key_Sim->key_up (hDefines.value(baScript));
                     }
 
                     // No values, single key statement instead
@@ -304,11 +310,11 @@ int scriptengine::runScript(QString mode_id)
                         qDebug() <<"key_up:"<<baScript.at(0);
                         if (baScript.at(0) < 90)
                         {
-                            XKeys->key_up(XK_Shift_L);
-                            XKeys->key_up(baScript.at(0));
+                            Key_Sim->key_up(XK_Shift_L);
+                            Key_Sim->key_up(baScript.at(0));
                         }
                         else
-                        XKeys->key_up(baScript.at(0));
+                        Key_Sim->key_up(baScript.at(0));
                     }
                 }
                 if(bCommand[com_key_send])
@@ -316,8 +322,8 @@ int scriptengine::runScript(QString mode_id)
                     if(hDefines.contains(baScript))
                     {
                         qDebug() <<"key_send: Definitions:"<<baScript<<":"<<hDefines.value(baScript);
-                        XKeys->key_down (hDefines.value(baScript));
-                        XKeys->key_up (hDefines.value(baScript));
+                        Key_Sim->key_down (hDefines.value(baScript));
+                        Key_Sim->key_up (hDefines.value(baScript));
                     }
                     else
                     {
@@ -326,15 +332,15 @@ int scriptengine::runScript(QString mode_id)
                     {
                         if (cChar.unicode() < 90)
                         {
-                            XKeys->key_down(XK_Shift_L);
-                            XKeys->key_down(cChar.unicode());
-                            XKeys->key_up(cChar.unicode());
-                            XKeys->key_up(XK_Shift_L);
+                            Key_Sim->key_down(XK_Shift_L);
+                            Key_Sim->key_down(cChar.unicode());
+                            Key_Sim->key_up(cChar.unicode());
+                            Key_Sim->key_up(XK_Shift_L);
                         }
                         else
                         {
-                        XKeys->key_down(cChar.unicode());
-                        XKeys->key_up(cChar.unicode());
+                        Key_Sim->key_down(cChar.unicode());
+                        Key_Sim->key_up(cChar.unicode());
                         }
                     }
                     }
@@ -354,8 +360,8 @@ int scriptengine::runScript(QString mode_id)
                     if(hDefines.contains(baScript))
                     {
                         qDebug() <<"key_press: Definitions:"<<baScript<<":"<<hDefines.value(baScript);
-                        XKeys->key_down (hDefines.value(baScript));
-                        XKeys->key_up (hDefines.value(baScript));
+                        Key_Sim->key_down (hDefines.value(baScript));
+                        Key_Sim->key_up (hDefines.value(baScript));
                     }
 
                     // No values, single key statement instead
@@ -365,15 +371,15 @@ int scriptengine::runScript(QString mode_id)
                         qDebug() <<"key_press:"<<baScript.at(0);
                         if (baScript.at(0) < 90)
                         {
-                            XKeys->key_down(XK_Shift_L);
-                            XKeys->key_down(baScript.at(0));
-                            XKeys->key_up(baScript.at(0));
-                            XKeys->key_up(XK_Shift_L);
+                            Key_Sim->key_down(XK_Shift_L);
+                            Key_Sim->key_down(baScript.at(0));
+                            Key_Sim->key_up(baScript.at(0));
+                            Key_Sim->key_up(XK_Shift_L);
                         }
                         else
                         {
-                        XKeys->key_down(baScript.at(0));
-                        XKeys->key_up(baScript.at(0));
+                        Key_Sim->key_down(baScript.at(0));
+                        Key_Sim->key_up(baScript.at(0));
                         }
                     }
                 }
@@ -384,7 +390,7 @@ int scriptengine::runScript(QString mode_id)
 
                     int iMouseButtonIndex = slMouseButtonList.indexOf(baScript.toLower());
 
-                    XMouse->mouse_button_click(xmouse_button_type_enum(iMouseButtonIndex+1));
+                    Mouse_Sim->mouse_button_click(Mouse_Sim_button_type_enum(iMouseButtonIndex+1));
 
                     }
             }
@@ -437,7 +443,7 @@ void scriptengine::preScript(QString sVarName, int iVar)
 
 void scriptengine::debug(float x, float y)
 {
-    XMouse->mouse_move(x,y);
+    Mouse_Sim->mouse_move(x,y);
 }
 
 void scriptengine::updateScriptFile()
