@@ -36,6 +36,10 @@ scriptengine::scriptengine()
     slPreScriptList << "FingerMod";
     slPreScriptList << "HandMod";
 
+    slMouseTypeList << "absolute";
+    slMouseTypeList << "relative";
+    slMouseTypeList << "absolute_to_relative";
+
     iModifiers = 0;
 
     tFileUpdateTimer = new QTimer(this);
@@ -103,7 +107,7 @@ void scriptengine::setDefinitions(QString sPathToDefines)
             }
             continue;
         }
-        if (qlTokenize.at(0) == "Leap_Mouse_Height_Range")
+        else if (qlTokenize.at(0) == "Leap_Mouse_Height_Range")
         {
 
             // Try-catch doesn't work on mingw Qt, how disappointing
@@ -122,7 +126,32 @@ void scriptengine::setDefinitions(QString sPathToDefines)
             }
             continue;
         }
-        if (qlTokenize.size() > 1)
+        else if (qlTokenize.at(0) == "Leap_Mouse_Type")
+        {
+            // Try-catch doesn't work on mingw Qt, how disappointing
+            if (qlTokenize.size() != 2)
+            {
+                qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Type Undefined. Using Absolute as default";
+                Mouse_Sim->mouse_type = mouse_type_enum::xm_type_absolute;
+            }
+            else
+            {
+                switch(slMouseTypeList.indexOf(qlTokenize.at(1).toLower()))
+                {
+                    case 0:
+                        Mouse_Sim->mouse_type =  mouse_type_enum::xm_type_absolute;
+                    break;
+                case 1:
+                    Mouse_Sim->mouse_type =  mouse_type_enum::xm_type_relative;
+                break;
+                case 2:
+                    Mouse_Sim->mouse_type =  mouse_type_enum::xm_type_absolute_to_relative;
+                break;
+                }
+            }
+            continue;
+        }
+        else if (qlTokenize.size() > 1)
             hDefines.insert(qlTokenize.at(0), qlTokenize.at(1).toUInt(NULL, 16));
         else
             qWarning() << "Incomplete define. Unable to add to Defines: " << qlTokenize;
@@ -408,7 +437,7 @@ int scriptengine::runScript(QString mode_id)
 
                     int iMouseButtonIndex = slMouseButtonList.indexOf(baScript.toLower());
 
-                    Mouse_Sim->mouse_button_click(xmouse_button_type_enum(iMouseButtonIndex+1));
+                    Mouse_Sim->mouse_button_click(mouse_button_type_enum(iMouseButtonIndex+1));
 
                     }
             }

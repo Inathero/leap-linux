@@ -6,7 +6,6 @@ logic::logic(QObject *parent) : QObject(parent)
 
     Macro = new macro(this);
     ScriptEngine = new scriptengine;
-    bFingersExtended[4] = {false};
     bDebugLeftFist = false;
     ScriptEngine->setDefinitions(QApplication::applicationDirPath().append("/scripts/defines.ina"));
     ScriptEngine->setScriptFile(QApplication::applicationDirPath().append("/scripts/macros.ina"));

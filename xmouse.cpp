@@ -10,7 +10,7 @@ xmouse::xmouse(QObject *parent) : QObject(parent)
     xWinRoot = XDefaultRootWindow(xDisplay);
 }
 
-void xmouse::mouse_button_click(xmouse_button_type_enum xmouse_enum)
+void xmouse::mouse_button_click(mouse_button_type_enum xmouse_enum)
 {
     Display *dpy = NULL;
     dpy = XOpenDisplay (NULL);

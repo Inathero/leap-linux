@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/autoscroll_1.png</file>
+        <file>icons/discord_ok.ico</file>
+        <file>icons/discord_ok.svg</file>
+        <file>icons/discord_ok.png</file>
+    </qresource>
+</RCC>

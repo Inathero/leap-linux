@@ -8,12 +8,8 @@
 #include <QDebug>
 #include <QApplication>
 #include <QDesktopWidget>
-enum xmouse_button_type_enum
-{
-    xm_left = 1,
-    xm_middle,
-    xm_right
-};
+
+#include "mouseenums.h"
 
 class winmouse : public QObject
 {
@@ -21,13 +17,14 @@ class winmouse : public QObject
 public:
     explicit winmouse(QObject *parent = 0);
 
+    mouse_type_enum mouse_type;
 signals:
 
 public slots:
-    void mouse_button_click(xmouse_button_type_enum xmouse_enum);
+    void mouse_button_click(mouse_button_type_enum xmouse_enum);
     void mouse_move(float Leap_Finger_x, float Leap_Finger_y);
-    void mouse_button_down(xmouse_button_type_enum xmouse_enum);
-    void mouse_button_up(xmouse_button_type_enum xmouse_enum);
+    void mouse_button_down(mouse_button_type_enum xmouse_enum);
+    void mouse_button_up(mouse_button_type_enum xmouse_enum);
     QPoint mouse_map_leap_to_screen(float Finger_x, float Finger_y);
 
     void mouse_set_leap_ranges(int * iLeapMouseRect);

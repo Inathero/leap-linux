@@ -9,6 +9,9 @@
 #include <QtConcurrent/QtConcurrent>
 #include <QMetaType>
 #include <QTimer>
+#include <QSystemTrayIcon>
+#include <QMenu>
+
 
 #include "listener.h"
 #include "Leap.h"
@@ -30,10 +33,14 @@ public slots:
 
     void Leap_StartPolling();
 
+    void trayAction(QAction * tAction);
 private:
     Ui::MainWindow *ui;
     listener * Listener;
     QTimer * Leap_Poller;
+    QMenu * myMenu;
+    QSystemTrayIcon * sTray;
+
 };
 
 #endif // MAINWINDOW_H

@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-unix: QT += x11extras
+#unix: QT += x11extras
 
 TARGET = leap-linux
 TEMPLATE = app
@@ -26,7 +26,8 @@ HEADERS  += mainwindow.h \
     listener.h \
     logic.h \ 
     macro.h \
-    scriptengine.h
+    scriptengine.h \
+    mouseenums.h
 
 unix: HEADERS += xkeys.h \
                 xmouse.h
@@ -40,10 +41,13 @@ win32: SOURCES += winkeys.cpp \
 
 FORMS    += mainwindow.ui
 
-unix: LIBS += -L/usr/lib/Leap -lLeap -L/usr/X11R6/lib -lX11 -lXtst
-unix: INCLUDEPATH += /usr/lib/Leap $$PWD/leap/include $$PWD/leap/util
-unix: DEPENDPATH += /usr/lib/Leap
+unix: LIBS += -L$$PWD/leap/lib/x64 -lLeap -L/usr/X11R6/lib -lX11 -lXtst
+unix: INCLUDEPATH += $$PWD/leap/include $$PWD/leap/util
+unix: DEPENDPATH += $$PWD/leap/util
 
 win32: LIBS += -L$$PWD/leap/lib/x86/orion/ -lLeap -luser32
 win32: INCLUDEPATH += $$PWD/leap/lib/x86/orion $$PWD/leap/include/orion
 win32: DEPENDPATH += $$PWD/leap/lib/x86/orion
+
+RESOURCES += \
+    resources.qrc

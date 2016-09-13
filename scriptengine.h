@@ -74,6 +74,7 @@ private:
     QStringList slCommandList;
     QStringList slMouseButtonList;
     QStringList slPreScriptList;
+    QStringList slMouseTypeList;
 #if __unix
     xkeys * Key_Sim;
     xmouse * Mouse_Sim;
