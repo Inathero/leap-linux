@@ -87,69 +87,97 @@ void scriptengine::setDefinitions(QString sPathToDefines)
         qlTokenize.removeAll("");
 
         if (qlTokenize.isEmpty())
-                    continue;
+            continue;
 
+        QString sComp = qlTokenize.at(0);
         // Non-Macro defines
-        if (qlTokenize.at(0) == "Leap_Mouse_Width_Range")
+        if (sComp.contains("Leap_Mouse_"))
         {
-            // Try-catch doesn't work on mingw Qt, how disappointing
-            if (qlTokenize.size() != 3)
+            if(sComp.contains("_Width_Range") )
             {
-                qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Width_Range_Min defined with no value. Using -100 as default";
-                qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Width_Range_Max defined with no value. Using 100 as default";
-                LeapMouseRect[0] = -100;
-                LeapMouseRect[1] = 100;
-            }
-            else
-            {
-                LeapMouseRect[0] = qlTokenize.at(1).toInt();
-                LeapMouseRect[1] = qlTokenize.at(2).toInt();
-            }
-            continue;
-        }
-        else if (qlTokenize.at(0) == "Leap_Mouse_Height_Range")
-        {
-
-            // Try-catch doesn't work on mingw Qt, how disappointing
-            if (qlTokenize.size() != 3)
-            {
-                qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Height_Min defined with no value. Using 70 as default";
-                qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Height_Max defined with no value. Using 250 as default";
-                LeapMouseRect[2] = 70;
-                LeapMouseRect[3] = 250;
-
-            }
-            else
-            {
-                LeapMouseRect[2] = qlTokenize.at(1).toInt();
-                LeapMouseRect[3] = qlTokenize.at(2).toInt();
-            }
-            continue;
-        }
-        else if (qlTokenize.at(0) == "Leap_Mouse_Type")
-        {
-            // Try-catch doesn't work on mingw Qt, how disappointing
-            if (qlTokenize.size() != 2)
-            {
-                qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Type Undefined. Using Absolute as default";
-                Mouse_Sim->mouse_type = mouse_type_enum::xm_type_absolute;
-            }
-            else
-            {
-                switch(slMouseTypeList.indexOf(qlTokenize.at(1).toLower()))
+                // Try-catch doesn't work on mingw Qt, how disappointing
+                if (qlTokenize.size() != 3)
                 {
+                    qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Width_Range_Min defined with no value. Using -100 as default";
+                    qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Width_Range_Max defined with no value. Using 100 as default";
+                    LeapMouseRect[0] = -100;
+                    LeapMouseRect[1] = 100;
+                }
+                else
+                {
+                    LeapMouseRect[0] = qlTokenize.at(1).toInt();
+                    LeapMouseRect[1] = qlTokenize.at(2).toInt();
+                }
+                continue;
+            }
+            if(sComp.contains("_Height_Range"))
+            {
+                // Try-catch doesn't work on mingw Qt, how disappointing
+                if (qlTokenize.size() != 3)
+                {
+                    qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Height_Min defined with no value. Using 70 as default";
+                    qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Height_Max defined with no value. Using 250 as default";
+                    LeapMouseRect[2] = 70;
+                    LeapMouseRect[3] = 250;
+
+                }
+                else
+                {
+                    LeapMouseRect[2] = qlTokenize.at(1).toInt();
+                    LeapMouseRect[3] = qlTokenize.at(2).toInt();
+                }
+                continue;
+            }
+            if(sComp.contains("_Type"))
+            {
+                // Try-catch doesn't work on mingw Qt, how disappointing
+                if (qlTokenize.size() != 2)
+                {
+                    qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Type Undefined. Using Absolute as default";
+                    Mouse_Sim->mouse_type = mouse_type_enum::xm_type_absolute;
+                }
+                else
+                {
+                    switch(slMouseTypeList.indexOf(qlTokenize.at(1).toLower()))
+                    {
                     case 0:
                         Mouse_Sim->mouse_type =  mouse_type_enum::xm_type_absolute;
-                    break;
-                case 1:
-                    Mouse_Sim->mouse_type =  mouse_type_enum::xm_type_relative;
-                break;
-                case 2:
-                    Mouse_Sim->mouse_type =  mouse_type_enum::xm_type_absolute_to_relative;
-                break;
+                        break;
+                    case 1:
+                        Mouse_Sim->mouse_type =  mouse_type_enum::xm_type_relative;
+                        break;
+                    case 2:
+                        Mouse_Sim->mouse_type =  mouse_type_enum::xm_type_absolute_to_relative;
+                        break;
+                    }
                 }
+                continue;
             }
-            continue;
+
+        }
+        else if (sComp.contains("Leap_Enable_Gesture_"))
+        {
+            sComp = sComp.replace("Leap_Enable_Gesture_","");
+            if(qlTokenize.size() == 2)
+            {
+            if(sComp == "Swipe")
+            bLeapGesturesEnable[0] = qlTokenize.at(1).toLower() == "true" ? true : false;
+            else if(sComp == "Circle")
+            bLeapGesturesEnable[1] = qlTokenize.at(1).toLower() == "true" ? true : false;
+            else if(sComp == "Key_Tap")
+            bLeapGesturesEnable[2] = qlTokenize.at(1).toLower() == "true" ? true : false;
+            else if(sComp == "Screen_Tap")
+            bLeapGesturesEnable[3] = qlTokenize.at(1).toLower() == "true" ? true : false;
+            }
+            else
+                qWarning() << QString("Leap_Enable_Gesture_").append(sComp) << " is UNDEFINED";
+        }
+        else if (sComp.contains("Gesture."))
+        {
+            if(qlTokenize.size() == 2)
+                hLeapGestureMods.insert(sComp, qlTokenize.at(1).toFloat());
+            else
+                qWarning() << sComp << " is detect but not defined. Will fallback to Leap Controller's Defaults";
         }
         else if (qlTokenize.size() > 1)
             hDefines.insert(qlTokenize.at(0), qlTokenize.at(1).toUInt(NULL, 16));
@@ -225,7 +253,7 @@ QList<QByteArray> scriptengine::getScriptSection(QString base_mode_id)
         // strip iModifiers as a fallback to other mods
         switch (xIterate)
         {
-            case 1:
+        case 1:
             if ( iModifiers & FINGER_MOD )
                 mode_id.append(sFingerMod);
             qDebug() << "scriptengine::getScriptSection:" << mode_id;
@@ -242,7 +270,7 @@ QList<QByteArray> scriptengine::getScriptSection(QString base_mode_id)
         }
     } while (xIterate >= 0);
 
-return slScriptSection;
+    return slScriptSection;
 }
 
 void scriptengine::getScriptModeIndexes()
@@ -279,7 +307,7 @@ int scriptengine::runScript(QString mode_id)
     {
         int tSize = slCommandList.size();
         bCommand = new bool[tSize];
-//        = {false};
+        //        = {false};
         bool * bCPointer = bCommand;
 
         foreach(QByteArray baScript, slScriptSection)
@@ -321,7 +349,7 @@ int scriptengine::runScript(QString mode_id)
                         }
                         else
                         {
-                        Key_Sim->key_down(baScript.at(0));
+                            Key_Sim->key_down(baScript.at(0));
                         }
                     }
 
@@ -345,7 +373,7 @@ int scriptengine::runScript(QString mode_id)
                             Key_Sim->key_up(baScript.at(0));
                         }
                         else
-                        Key_Sim->key_up(baScript.at(0));
+                            Key_Sim->key_up(baScript.at(0));
                     }
                 }
                 if(bCommand[com_key_send])
@@ -359,37 +387,37 @@ int scriptengine::runScript(QString mode_id)
                     else
                     {
                         qDebug() <<"key_send:"<<baScript;
-                    foreach(QChar cChar, baScript)
-                    {
-                        #if _WIN32
-                        if ( int(cChar.toLatin1()) >= 65 && int(cChar.toLatin1()) <= 90)
+                        foreach(QChar cChar, baScript)
                         {
-                            Key_Sim->key_down(XK_Shift_L);
-                            Key_Sim->key_down(cChar.unicode());
-                            Key_Sim->key_up(cChar.unicode());
-                            Key_Sim->key_up(XK_Shift_L);
-                        }
-                        else if ( int(cChar.toLatin1()) >= 97 && int(cChar.toLatin1()) <= 122)
-                        {
-                            cChar = QChar(int(cChar.toLatin1()) - 32);
-                            Key_Sim->key_down(cChar.unicode());
-                            Key_Sim->key_up(cChar.unicode());
-                        }
-                        #elif __unix
-                        if (cChar.unicode() < 91)
-                        {
-                            Key_Sim->key_down(XK_Shift_L);
-                            Key_Sim->key_down(cChar.unicode());
-                            Key_Sim->key_up(cChar.unicode());
-                            Key_Sim->key_up(XK_Shift_L);
-                        }
-                        #endif
-                        else
+#if _WIN32
+                            if ( int(cChar.toLatin1()) >= 65 && int(cChar.toLatin1()) <= 90)
                             {
-                        Key_Sim->key_down(cChar.unicode());
-                        Key_Sim->key_up(cChar.unicode());
+                                Key_Sim->key_down(XK_Shift_L);
+                                Key_Sim->key_down(cChar.unicode());
+                                Key_Sim->key_up(cChar.unicode());
+                                Key_Sim->key_up(XK_Shift_L);
                             }
-                    }
+                            else if ( int(cChar.toLatin1()) >= 97 && int(cChar.toLatin1()) <= 122)
+                            {
+                                cChar = QChar(int(cChar.toLatin1()) - 32);
+                                Key_Sim->key_down(cChar.unicode());
+                                Key_Sim->key_up(cChar.unicode());
+                            }
+#elif __unix
+                            if (cChar.unicode() < 91)
+                            {
+                                Key_Sim->key_down(XK_Shift_L);
+                                Key_Sim->key_down(cChar.unicode());
+                                Key_Sim->key_up(cChar.unicode());
+                                Key_Sim->key_up(XK_Shift_L);
+                            }
+#endif
+                            else
+                            {
+                                Key_Sim->key_down(cChar.unicode());
+                                Key_Sim->key_up(cChar.unicode());
+                            }
+                        }
                     }
                 }
                 if(bCommand[com_launch])
@@ -425,8 +453,8 @@ int scriptengine::runScript(QString mode_id)
                         }
                         else
                         {
-                        Key_Sim->key_down(baScript.at(0));
-                        Key_Sim->key_up(baScript.at(0));
+                            Key_Sim->key_down(baScript.at(0));
+                            Key_Sim->key_up(baScript.at(0));
                         }
                     }
                 }
@@ -439,7 +467,7 @@ int scriptengine::runScript(QString mode_id)
 
                     Mouse_Sim->mouse_button_click(mouse_button_type_enum(iMouseButtonIndex+1));
 
-                    }
+                }
             }
 
             // commands that have no arguments
@@ -464,44 +492,44 @@ void scriptengine::preScript(QString sVarName, int iVar)
 {
     switch(slPreScriptList.indexOf(sVarName))
     {
-        // Finger Mods
-        case 0:
+    // Finger Mods
+    case 0:
+    {
+        iModifiers = iModifiers | FINGER_MOD;
+        switch (iVar)
         {
-            iModifiers = iModifiers | FINGER_MOD;
-            switch (iVar)
-            {
-                case 0:
-                case 5:
-                sFingerMod = "";
-                break;
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                sFingerMod = "_";
-                sFingerMod.append(QString::number(iVar));
-                break;
-
-            }
-        }
-        break;
-        // Hand Mods
+        case 0:
+        case 5:
+            sFingerMod = "";
+            break;
         case 1:
-            switch (iVar)
-            {
-            case LEAP_HAND_RIGHT:
-                sHandMod = "R_";
-                break;
-            case LEAP_HAND_LEFT:
-                sHandMod = "L_";
-                break;
-            case LEAP_HAND_BOTH_LEFT:
-                sHandMod = "BL_";
-                break;
-            case LEAP_HAND_BOTH_RIGHT:
-                sHandMod = "BR_";
-            }
-            iModifiers = iModifiers | HAND_MOD;
+        case 2:
+        case 3:
+        case 4:
+            sFingerMod = "_";
+            sFingerMod.append(QString::number(iVar));
+            break;
+
+        }
+    }
+    break;
+    // Hand Mods
+    case 1:
+        switch (iVar)
+        {
+        case LEAP_HAND_RIGHT:
+            sHandMod = "R_";
+            break;
+        case LEAP_HAND_LEFT:
+            sHandMod = "L_";
+            break;
+        case LEAP_HAND_BOTH_LEFT:
+            sHandMod = "BL_";
+            break;
+        case LEAP_HAND_BOTH_RIGHT:
+            sHandMod = "BR_";
+        }
+        iModifiers = iModifiers | HAND_MOD;
         break;
 
     }
@@ -516,16 +544,16 @@ void scriptengine::debug(float x, float y)
 
 void scriptengine::debugMouseDown()
 {
-//    Mouse_Sim->mouse_button_down(xm_left);
+    //    Mouse_Sim->mouse_button_down(xm_left);
 }
 
 void scriptengine::debugMouseUp()
 {
-//    Mouse_Sim->mouse_button_up(xm_left);
+    //    Mouse_Sim->mouse_button_up(xm_left);
 }
 
 void scriptengine::updateScriptFile()
 {
- setScriptFile(sScriptFile);
+    setScriptFile(sScriptFile);
 }
 

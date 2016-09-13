@@ -36,30 +36,33 @@
 // if you add more commands. change size of bool in runScript
 enum script_command_enums
 {
-    com_key_down,
-    com_key_up,
-    com_key_send,
-    com_launch,
-    com_mode_lock,
-    com_key_press,
-    com_mouse_click
+  com_key_down,
+  com_key_up,
+  com_key_send,
+  com_launch,
+  com_mode_lock,
+  com_key_press,
+  com_mouse_click
 };
 
 class scriptengine : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
     scriptengine();
     void setScriptFile(QString sPathToScript);
     void setDefinitions(QString sPathToDefines);
+
+    bool bLeapGesturesEnable[4];
+    QHash<QString,float> hLeapGestureMods;
 public slots:
     int runScript(QString mode_id);
     void preScript(QString sVarName, int iVar);
     void debug(float x, float y);
     void debugMouseDown();
     void debugMouseUp();
-private slots:
-    void updateScriptFile();
+    private slots:
+      void updateScriptFile();
     QList<QByteArray> getScriptSection(QString base_mode_id);
     void getScriptModeIndexes();
 private:

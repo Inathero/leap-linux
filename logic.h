@@ -18,6 +18,7 @@ class logic : public QObject
 public:
     explicit logic(QObject *parent = 0);
 
+    scriptengine * ScriptEngine;
 signals:
 
 public slots:
@@ -28,7 +29,6 @@ private:
     inline void logic_hand_debug(Leap::Hand hand);
 
     macro * Macro;
-    scriptengine * ScriptEngine;
     bool bHandKeyRot = false;
     bool bThumbKeyRot = false;
     bool bFingersExtended[4];
