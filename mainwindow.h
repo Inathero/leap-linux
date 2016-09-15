@@ -32,6 +32,7 @@ public:
 public slots:
 
     void Leap_StartPolling();
+    void Leap_StopPolling();
 
     void trayAction(QAction * tAction);
 private:

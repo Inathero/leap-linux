@@ -24,4 +24,5 @@ void macro::macroRelease()
 {
     qDebug() << "macro::macroRelease";
     MacroDelay->stop();
+    qDebug() << "macro::macroRelease:ok";
 }

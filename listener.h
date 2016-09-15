@@ -10,6 +10,10 @@
 
 using namespace Leap;
 
+
+#define FLAG_INITIAL_CONNECT 1
+#define FLAG_RECONNECT 2
+
 class listener : public QObject
 {
     Q_OBJECT
@@ -20,6 +24,7 @@ public:
 
 signals:
     void StartPolling();
+    void StopPolling();
 
 public slots:
 private slots:
@@ -27,7 +32,9 @@ private slots:
 private:
     logic * Logic;
     Controller * Leap_Controller;
+    QTimer * LeapListenTimer;
     int iPreviousFrameID;
+    int iInitialConnectFlags;
 };
 
 #endif // LISTENER_H

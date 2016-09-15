@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     connect(Listener, &listener::StartPolling, this, &MainWindow::Leap_StartPolling);
+    connect(Listener, &listener::StopPolling, this, &MainWindow::Leap_StopPolling);
     connect(Leap_Poller, &QTimer::timeout, Listener, &listener::onPoll);
     QTimer::singleShot(1, this, &MainWindow::hide);
 }
@@ -34,6 +35,11 @@ MainWindow::~MainWindow()
 void MainWindow::Leap_StartPolling()
 {
     Leap_Poller->start(1);
+}
+
+void MainWindow::Leap_StopPolling()
+{
+    Leap_Poller->stop();
 }
 
 void MainWindow::trayAction(QAction *tAction)
