@@ -40,6 +40,12 @@ scriptengine::scriptengine()
     slMouseTypeList << "relative";
     slMouseTypeList << "absolute_to_relative";
 
+    slFingerTypeList << "thumb";
+    slFingerTypeList << "index";
+    slFingerTypeList << "middle";
+    slFingerTypeList << "ring";
+    slFingerTypeList << "pinkie";
+
     iModifiers = 0;
 
     tFileUpdateTimer = new QTimer(this);
@@ -76,6 +82,9 @@ void scriptengine::setDefinitions(QString sPathToDefines)
     fDefines.close();
 
     QList<QByteArray> qlDefines = baDefines.split('\n');
+    QList<QByteArray> qlConfigBlock;
+    bool bConfigBlock = false;
+    int iConfigBlockType = 0;
     foreach (QByteArray baDefine, qlDefines)
     {
         // Ignore comments
@@ -90,70 +99,43 @@ void scriptengine::setDefinitions(QString sPathToDefines)
             continue;
 
         QString sComp = qlTokenize.at(0);
-        // Non-Macro defines
-        if (sComp.contains("Leap_Mouse_"))
+        if(bConfigBlock)
         {
-            if(sComp.contains("_Width_Range") )
+            // End of config block
+            if(qlTokenize.contains("}"))
             {
-                // Try-catch doesn't work on mingw Qt, how disappointing
-                if (qlTokenize.size() != 3)
-                {
-                    qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Width_Range_Min defined with no value. Using -100 as default";
-                    qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Width_Range_Max defined with no value. Using 100 as default";
-                    LeapMouseRect[0] = -100;
-                    LeapMouseRect[1] = 100;
+                // Copy everything up till }
+                foreach(QByteArray a, qlTokenize) {
+                    if (!a.contains('}'))
+                        qlConfigBlock << a;
+                    else
+                        break;
                 }
-                else
-                {
-                    LeapMouseRect[0] = qlTokenize.at(1).toInt();
-                    LeapMouseRect[1] = qlTokenize.at(2).toInt();
-                }
-                continue;
-            }
-            if(sComp.contains("_Height_Range"))
-            {
-                // Try-catch doesn't work on mingw Qt, how disappointing
-                if (qlTokenize.size() != 3)
-                {
-                    qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Height_Min defined with no value. Using 70 as default";
-                    qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Height_Max defined with no value. Using 250 as default";
-                    LeapMouseRect[2] = 70;
-                    LeapMouseRect[3] = 250;
+                // Reset block
+                bConfigBlock = false;
 
-                }
-                else
+                // Copy block to right config parser
+                switch(iConfigBlockType)
                 {
-                    LeapMouseRect[2] = qlTokenize.at(1).toInt();
-                    LeapMouseRect[3] = qlTokenize.at(2).toInt();
+                case CONFIG_BLOCK_MOUSE:
+                    setupLeapMouse(qlConfigBlock);
+                    break;
                 }
                 continue;
             }
-            if(sComp.contains("_Type"))
-            {
-                // Try-catch doesn't work on mingw Qt, how disappointing
-                if (qlTokenize.size() != 2)
-                {
-                    qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Type Undefined. Using Absolute as default";
-                    Mouse_Sim->mouse_type = mouse_type_enum::xm_type_absolute;
-                }
-                else
-                {
-                    switch(slMouseTypeList.indexOf(qlTokenize.at(1).toLower()))
-                    {
-                    case 0:
-                        Mouse_Sim->mouse_type =  mouse_type_enum::xm_type_absolute;
-                        break;
-                    case 1:
-                        Mouse_Sim->mouse_type =  mouse_type_enum::xm_type_relative;
-                        break;
-                    case 2:
-                        Mouse_Sim->mouse_type =  mouse_type_enum::xm_type_absolute_to_relative;
-                        break;
-                    }
-                }
+            else {
+                foreach(QByteArray a, qlTokenize)
+                    qlConfigBlock << a;
                 continue;
             }
-
+        }
+        // Non-Macro defines
+        if (sComp.contains("Leap_Mouse_Config"))
+        {
+            // The beginning '{' in script is actually completely useless
+            // only the ending '}' is important
+            bConfigBlock = true;
+            iConfigBlockType = CONFIG_BLOCK_MOUSE;
         }
         else if (sComp.contains("Leap_Enable_Gesture_"))
         {
@@ -318,8 +300,10 @@ int scriptengine::runScript(QString mode_id)
             if (iCommand != -1)
             {
                 // Reset previous commands
+                qDebug() << "scriptengine::runScript:clear_start";
                 for (int i = 0; i < slCommandList.size(); i++)
                     *(bCPointer + i) = false;
+                qDebug() << "scriptengine::runScript:clear_end";
 
                 // Activate current command
                 bCommand[iCommand] = true;
@@ -551,5 +535,111 @@ void scriptengine::debugMouseUp()
 void scriptengine::updateScriptFile()
 {
     setScriptFile(sScriptFile);
+}
+
+void scriptengine::setupLeapMouse(QList<QByteArray> qlLeapBlock)
+{
+    for(int i = 0; i < qlLeapBlock.size(); i++)
+    {
+        QString sComp = qlLeapBlock.at(i);
+
+        if(sComp.contains("Track_Finger") ) {
+            if (i + 1 < qlLeapBlock.size()) {
+                switch (slFingerTypeList.indexOf(qlLeapBlock.at(++i).toLower())) {
+                case 0: //thumb
+
+                    break;
+                }
+            }
+            else {
+                qWarning() << "scriptengine::setupLeapMouse: Not enough arguments for Track_Finger. Mouse will not track";
+                continue;
+            }
+        }
+        if(sComp.contains("Track_Palm") ) {
+            if (i + 1 < qlLeapBlock.size()) {
+                switch (slFingerTypeList.indexOf(qlLeapBlock.at(++i).toLower())) {
+                case 0: //thumb
+
+                    break;
+                }
+            }
+            else {
+                qWarning() << "scriptengine::setupLeapMouse: Not enough arguments for Track_Palm. Mouse will not track";
+                continue;
+            }
+        }
+        if(sComp.contains("Track_Modifier") ) {
+            if (i + 1 < qlLeapBlock.size()) {
+                switch (slFingerTypeList.indexOf(qlLeapBlock.at(++i).toLower())) {
+                case 0: //thumb
+
+                    break;
+                }
+            }
+            else {
+                qWarning() << "scriptengine::setupLeapMouse: Not enough arguments for Track_Modifier. Mouse will not have the modifier modified";
+                continue;
+            }
+        }
+        if(sComp.contains("Leap_Mouse_Width_Range") ) { // Try-catch doesn't work on mingw Qt, how disappointing
+            if (i + 2 < qlLeapBlock.size())
+            {
+                LeapMouseRect[0] = qlLeapBlock.at(++i).toInt();
+                LeapMouseRect[1] = qlLeapBlock.at(++i).toInt();
+            }
+            else
+            {
+                qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Width_Range_Min defined with no value. Using -100 as default";
+                qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Width_Range_Max defined with no value. Using 100 as default";
+                LeapMouseRect[0] = -100;
+                LeapMouseRect[1] = 100;
+            }
+            continue;
+        }
+        if(sComp.contains("Leap_Mouse_Height_Range"))
+        {
+            // Try-catch doesn't work on mingw Qt, how disappointing
+            if (i + 2 < qlLeapBlock.size())
+            {
+                LeapMouseRect[2] = qlLeapBlock.at(++i).toInt();
+                LeapMouseRect[3] = qlLeapBlock.at(++i).toInt();
+            }
+            else
+            {
+                qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Height_Min defined with no value. Using 70 as default";
+                qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Height_Max defined with no value. Using 250 as default";
+                LeapMouseRect[2] = 70;
+                LeapMouseRect[3] = 250;
+            }
+            continue;
+        }
+        if(sComp.contains("Leap_Mouse_Type"))
+        {
+            // Try-catch doesn't work on mingw Qt, how disappointing
+            if (i + 1 < qlLeapBlock.size())
+            {
+                switch(slMouseTypeList.indexOf(qlLeapBlock.at(++i).toLower()))
+                {
+                case 0:
+                    Mouse_Sim->mouse_type =  mouse_type_enum::xm_type_absolute;
+                    break;
+                case 1:
+                    Mouse_Sim->mouse_type =  mouse_type_enum::xm_type_relative;
+                    break;
+                case 2:
+                    Mouse_Sim->mouse_type =  mouse_type_enum::xm_type_absolute_to_relative;
+                    break;
+                }
+            }
+            else
+            {
+                qWarning() << "scriptengine::setDefinitions: Leap_Mouse_Type Undefined. Using Absolute as default";
+                Mouse_Sim->mouse_type = mouse_type_enum::xm_type_absolute;
+            }
+            continue;
+        }
+    }
+
 }
 

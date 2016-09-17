@@ -33,6 +33,8 @@
 #define LEAP_HAND_BOTH_LEFT     3
 #define LEAP_HAND_BOTH_RIGHT    4
 
+#define CONFIG_BLOCK_MOUSE		1
+
 // if you add more commands. change size of bool in runScript
 enum script_command_enums
 {
@@ -61,8 +63,10 @@ public slots:
     void debug(float x, float y);
     void debugMouseDown();
     void debugMouseUp();
-    private slots:
-      void updateScriptFile();
+
+private slots:
+    void updateScriptFile();
+    void setupLeapMouse(QList<QByteArray> qlLeapBlock);
     QList<QByteArray> getScriptSection(QString base_mode_id);
     void getScriptModeIndexes();
 private:
@@ -78,6 +82,7 @@ private:
     QStringList slMouseButtonList;
     QStringList slPreScriptList;
     QStringList slMouseTypeList;
+    QStringList slFingerTypeList;
 #if __unix
     xkeys * Key_Sim;
     xmouse * Mouse_Sim;

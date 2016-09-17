@@ -169,13 +169,11 @@ void logic::Leap_FingerSetup(FingerList Fingers)
             // It tracks index finger (when extended) and maps cursor to it
             //
             // Currently not in use, so it is ignored
-//            qDebug() << iHandActive;
             if (finger.type() == 1  &&
                 finger.isExtended() &&
                 finger.hand().isRight()
-//                iHandActive == LEAP_HAND_RIGHT
                  ){
-//                ScriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
+                ScriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
             }
         }
     }
