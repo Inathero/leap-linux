@@ -142,14 +142,14 @@ void scriptengine::setDefinitions(QString sPathToDefines)
             sComp = sComp.replace("Leap_Enable_Gesture_","");
             if(qlTokenize.size() == 2)
             {
-                if(sComp == "Swipe")
-                    bLeapGesturesEnable[0] = qlTokenize.at(1).toLower() == "true" ? true : false;
-                else if(sComp == "Circle")
-                    bLeapGesturesEnable[1] = qlTokenize.at(1).toLower() == "true" ? true : false;
-                else if(sComp == "Key_Tap")
-                    bLeapGesturesEnable[2] = qlTokenize.at(1).toLower() == "true" ? true : false;
-                else if(sComp == "Screen_Tap")
-                    bLeapGesturesEnable[3] = qlTokenize.at(1).toLower() == "true" ? true : false;
+            if(sComp == "Swipe")
+            bLeapGesturesEnable[0] = qlTokenize.at(1).toLower() == "true" ? true : false;
+            else if(sComp == "Circle")
+            bLeapGesturesEnable[1] = qlTokenize.at(1).toLower() == "true" ? true : false;
+            else if(sComp == "Key_Tap")
+            bLeapGesturesEnable[2] = qlTokenize.at(1).toLower() == "true" ? true : false;
+            else if(sComp == "Screen_Tap")
+            bLeapGesturesEnable[3] = qlTokenize.at(1).toLower() == "true" ? true : false;
             }
             else
                 qWarning() << QString("Leap_Enable_Gesture_").append(sComp) << " is UNDEFINED";
@@ -492,8 +492,8 @@ void scriptengine::preScript(QString sVarName, int iVar)
 
         }
     }
-        break;
-        // Hand Mods
+    break;
+    // Hand Mods
     case 1:
         switch (iVar)
         {
@@ -545,66 +545,42 @@ void scriptengine::setupLeapMouse(QList<QByteArray> qlLeapBlock)
 
         if(sComp.contains("Track_Finger") ) {
             if (i + 1 < qlLeapBlock.size()) {
-            LeapMouseConfig.iTrack_Type = LEAP_MOUSE_TRACK_FINGER;
-            LeapMouseConfig.Track_Mods.iFinger = slFingerTypeList.indexOf(qlLeapBlock.at(++i).toLower());
-               qWarning() << " Finger ID" << LeapMouseConfig.Track_Mods.iFinger;
-            if(LeapMouseConfig.Track_Mods.iFinger == -1){
-                qWarning() << "scriptengine::setupLeapMouse: Invalid Finger ID. Defaulting to 'Index' Finger";
-                LeapMouseConfig.Track_Mods.iFinger = 1;
-            }
+                switch (slFingerTypeList.indexOf(qlLeapBlock.at(++i).toLower())) {
+                case 0: //thumb
+
+                    break;
+                }
             }
             else {
                 qWarning() << "scriptengine::setupLeapMouse: Not enough arguments for Track_Finger. Mouse will not track";
-            }
                 continue;
+            }
         }
         if(sComp.contains("Track_Palm") ) {
             if (i + 1 < qlLeapBlock.size()) {
-            LeapMouseConfig.iTrack_Type = LEAP_MOUSE_TRACK_PALM;
-            QString sHand = qlLeapBlock.at(++i).toLower();
-            int iHand = sHand == "left_hand" ? 1 : sHand == "right_hand" ? 2 : -1;
-            if (iHand == -1)
-            {
-                qWarning() << "scriptEngine::setupLeapMouse: Invalid Hand ID. Defaulting to 'Right' Hand";
-                LeapMouseConfig.Track_Mods.iHand = iHand;
-            }
-            else
-                LeapMouseConfig.Track_Mods.iHand = slFingerTypeList.indexOf(qlLeapBlock.at(++i).toLower());
+                switch (slFingerTypeList.indexOf(qlLeapBlock.at(++i).toLower())) {
+                case 0: //thumb
+
+                    break;
+                }
             }
             else {
                 qWarning() << "scriptengine::setupLeapMouse: Not enough arguments for Track_Palm. Mouse will not track";
+                continue;
             }
-            continue;
         }
         if(sComp.contains("Track_Modifier") ) {
             if (i + 1 < qlLeapBlock.size()) {
-                QString sMod = qlLeapBlock.at(++i).toLower();
-               qWarning() << " mod ID" << sMod;
-                if (sMod == "left_hand")
-                    LeapMouseConfig.Track_Mods.iHand = LEAP_MOUSE_LEFT;
-                else if (sMod == "right_hand")
-                    LeapMouseConfig.Track_Mods.iHand = LEAP_MOUSE_RIGHT;
-                else if (sMod == "extended")
-                    LeapMouseConfig.Track_Mods.bExtended = true;
-                else if (sMod == "not_extended")
-                    LeapMouseConfig.Track_Mods.bExtended = false;
-                else if (sMod == "hand_open")
-                    LeapMouseConfig.Track_Mods.bHandOpen = true;
-                else if (sMod == "hand_closed")
-                    LeapMouseConfig.Track_Mods.bHandOpen = false;
-                else if (sMod == "both_hands")
-                    LeapMouseConfig.Track_Mods.iHandCount = 2;
-                else if (sMod == "one_hand")
-                    LeapMouseConfig.Track_Mods.iHandCount = 1;
-                else if (sMod == "enable")
-                    LeapMouseConfig.Track_Mods.bEnable = true;
-                else if (sMod == "disable")
-                    LeapMouseConfig.Track_Mods.bEnable = false;
+                switch (slFingerTypeList.indexOf(qlLeapBlock.at(++i).toLower())) {
+                case 0: //thumb
+
+                    break;
+                }
             }
             else {
                 qWarning() << "scriptengine::setupLeapMouse: Not enough arguments for Track_Modifier. Mouse will not have the modifier modified";
-            }
                 continue;
+            }
         }
         if(sComp.contains("Leap_Mouse_Width_Range") ) { // Try-catch doesn't work on mingw Qt, how disappointing
             if (i + 2 < qlLeapBlock.size())

@@ -28,12 +28,6 @@ F12     0xffc9
 Back    0xff08
 Enter   0xff0d 
 
-# Leap Mouse Types:
-# --------------------------------------------------------------------------------------------------------------------------------------
-#   Absolute: Maps Width_Range and Height_Range to primary displays resolution. This basically gives you 1:1 movement accross everything
-#   Relative: Leap acts as a regular mouse, where all movements are relative to the previous. Uses Width|Height_Range define
-# --------------------------------------------------------------------------------------------------------------------------------------
-Leap_Mouse_Type Relative
 
 Leap_Mouse_Config {
 
@@ -42,29 +36,37 @@ Leap_Mouse_Config {
 #   Track_Finger
 #       Thumb | Index | Middle | Ring | Pinkie
 #       Modifiers:
-#          Left         | Right (d)
+#          Left_Hand    | Right_Hand (d)
 #          Extended (d) | Not_Extended
-#          Hand_Closed  | Hand_Open (d)
-#          Both_Hands   | One_Hand  (d)
-#          Enable       | Disable   (d)
-#   Track_Palm
-#       Left | Right
+#          Hand_Closed  | Hand_Open  (d) (disabled)
+#          Both_Hands   | One_Hand   (d) (disabled)
+#          Enable       | Disable    (d)
+#
+#   (Not Enabled Yet)
+#   Track_Palm 
+#       Left_Hand | Right_Hand
 #       Modifiers:
-#          Left         | Right (d)  <== Optional, overwrites previous
-#          Hand_Closed  | Hand_Open (d)
-#          Both_Hands   | One_Hand  (d)
-#          Enable       | Disable   (d)
+#          Left_Hand    | Right_Hand (d)  <== Optional, overwrites previous
+#          Hand_Closed  | Hand_Open  (d) 
+#          Both_Hands   | One_Hand   (d)
+#          Enable       | Disable    (d)
 #
 # If both types are entered, I don't know what happens plz don't do this
 
-
   Track_Finger Index
 
-  Track_Modifier Right
+  Track_Modifier Left_Hand
   Track_Modifier Extended
-  Track_Modifier Hand_Open
   Track_Modifier One_Hand
+  Track_Modifier Enabled
   
+
+# Leap Mouse Types:
+# --------------------------------------------------------------------------------------------------------------------------------------
+#   Absolute: Maps Width_Range and Height_Range to primary displays resolution. This basically gives you 1:1 movement accross everything
+#   Relative: Leap acts as a regular mouse, where all movements are relative to the previous. Uses Width|Height_Range define
+# --------------------------------------------------------------------------------------------------------------------------------------
+  Leap_Mouse_Type Relative
 
   Leap_Mouse_Width_Range  -110 110
   Leap_Mouse_Height_Range 50 250

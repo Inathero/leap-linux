@@ -27,7 +27,8 @@ HEADERS  += mainwindow.h \
     logic.h \ 
     macro.h \
     scriptengine.h \
-    mouseenums.h
+    mouseenums.h \
+    leapmouseconfig.h
 
 unix: HEADERS += xkeys.h \
                 xmouse.h

@@ -11,8 +11,6 @@
 #include <QHash>
 #include <QTimer>
 
-#include "leapmouseconfig.h"
-
 #if __unix
 #include "xkeys.h"
 #include "xmouse.h"
@@ -59,8 +57,6 @@ public:
 
     bool bLeapGesturesEnable[4];
     QHash<QString,float> hLeapGestureMods;
-    stLeapMouseConfig LeapMouseConfig;
-
 public slots:
     int runScript(QString mode_id);
     void preScript(QString sVarName, int iVar);

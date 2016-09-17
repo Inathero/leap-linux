@@ -36,27 +36,29 @@ Leap_Mouse_Config {
 #   Track_Finger
 #       Thumb | Index | Middle | Ring | Pinkie
 #       Modifiers:
-#          Left         | Right (d)
+#          Left_Hand    | Right_Hand (d)
 #          Extended (d) | Not_Extended
-#          Hand_Closed  | Hand_Open (d)
-#          Both_Hands   | One_Hand  (d)
-#          Enable       | Disable   (d)
-#   Track_Palm
-#       Left | Right
+#          Hand_Closed  | Hand_Open  (d) (disabled)
+#          Both_Hands   | One_Hand   (d) (disabled)
+#          Enable       | Disable    (d)
+#
+#   (Not Enabled Yet)
+#   Track_Palm 
+#       Left_Hand | Right_Hand
 #       Modifiers:
-#          Left         | Right (d)  <== Optional, overwrites previous
-#          Hand_Closed  | Hand_Open (d)
-#          Both_Hands   | One_Hand  (d)
-#          Enable       | Disable   (d)
+#          Left_Hand    | Right_Hand (d)  <== Optional, overwrites previous
+#          Hand_Closed  | Hand_Open  (d) 
+#          Both_Hands   | One_Hand   (d)
+#          Enable       | Disable    (d)
 #
 # If both types are entered, I don't know what happens plz don't do this
 
   Track_Finger Index
 
-  Track_Modifier Right
+  Track_Modifier Left_Hand
   Track_Modifier Extended
-  Track_Modifier Hand_Open
   Track_Modifier One_Hand
+  Track_Modifier Enabled
   
 
 # Leap Mouse Types:
