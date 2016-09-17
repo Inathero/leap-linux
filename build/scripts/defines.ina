@@ -58,7 +58,7 @@ Leap_Mouse_Config {
   Track_Modifier Left_Hand
   Track_Modifier Extended
   Track_Modifier One_Hand
-  Track_Modifier Enabled
+  Track_Modifier Disable
   
 
 # Leap Mouse Types:
