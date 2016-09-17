@@ -34,7 +34,7 @@ Enter   0x0D
 #   Relative: Leap acts as a regular mouse, where all movements are relative to the previous. Uses Width|Height_Range define
 # --------------------------------------------------------------------------------------------------------------------------------------
 Leap_Mouse_Type Relative
-Leap_Mouse_Width_Range  -110 110
+Leap_Mouse_Width_Range  -210 210
 #Leap_Mouse_Width_Range  -90 90
 Leap_Mouse_Height_Range 50 250
 #Leap_Mouse_Height_Range 70 200

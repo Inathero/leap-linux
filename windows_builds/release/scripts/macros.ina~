@@ -22,18 +22,9 @@
 # key_send  = sends a string of keys/letters
 # key_press = presses down and releases 1 key (functionally same with key_send if key_send is used with 1 key)
 # launch    = launches an application
-mode BL_finger_tap_1
-    mode_lock 10
-    mouse_click Left
-mode BL_finger_tap_2
-    mode_lock 10
-    mouse_click Left
-mode BL_finger_tap_3
-    mode_lock 10
-    mouse_click Left
-mode BL_finger_tap_4
-    mode_lock 10
-    mouse_click Left
-mode BL_finger_tap
-    mode_lock 10
-    mouse_click Left
+mode R_finger_tap_3
+    mode_lock 4000
+mode R_finger_tap_2
+    mode_lock 4000
+mode R_finger_tap_1
+    mode_lock 4000

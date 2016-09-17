@@ -45,6 +45,7 @@ scriptengine::scriptengine()
     tFileUpdateTimer = new QTimer(this);
     LeapMouseRect = new int[4];
     connect(tFileUpdateTimer, &QTimer::timeout, this, &scriptengine::updateScriptFile);
+    tFileUpdateTimer->start(5000);
 }
 
 void scriptengine::setScriptFile(QString sPathToScript)
@@ -57,7 +58,6 @@ void scriptengine::setScriptFile(QString sPathToScript)
         baScriptData = fCheck.readAll();
 
     fCheck.close();
-    tFileUpdateTimer->start(5000);
 
     getScriptModeIndexes();
 }
@@ -475,11 +475,7 @@ int scriptengine::runScript(QString mode_id)
         }
 
         if (bCommand != NULL)
-        {
-            qDebug() << "pointer kill";
             delete bCommand;
-            qDebug() << "pointer success";
-        }
     }
 
     sFingerMod = "";
