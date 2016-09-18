@@ -48,20 +48,33 @@ scriptengine::scriptengine()
 
     iModifiers = 0;
 
-    tFileUpdateTimer = new QTimer(this);
+    QFSWatcher = new QFileSystemWatcher;
     LeapMouseRect = new int[4];
-    connect(tFileUpdateTimer, &QTimer::timeout, this, &scriptengine::updateScriptFile);
-    tFileUpdateTimer->start(5000);
+
+    connect(QFSWatcher, &QFileSystemWatcher::fileChanged, this, &scriptengine::scriptFileChanged);
+}
+
+void scriptengine::setScriptPath(QString sPathToScriptFolder)
+{
+    sScriptPath = sPathToScriptFolder;
+    QFSWatcher->addPath(sScriptPath + QString("/macros.ina"));
+    QFSWatcher->addPath(sScriptPath + QString("/defines.ina"));
+    qDebug() << "scriptengine::setScriptPath:QFSWatcher_file_list:"<<QFSWatcher->files();
+
+    setScriptFile(sScriptPath + QString("/macros.ina"));
+    setDefinitions(sScriptPath + QString("/defines.ina"));
+
 }
 
 void scriptengine::setScriptFile(QString sPathToScript)
 {
-    sScriptFile = sPathToScript;
-    QFile fCheck(sScriptFile);
+    QFile fCheck(sPathToScript);
     if (!fCheck.open(QIODevice::ReadOnly | QIODevice::Text))
-        qWarning() << "Unable to find script file. Can not load macros";
-    else
+        qWarning() << "scriptengine::setScriptFile: Unable to find script file or currently open in another program. Can not load macros";
+    else {
         baScriptData = fCheck.readAll();
+        qDebug() << "scriptengine::setScriptFile: Successfully read script file:" << sPathToScript;
+    }
 
     fCheck.close();
 
@@ -73,10 +86,10 @@ void scriptengine::setDefinitions(QString sPathToDefines)
     QByteArray baDefines;
     QFile fDefines(sPathToDefines);
     if (!fDefines.open(QIODevice::ReadOnly | QIODevice::Text))
-        qWarning() << "Unable to find defines file. Can not load defines: " << sPathToDefines;
+        qWarning() << "scriptengine::setDefinitions: Unable to find defines file or currently open in another program. Can not load defines: " << sPathToDefines;
     else
     {
-        qDebug() << "Defines File Located";
+        qDebug() << "scriptengine::setDefinitions: Successfully read definitions file:" << sPathToDefines;
         baDefines = fDefines.readAll();
     }
     fDefines.close();
@@ -532,11 +545,6 @@ void scriptengine::debugMouseUp()
     //    Mouse_Sim->mouse_button_up(xm_left);
 }
 
-void scriptengine::updateScriptFile()
-{
-    setScriptFile(sScriptFile);
-}
-
 void scriptengine::setupLeapMouse(QList<QByteArray> qlLeapBlock)
 {
     for(int i = 0; i < qlLeapBlock.size(); i++)
@@ -665,5 +673,16 @@ void scriptengine::setupLeapMouse(QList<QByteArray> qlLeapBlock)
         }
     }
 
+}
+
+void scriptengine::scriptFileChanged(QString sFileName)
+{
+    qDebug() << "scriptengine::scriptFileChanged:"<<sFileName;
+    if(sFileName.contains("macros"))
+      setScriptFile(sScriptPath + QString("/macros.ina"));
+    else if (sFileName.contains("defines"))
+        setScriptFile(sScriptPath + QString("/defines.ina"));
+    else
+      qWarning() << "scriptengine:scriptFileChanged: No Pre-determined Update Path For Script File";
 }
 

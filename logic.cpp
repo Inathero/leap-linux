@@ -7,8 +7,7 @@ logic::logic(QObject *parent) : QObject(parent)
     Macro = new macro(this);
     ScriptEngine = new scriptengine;
     bDebugLeftFist = false;
-    ScriptEngine->setDefinitions(QApplication::applicationDirPath().append("/scripts/defines.ina"));
-    ScriptEngine->setScriptFile(QApplication::applicationDirPath().append("/scripts/macros.ina"));
+    ScriptEngine->setScriptPath(QApplication::applicationDirPath().append("/scripts"));
 }
 
 inline void logic::logic_hand_debug(Hand hand)
@@ -43,23 +42,24 @@ void logic::Leap_Hands(Leap::HandList Hands)
                 bDebugLeftFist = true;
                 //            ScriptEngine->debugMouseDown();
             }
-            if (hand.isLeft() && iFingersExtended == 4 && bDebugLeftFist)
+            else if (hand.isLeft() && iFingersExtended == 4 && bDebugLeftFist)
             {
                 bDebugLeftFist = false;
                 //            ScriptEngine->debugMouseUp();
             }
 
             // alms_giver
-            if (hand.palmVelocity().magnitude() < 30 && hand.palmNormal().y > 0.6 && iFingersExtended > 3)
+            else if (hand.palmVelocity().magnitude() < 30 && hand.palmNormal().y > 0.6 && iFingersExtended > 3)
             {
                 if(Macro->isMacroAvailable())
                 {
                     int iModeLock = ScriptEngine->runScript("alms_giver");
                     Macro->macroLock(iModeLock);
+                    return;
                 }
             }
             // hand_key
-            if (iFingersExtended == 0 && !bThumbExtended)
+            else if (iFingersExtended == 0 && !bThumbExtended)
             {
                 if(Macro->isMacroAvailable())
                 {
@@ -88,7 +88,7 @@ void logic::Leap_Hands(Leap::HandList Hands)
                 }
             }
             // thumbs_up | down
-            if (iFingersExtended == 0 && bThumbExtended)
+            else if (iFingersExtended == 0 && bThumbExtended)
             {
                 if(Macro->isMacroAvailable())
                 {
@@ -116,7 +116,7 @@ void logic::Leap_Hands(Leap::HandList Hands)
             }
 
             // shaka_up | down -- Thumb and pinky extended
-            if (iFingersExtended == 1 && bFingersExtended[3] && bThumbExtended)
+            else if (iFingersExtended == 1 && bFingersExtended[3] && bThumbExtended)
             {
                 if(Macro->isMacroAvailable())
                 {
@@ -125,11 +125,13 @@ void logic::Leap_Hands(Leap::HandList Hands)
                     {
                         iModeLock = ScriptEngine->runScript("shaka_down");
                         Macro->macroLock(iModeLock);
+                        return;
                     }
                     if(hand.palmNormal().y > 0.9)
                     {
                         iModeLock = ScriptEngine->runScript("shaka_up");
                         Macro->macroLock(iModeLock);
+                        return;
                     }
                 }
             }

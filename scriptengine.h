@@ -10,6 +10,7 @@
 #include <QProcess>
 #include <QHash>
 #include <QTimer>
+#include <QFileSystemWatcher>
 
 #include "leapmouseconfig.h"
 
@@ -54,14 +55,16 @@ class scriptengine : public QObject
   Q_OBJECT
 public:
     scriptengine();
-    void setScriptFile(QString sPathToScript);
-    void setDefinitions(QString sPathToDefines);
 
     bool bLeapGesturesEnable[4];
     QHash<QString,float> hLeapGestureMods;
     stLeapMouseConfig LeapMouseConfig;
 
 public slots:
+    void setScriptPath(QString sPathToScriptFolder);
+    void setScriptFile(QString sPathToScript);
+    void setDefinitions(QString sPathToDefines);
+
     int runScript(QString mode_id);
     void preScript(QString sVarName, int iVar);
     void debug(float x, float y);
@@ -69,8 +72,8 @@ public slots:
     void debugMouseUp();
 
 private slots:
-    void updateScriptFile();
     void setupLeapMouse(QList<QByteArray> qlLeapBlock);
+    void scriptFileChanged(QString sFileName);
     QList<QByteArray> getScriptSection(QString base_mode_id);
     void getScriptModeIndexes();
 private:
@@ -94,13 +97,15 @@ private:
     winkeys * Key_Sim;
     winmouse * Mouse_Sim;
 #endif
-    QTimer * tFileUpdateTimer;
 
     int * LeapMouseRect;
 
     int iModifiers;
     QString sFingerMod;
     QString sHandMod;
+
+    QFileSystemWatcher * QFSWatcher;
+    QString sScriptPath;
 };
 
 #endif // SCRIPTENGINE_H

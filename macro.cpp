@@ -22,5 +22,6 @@ void macro::macroLock( int iInterval )
 
 void macro::macroRelease()
 {
+    qDebug() << "macro::macroRelease";
     MacroDelay->stop();
 }
