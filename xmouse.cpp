@@ -24,6 +24,7 @@ void xmouse::mouse_button_click(mouse_button_type_enum xmouse_enum)
     XCloseDisplay (dpy);
 }
 
+
 void xmouse::mouse_move(float Leap_Finger_x, float Leap_Finger_y)
 {
     Display *dpy = NULL;

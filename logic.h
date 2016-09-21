@@ -34,8 +34,16 @@ private:
     bool bFingersExtended[4];
     int iFingersExtended;
     bool bThumbExtended;
+    bool bPinch;
     bool bDebugLeftFist;
+    bool bStillProcessing;
     int iHandActive;
+
+    const int iTempPinchFrequency = 30;
+    const int iTempPinchModifier = 5;
+    int iGenericCounter;
+
+    Leap::Vector lvPinchPalmReference;
 };
 
 #endif // LOGIC_H

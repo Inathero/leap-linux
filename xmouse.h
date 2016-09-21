@@ -35,7 +35,7 @@ public:
 signals:
 
 public slots:
-    void mouse_button_click(mouse_button_type_enum xmouse_enum);
+    static void mouse_button_click(mouse_button_type_enum xmouse_enum);
     void mouse_move(float Leap_Finger_x, float Leap_Finger_y);
     QPoint mouse_map_leap_to_screen(float Finger_x, float Finger_y);
 

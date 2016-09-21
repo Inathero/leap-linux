@@ -7,24 +7,31 @@ logic::logic(QObject *parent) : QObject(parent)
     Macro = new macro(this);
     ScriptEngine = new scriptengine;
     bDebugLeftFist = false;
+    bPinch = false;
     ScriptEngine->setScriptPath(QApplication::applicationDirPath().append("/scripts"));
+    iGenericCounter = 0;
 }
 
 inline void logic::logic_hand_debug(Hand hand)
 {
-    //     qDebug() << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius();
+//    qDebug() <<  hand.pinchStrength();
+//         qDebug() << hand.palmNormal().toString().c_str() << " : " << hand.pinchStrength() << iFingersExtended;
     // qDebug() << hand.grabStrength() << " : " << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius(); // qDebug() << hand.palmVelocity().magnitude() <<  ", " << hand.palmNormal().toString().c_str(
 }
 
+// z < -0.5
+// pinch = 1
+// fingersextended = 3
 void logic::Leap_Hands(Leap::HandList Hands)
 {
 
-    if(!Hands.isEmpty())
+    if(!Hands.isEmpty() && !bStillProcessing)
     {
+        iGenericCounter ++;
         for (auto hand : Hands)
         {
             //        Hand hand = Hands.frontmost();
-
+            bStillProcessing = true;
             if(Hands.count() == LEAP_HAND_BOTH)
                 iHandActive = hand.isLeft() ? LEAP_HAND_BOTH_LEFT : LEAP_HAND_BOTH_RIGHT;
             else
@@ -135,14 +142,47 @@ void logic::Leap_Hands(Leap::HandList Hands)
                     }
                 }
             }
+
+
+            // pinch
+            else if (iFingersExtended >= 2 && hand.pinchStrength() > 0.5)
+            {
+                Leap::Vector lvStabPalmPos = hand.stabilizedPalmPosition();
+                if(!bPinch)
+                {
+                    bPinch = true;
+                    lvPinchPalmReference = lvStabPalmPos;
+                }
+                else
+                {
+                    if(iGenericCounter % iTempPinchFrequency == 0)
+                    {
+                    int iSpeedMultiplier = (lvStabPalmPos.y - lvPinchPalmReference.y) / iTempPinchModifier;
+                    mouse_button_type_enum iWheelMod;
+                    if (iSpeedMultiplier < 0)
+                        iWheelMod = xm_wheel_down;
+                    else
+                        iWheelMod = xm_wheel_up;
+
+//                    for(int i = 0; i < abs(iSpeedMultiplier); i++)
+                        xmouse::mouse_button_click(iWheelMod);
+                    }
+                }
+            }
+
+            if (hand.pinchStrength() != 1)
+                bPinch = false;
         }
 
+        bStillProcessing = false;
     }
     else
     {
+        bStillProcessing = false;
         iHandActive = -1;
         bHandKeyRot = false;
         bThumbKeyRot= false;
+        iGenericCounter = 0;
     }
 }
 
