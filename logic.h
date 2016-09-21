@@ -39,8 +39,8 @@ private:
     bool bStillProcessing;
     int iHandActive;
 
-    const int iTempPinchFrequency = 30;
-    const int iTempPinchModifier = 5;
+    const int iTempPinchFrequency = 20;
+    const int iTempPinchModifier = 10;
     int iGenericCounter;
 
     Leap::Vector lvPinchPalmReference;

@@ -145,7 +145,7 @@ void logic::Leap_Hands(Leap::HandList Hands)
 
 
             // pinch
-            else if (iFingersExtended >= 2 && hand.pinchStrength() > 0.5)
+            else if (iFingersExtended >= 2 && hand.pinchStrength() > 0.8)
             {
                 Leap::Vector lvStabPalmPos = hand.stabilizedPalmPosition();
                 if(!bPinch)
@@ -164,13 +164,13 @@ void logic::Leap_Hands(Leap::HandList Hands)
                     else
                         iWheelMod = xm_wheel_up;
 
-//                    for(int i = 0; i < abs(iSpeedMultiplier); i++)
+                    for(int i = 0; i < (abs(iSpeedMultiplier) > 0); i++)
                         xmouse::mouse_button_click(iWheelMod);
                     }
                 }
             }
 
-            if (hand.pinchStrength() != 1)
+            if (hand.pinchStrength() < 0.2)
                 bPinch = false;
         }
 
