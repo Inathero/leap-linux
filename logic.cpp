@@ -3,15 +3,14 @@
 
 logic::logic(QObject *parent) : QObject(parent)
 {
-
-    Macro = new macro(this);
     ScriptEngine = new scriptengine;
     bDebugLeftFist = false;
     bPinch = false;
     ScriptEngine->setScriptPath(QApplication::applicationDirPath().append("/scripts"));
     iGenericCounter = 0;
     Timer = new timer;
-    for (int i = 0; i < 1; i++)
+
+    for (int i = 0; i < 7; i++)
     {
         macro_block_struct a;
         qlMacroBlocks.append(a);
@@ -65,17 +64,17 @@ void logic::Leap_Hands(Leap::HandList Hands)
             // alms_giver
             else if (hand.palmVelocity().magnitude() < 30 && hand.palmNormal().y > 0.6 && iFingersExtended > 3)
             {
-                if(Macro->isMacroAvailable())
+                if(qlMacroBlocks[0].bEnabled)
                 {
                     int iModeLock = ScriptEngine->runScript("alms_giver");
-                    Macro->macroLock(iModeLock);
+                    Timer->AddToQueue(qlMacroBlocks[0], iModeLock);
                     return;
                 }
             }
             // hand_key
             else if (iFingersExtended == 0 && !bThumbExtended)
             {
-                if(Macro->isMacroAvailable())
+                if(qlMacroBlocks[1].bEnabled)
                 {
                     if (hand.palmNormal().y < -0.85 && !bHandKeyRot)
                         bHandKeyRot = true;
@@ -97,14 +96,14 @@ void logic::Leap_Hands(Leap::HandList Hands)
                                 iModeLock = ScriptEngine->runScript("hand_key_up");
                         }
                         if (iModeLock != -1)
-                            Macro->macroLock(iModeLock);
+                            Timer->AddToQueue(qlMacroBlocks[1], iModeLock);
                     }
                 }
             }
             // thumbs_up | down
             else if (iFingersExtended == 0 && bThumbExtended)
             {
-                if(Macro->isMacroAvailable())
+                if(qlMacroBlocks[2].bEnabled)
                 {
                     if (hand.palmNormal().y < -0.70)
                         bThumbKeyRot = true;
@@ -116,7 +115,7 @@ void logic::Leap_Hands(Leap::HandList Hands)
                             iModeLock = ScriptEngine->runScript("thumb_down");
                         else
                             iModeLock = ScriptEngine->runScript("thumb_up");
-                        Macro->macroLock(iModeLock);
+                        Timer->AddToQueue(qlMacroBlocks[2], iModeLock);
                     }
                     if(hand.palmNormal().x < -0.60 && bThumbKeyRot)
                     {
@@ -124,7 +123,7 @@ void logic::Leap_Hands(Leap::HandList Hands)
                             iModeLock = ScriptEngine->runScript("thumb_up");
                         else
                             iModeLock = ScriptEngine->runScript("thumb_down");
-                        Macro->macroLock(iModeLock);
+                        Timer->AddToQueue(qlMacroBlocks[2], iModeLock);
                     }
                 }
             }
@@ -132,19 +131,19 @@ void logic::Leap_Hands(Leap::HandList Hands)
             // shaka_up | down -- Thumb and pinky extended
             else if (iFingersExtended == 1 && bFingersExtended[3] && bThumbExtended)
             {
-                if(Macro->isMacroAvailable())
+                if(qlMacroBlocks[3].bEnabled)
                 {
                     int iModeLock = 0;
                     if(hand.palmNormal().y < -0.9)
                     {
                         iModeLock = ScriptEngine->runScript("shaka_down");
-                        Macro->macroLock(iModeLock);
+                        Timer->AddToQueue(qlMacroBlocks[3], iModeLock);
                         return;
                     }
                     if(hand.palmNormal().y > 0.9)
                     {
                         iModeLock = ScriptEngine->runScript("shaka_up");
-                        Macro->macroLock(iModeLock);
+                        Timer->AddToQueue(qlMacroBlocks[3], iModeLock);
                         return;
                     }
                 }
@@ -246,7 +245,7 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
         {
         case Gesture::TYPE_CIRCLE:
         {
-            if(Macro->isMacroAvailable() && iFingersExtended == 1)
+            if(qlMacroBlocks[4].bEnabled && iFingersExtended == 1)
             {
                 CircleGesture gesture = CircleGesture(*gl);
                 bool bDirection = gesture.pointable().direction().angleTo(gesture.normal()) <= Leap::PI/2;// ? "clockwise" : "counterclockwise";
@@ -263,7 +262,7 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
                     if (gesture.progress() > 1.)
                         iModeLock = ScriptEngine->runScript("circle_counterclockwise");
                 }
-                Macro->macroLock(iModeLock);
+                Timer->AddToQueue(qlMacroBlocks[4], iModeLock);
             }
         }
             break;
@@ -279,7 +278,7 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
             SwipeGesture gesture = SwipeGesture(*gl);
             int iModeLock = 0;
             //                        qDebug() << "swiupe: " << gesture.direction().x <<", " << Macro->isMacroAvailable();
-            if(Macro->isMacroAvailable())
+            if(qlMacroBlocks[5].bEnabled)
             {
                 if ( fabs(hand.palmNormal().x) < 0.5)
                     return;
@@ -295,7 +294,7 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
                     //                                if (gesture.direction().y < -0.50)
                     //                                    iModeLock = ScriptEngine->runScript("swipe_down");
                 }
-                Macro->macroLock(iModeLock);
+                Timer->AddToQueue(qlMacroBlocks[5], iModeLock);
             }
         }
             break;
@@ -310,12 +309,12 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
             }
 
 //            if(Macro->isMacroAvailable())
-            if(qlMacroBlocks.first().bEnabled)
+            if(qlMacroBlocks[6].bEnabled)
             {
                 qDebug() << gesture.pointable().id() ;
                 ScriptEngine->preScript("FingerMod", gesture.pointable().id() % 10);
                 int iModeLock = ScriptEngine->runScript("finger_tap");
-                Timer->AddToQueue(qlMacroBlocks.first(), iModeLock);
+                Timer->AddToQueue(qlMacroBlocks[6], iModeLock);
 //                Macro->macroLock(iModeLock);
             }
         }

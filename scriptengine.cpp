@@ -313,10 +313,8 @@ int scriptengine::runScript(QString mode_id)
             if (iCommand != -1)
             {
                 // Reset previous commands
-                qDebug() << "scriptengine::runScript:clear_start";
                 for (int i = 0; i < slCommandList.size(); i++)
                     *(bCPointer + i) = false;
-                qDebug() << "scriptengine::runScript:clear_end";
 
                 // Activate current command
                 bCommand[iCommand] = true;

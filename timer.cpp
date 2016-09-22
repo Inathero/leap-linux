@@ -42,7 +42,7 @@ void timer::ThreadLoop()
             {
                 if(iTimeStamp - qlMaster.at(i).iTimeStamp >= qlMaster.at(i).iMilliseconds)
                 {
-                    qDebug() << "timer::ThreadLoopClear";
+                    qDebug() << "timer::ThreadLoop:macro_unblocked";
                     qlMaster.at(i).macro_block.bEnabled = true;
                     qlMaster.removeAt(i);
                     i--;

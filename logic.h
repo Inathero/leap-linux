@@ -7,7 +7,6 @@
 #include <QApplication>
 
 #include "Leap.h"
-#include "macro.h"
 #include "timer.h"
 #include "scriptengine.h"
 
@@ -32,7 +31,6 @@ private:
 
     QList<macro_block_struct> qlMacroBlocks;
 
-    macro * Macro;
     bool bHandKeyRot = false;
     bool bThumbKeyRot = false;
     bool bFingersExtended[4];
