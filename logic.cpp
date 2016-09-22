@@ -10,13 +10,12 @@ logic::logic(QObject *parent) : QObject(parent)
     bPinch = false;
     ScriptEngine->setScriptPath(QApplication::applicationDirPath().append("/scripts"));
     iGenericCounter = 0;
-    macro_block_struct a;;
-    a.bEnabled = false;
-    qDebug() << a.bEnabled;
-    qDebug() << "- - ";
     Timer = new timer;
-    Timer->AddToQueue(a, 1);
-    qDebug() << a.bEnabled;
+    for (int i = 0; i < 1; i++)
+    {
+        macro_block_struct a;
+        qlMacroBlocks.append(a);
+    }
 
 }
 
@@ -155,6 +154,11 @@ void logic::Leap_Hands(Leap::HandList Hands)
             // pinch
             else if (iFingersExtended >= 2 && hand.pinchStrength() > 0.8)
             {
+
+                macro_block_struct a;;
+                a.bEnabled = false;
+                qDebug() << "Timer::AddITem";
+                Timer->AddToQueue(a, 2000);
                 Leap::Vector lvStabPalmPos = hand.stabilizedPalmPosition();
                 if(!bPinch)
                 {
@@ -305,12 +309,14 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
                 ScriptEngine->preScript("HandMod", iHandActive);
             }
 
-            if(Macro->isMacroAvailable())
+//            if(Macro->isMacroAvailable())
+            if(qlMacroBlocks.first().bEnabled)
             {
                 qDebug() << gesture.pointable().id() ;
                 ScriptEngine->preScript("FingerMod", gesture.pointable().id() % 10);
                 int iModeLock = ScriptEngine->runScript("finger_tap");
-                Macro->macroLock(iModeLock);
+                Timer->AddToQueue(qlMacroBlocks.first(), iModeLock);
+//                Macro->macroLock(iModeLock);
             }
         }
             break;

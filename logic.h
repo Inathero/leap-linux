@@ -30,6 +30,8 @@ public slots:
 private:
     inline void logic_hand_debug(Leap::Hand hand);
 
+    QList<macro_block_struct> qlMacroBlocks;
+
     macro * Macro;
     bool bHandKeyRot = false;
     bool bThumbKeyRot = false;
