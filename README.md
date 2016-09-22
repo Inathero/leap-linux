@@ -11,6 +11,5 @@ This is built using Qt as the primary framework
 
 TODO:
 
-* Move macro lock from global to individual
-* Find that random crash bug
-* Make gestures themselves scriptable instead of hardcoded [potentially]
+* Find that random crash bug (I think I got it!)
+* Make gestures themselves scriptable instead of hardcoded (Working somewhat with leap mouse config)
