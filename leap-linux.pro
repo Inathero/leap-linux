@@ -20,7 +20,8 @@ SOURCES += main.cpp\
     listener.cpp \
     logic.cpp \
     macro.cpp \
-    scriptengine.cpp
+    scriptengine.cpp \
+    timer.cpp
 
 HEADERS  += mainwindow.h \
     listener.h \
@@ -28,7 +29,8 @@ HEADERS  += mainwindow.h \
     macro.h \
     scriptengine.h \
     mouseenums.h \
-    leapmouseconfig.h
+    leapmouseconfig.h \
+    timer.h
 
 unix: HEADERS += xkeys.h \
                 xmouse.h

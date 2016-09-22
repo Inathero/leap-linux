@@ -10,6 +10,14 @@ logic::logic(QObject *parent) : QObject(parent)
     bPinch = false;
     ScriptEngine->setScriptPath(QApplication::applicationDirPath().append("/scripts"));
     iGenericCounter = 0;
+    macro_block_struct a;;
+    a.bEnabled = false;
+    qDebug() << a.bEnabled;
+    qDebug() << "- - ";
+    Timer = new timer;
+    Timer->AddToQueue(a, 1);
+    qDebug() << a.bEnabled;
+
 }
 
 inline void logic::logic_hand_debug(Hand hand)

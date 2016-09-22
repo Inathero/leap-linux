@@ -8,9 +8,11 @@
 
 #include "Leap.h"
 #include "macro.h"
+#include "timer.h"
 #include "scriptengine.h"
 
 using namespace Leap;
+
 
 class logic : public QObject
 {
@@ -42,6 +44,8 @@ private:
     const int iTempPinchFrequency = 20;
     const int iTempPinchModifier = 10;
     int iGenericCounter;
+
+    timer * Timer;
 
     Leap::Vector lvPinchPalmReference;
 };
