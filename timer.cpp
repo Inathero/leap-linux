@@ -6,7 +6,6 @@ timer::timer(QObject *parent) : QObject(parent)
     Time->start();
     bMasterControl = true;
     connect(&Thread, SIGNAL(started()), this, SLOT(ThreadLoop()));
-//    connect(this, SIGNAL(emptyQueue()), this, SLOT(stopThread()));
     moveToThread(&Thread);
     Thread.start();
 }

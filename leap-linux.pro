@@ -19,14 +19,12 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     listener.cpp \
     logic.cpp \
-    macro.cpp \
     scriptengine.cpp \
     timer.cpp
 
 HEADERS  += mainwindow.h \
     listener.h \
     logic.h \ 
-    macro.h \
     scriptengine.h \
     mouseenums.h \
     leapmouseconfig.h \
