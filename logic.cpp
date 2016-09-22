@@ -153,11 +153,6 @@ void logic::Leap_Hands(Leap::HandList Hands)
             // pinch
             else if (iFingersExtended >= 2 && hand.pinchStrength() > 0.8)
             {
-
-                macro_block_struct a;;
-                a.bEnabled = false;
-                qDebug() << "Timer::AddITem";
-                Timer->AddToQueue(a, 2000);
                 Leap::Vector lvStabPalmPos = hand.stabilizedPalmPosition();
                 if(!bPinch)
                 {
