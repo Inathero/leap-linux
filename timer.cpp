@@ -34,7 +34,6 @@ void timer::ThreadLoop()
         while(!qlMaster.isEmpty())
         {
             QThread::msleep(1);
-
             int iTimeStamp = Time->elapsed();
 
             for (int i = 0; i < qlMaster.size(); i++)
@@ -49,5 +48,4 @@ void timer::ThreadLoop()
             }
         }
     }
-
 }

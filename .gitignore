@@ -28,6 +28,10 @@ Makefile*
 
 *.autosave
 
+#vims
+*~
+*.un~
+
 # QtCtreator Qml
 *.qmlproject.user
 *.qmlproject.user.*
