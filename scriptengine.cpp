@@ -303,7 +303,7 @@ int scriptengine::runScript(QString mode_id)
         int tSize = slCommandList.size();
         bCommand = new bool[tSize];
         //        = {false};
-        bool * bCPointer = bCommand;
+//        bool * bCPointer = bCommand;
 
         foreach(QByteArray baScript, slScriptSection)
         {
@@ -314,7 +314,7 @@ int scriptengine::runScript(QString mode_id)
             {
                 // Reset previous commands
                 for (int i = 0; i < slCommandList.size(); i++)
-                    *(bCPointer + i) = false;
+                    *(bCommand + i) = false;
 
                 // Activate current command
                 bCommand[iCommand] = true;
@@ -470,7 +470,11 @@ int scriptengine::runScript(QString mode_id)
         }
 
         if (bCommand != NULL)
-            delete bCommand;
+        {
+//            bCPointer;
+            delete bCommand; //freed memory
+            bCommand = NULL; //pointed dangling ptr to NULL
+        }
     }
 
     sFingerMod = "";
