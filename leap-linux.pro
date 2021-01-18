@@ -15,16 +15,20 @@ TEMPLATE = app
 
 CONFIG += c++11
 
+INCLUDEPATH += src
+
 SOURCES += main.cpp\
         mainwindow.cpp \
     listener.cpp \
     logic.cpp \
     scriptengine.cpp \
+    src/AudioProgressBarDialog.cpp \
     timer.cpp
 
 HEADERS  += mainwindow.h \
     listener.h \
-    logic.h \ 
+    logic.h \  \
+    src/AudioProgressBarDialog.h \
     scriptengine.h \
     mouseenums.h \
     leapmouseconfig.h \
@@ -40,7 +44,8 @@ win32: HEADERS += winkeys.h \
 win32: SOURCES += winkeys.cpp \
                   winmouse.cpp
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    src/AudioProgressBarDialog.ui
 
 unix: LIBS += -L$$PWD/leap/lib/x64 -lLeap -L/usr/X11R6/lib -lX11 -lXtst
 unix: INCLUDEPATH += $$PWD/leap/include $$PWD/leap/util

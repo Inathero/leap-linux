@@ -3,13 +3,14 @@
 
 logic::logic(QObject *parent) : QObject(parent)
 {
-    ScriptEngine = new scriptengine;
-    bDebugLeftFist = false;
-    bPinch = false;
-    ScriptEngine->setScriptPath(QApplication::applicationDirPath().append("/scripts"));
-    iGenericCounter = 0;
-    Timer = new timer;
+    scriptEngine = new scriptengine;
+    _bDebugLeftFist = false;
+    _bPinch = false;
+    scriptEngine->setScriptPath(QApplication::applicationDirPath().append("/scripts"));
+    _iGenericCounter = 0;
+    _timer = new timer;
 
+    AudioDialog = new AudioProgressBarDialog;
     for (int i = 0; i < 7; i++)
     {
         macro_block_struct a;
@@ -18,7 +19,7 @@ logic::logic(QObject *parent) : QObject(parent)
 
 }
 
-inline void logic::logic_hand_debug(Hand hand)
+inline void logic::logicHandDebug(Hand hand)
 {
 //    qDebug() <<  hand.pinchStrength();
 //         qDebug() << hand.palmNormal().toString().c_str() << " : " << hand.pinchStrength() << iFingersExtended;
@@ -28,200 +29,208 @@ inline void logic::logic_hand_debug(Hand hand)
 // z < -0.5
 // pinch = 1
 // fingersextended = 3
-void logic::Leap_Hands(Leap::HandList Hands)
+void logic::leapHands(Leap::HandList Hands)
 {
 
-    if(!Hands.isEmpty() && !bStillProcessing)
+//    if(!Hands.isEmpty() && !_bStillProcessing)
+    if(!Hands.isEmpty())
     {
-        iGenericCounter ++;
+//        _iGenericCounter ++;
         for (auto hand : Hands)
         {
             //        Hand hand = Hands.frontmost();
-            bStillProcessing = true;
+            _bStillProcessing = true;
             if(Hands.count() == LEAP_HAND_BOTH)
-                iHandActive = hand.isLeft() ? LEAP_HAND_BOTH_LEFT : LEAP_HAND_BOTH_RIGHT;
+                _iHandActive = hand.isLeft() ? LEAP_HAND_BOTH_LEFT : LEAP_HAND_BOTH_RIGHT;
             else
-                iHandActive = hand.isLeft() ? LEAP_HAND_LEFT : LEAP_HAND_RIGHT;
+                _iHandActive = hand.isLeft() ? LEAP_HAND_LEFT : LEAP_HAND_RIGHT;
 
             //            qDebug() << "HAND:" << iHandActive;
-            ScriptEngine->preScript("HandMod", iHandActive);
+//            scriptEngine->preScript("HandMod", _iHandActive);
 
-            logic_hand_debug(hand);
+            logicHandDebug(hand);
 
-            Leap_FingerSetup(hand.fingers());
+//            leapFingerSetup(hand.fingers());
 
-            if (hand.isLeft() && iFingersExtended == 0 && !bDebugLeftFist)
-            {
-                bDebugLeftFist = true;
-                //            ScriptEngine->debugMouseDown();
-            }
-            else if (hand.isLeft() && iFingersExtended == 4 && bDebugLeftFist)
-            {
-                bDebugLeftFist = false;
-                //            ScriptEngine->debugMouseUp();
-            }
+//            if (hand.isLeft() && _iFingersExtended == 0 && !_bDebugLeftFist)
+//            {
+//                _bDebugLeftFist = true;
+//                //            ScriptEngine->debugMouseDown();
+//            }
+//            else if (hand.isLeft() && _iFingersExtended == 4 && _bDebugLeftFist)
+//            {
+//                _bDebugLeftFist = false;
+//                //            ScriptEngine->debugMouseUp();
+//            }
 
-            // alms_giver
-            else if (hand.palmVelocity().magnitude() < 30 && hand.palmNormal().y > 0.6 && iFingersExtended > 3)
-            {
-                if(qlMacroBlocks[0].bEnabled)
-                {
-                    int iModeLock = ScriptEngine->runScript("alms_giver");
-                    Timer->AddToQueue(qlMacroBlocks[0], iModeLock);
-                    return;
-                }
-            }
-            // hand_key
-            else if (iFingersExtended == 0 && !bThumbExtended)
-            {
-                if(qlMacroBlocks[1].bEnabled)
-                {
-                    if (hand.palmNormal().y < -0.85 && !bHandKeyRot)
-                        bHandKeyRot = true;
-                    else if (bHandKeyRot)
-                    {
-                        int iModeLock = -1;
-                        if (hand.isRight())
-                        {
-                            if(hand.palmNormal().x < -0.60)
-                                iModeLock = ScriptEngine->runScript("hand_key_up");
-                            else if(hand.palmNormal().x > 0.60)
-                                iModeLock = ScriptEngine->runScript("hand_key_down");
-                        }
-                        else
-                        {
-                            if(hand.palmNormal().x < -0.60)
-                                iModeLock = ScriptEngine->runScript("hand_key_down");
-                            else if(hand.palmNormal().x > 0.60)
-                                iModeLock = ScriptEngine->runScript("hand_key_up");
-                        }
-                        if (iModeLock != -1)
-                            Timer->AddToQueue(qlMacroBlocks[1], iModeLock);
-                    }
-                }
-            }
-            // thumbs_up | down
-            else if (iFingersExtended == 0 && bThumbExtended)
-            {
-                if(qlMacroBlocks[2].bEnabled)
-                {
-                    if (hand.palmNormal().y < -0.70)
-                        bThumbKeyRot = true;
+//            // alms_giver
+//            else if (hand.palmVelocity().magnitude() < 30 && hand.palmNormal().y > 0.6 && _iFingersExtended > 3)
+//            {
+//                if(qlMacroBlocks[0].bEnabled)
+//                {
+//                    int iModeLock = scriptEngine->runScript("alms_giver");
+//                    _timer->AddToQueue(qlMacroBlocks[0], iModeLock);
+//                    return;
+//                }
+//            }
+//            // hand_key
+//            else if (_iFingersExtended == 0 && !_bThumbExtended)
+//            {
+//                if(qlMacroBlocks[1].bEnabled)
+//                {
+//                    if (hand.palmNormal().y < -0.85 && !_bHandKeyRot)
+//                        _bHandKeyRot = true;
+//                    else if (_bHandKeyRot)
+//                    {
+//                        int iModeLock = -1;
+//                        if (hand.isRight())
+//                        {
+//                            if(hand.palmNormal().x < -0.60)
+//                                iModeLock = scriptEngine->runScript("hand_key_up");
+//                            else if(hand.palmNormal().x > 0.60)
+//                                iModeLock = scriptEngine->runScript("hand_key_down");
+//                        }
+//                        else
+//                        {
+//                            if(hand.palmNormal().x < -0.60)
+//                                iModeLock = scriptEngine->runScript("hand_key_down");
+//                            else if(hand.palmNormal().x > 0.60)
+//                                iModeLock = scriptEngine->runScript("hand_key_up");
+//                        }
+//                        if (iModeLock != -1)
+//                            _timer->AddToQueue(qlMacroBlocks[1], iModeLock);
+//                    }
+//                }
+//            }
+//            // thumbs_up | down
+//            else if (_iFingersExtended == 0 && _bThumbExtended)
+//            {
+//                if(qlMacroBlocks[2].bEnabled)
+//                {
+//                    if (hand.palmNormal().y < -0.70)
+//                        _bThumbKeyRot = true;
 
-                    int iModeLock = 0;
-                    if(hand.palmNormal().x > 0.60 && bThumbKeyRot)
-                    {
-                        if (hand.isRight())
-                            iModeLock = ScriptEngine->runScript("thumb_down");
-                        else
-                            iModeLock = ScriptEngine->runScript("thumb_up");
-                        Timer->AddToQueue(qlMacroBlocks[2], iModeLock);
-                    }
-                    if(hand.palmNormal().x < -0.60 && bThumbKeyRot)
-                    {
-                        if (hand.isRight())
-                            iModeLock = ScriptEngine->runScript("thumb_up");
-                        else
-                            iModeLock = ScriptEngine->runScript("thumb_down");
-                        Timer->AddToQueue(qlMacroBlocks[2], iModeLock);
-                    }
-                }
-            }
+//                    int iModeLock = 0;
+//                    if(hand.palmNormal().x > 0.60 && _bThumbKeyRot)
+//                    {
+//                        if (hand.isRight())
+//                            iModeLock = scriptEngine->runScript("thumb_down");
+//                        else
+//                            iModeLock = scriptEngine->runScript("thumb_up");
+//                        _timer->AddToQueue(qlMacroBlocks[2], iModeLock);
+//                    }
+//                    if(hand.palmNormal().x < -0.60 && _bThumbKeyRot)
+//                    {
+//                        if (hand.isRight())
+//                            iModeLock = scriptEngine->runScript("thumb_up");
+//                        else
+//                            iModeLock = scriptEngine->runScript("thumb_down");
+//                        _timer->AddToQueue(qlMacroBlocks[2], iModeLock);
+//                    }
+//                }
+//            }
 
-            // shaka_up | down -- Thumb and pinky extended
-            else if (iFingersExtended == 1 && bFingersExtended[3] && bThumbExtended)
-            {
-                if(qlMacroBlocks[3].bEnabled)
-                {
-                    int iModeLock = 0;
-                    if(hand.palmNormal().y < -0.9)
-                    {
-                        iModeLock = ScriptEngine->runScript("shaka_down");
-                        Timer->AddToQueue(qlMacroBlocks[3], iModeLock);
-                        return;
-                    }
-                    if(hand.palmNormal().y > 0.9)
-                    {
-                        iModeLock = ScriptEngine->runScript("shaka_up");
-                        Timer->AddToQueue(qlMacroBlocks[3], iModeLock);
-                        return;
-                    }
-                }
-            }
+//            // shaka_up | down -- Thumb and pinky extended
+//            else if (_iFingersExtended == 1 && _bFingersExtended[3] && _bThumbExtended)
+//            {
+//                if(qlMacroBlocks[3].bEnabled)
+//                {
+//                    int iModeLock = 0;
+//                    if(hand.palmNormal().y < -0.9)
+//                    {
+//                        iModeLock = scriptEngine->runScript("shaka_down");
+//                        _timer->AddToQueue(qlMacroBlocks[3], iModeLock);
+//                        return;
+//                    }
+//                    if(hand.palmNormal().y > 0.9)
+//                    {
+//                        iModeLock = scriptEngine->runScript("shaka_up");
+//                        _timer->AddToQueue(qlMacroBlocks[3], iModeLock);
+//                        return;
+//                    }
+//                }
+//            }
 
 
             // pinch
-            else if (iFingersExtended >= 2 && hand.pinchStrength() > 0.8)
+            if (hand.pinchStrength() > 0.8)
             {
                 Leap::Vector lvStabPalmPos = hand.stabilizedPalmPosition();
-                if(!bPinch)
+                if(!_bPinch)
                 {
-                    bPinch = true;
-                    lvPinchPalmReference = lvStabPalmPos;
+                    _bPinch = true;
+                    _lvPinchPalmReference = lvStabPalmPos;
                 }
                 else
                 {
-                    if(iGenericCounter % iTempPinchFrequency == 0)
+                    if(_iGenericCounter % _iTempPinchFrequency == 0)
                     {
-                    int iSpeedMultiplier = (lvStabPalmPos.y - lvPinchPalmReference.y) / iTempPinchModifier;
-                    mouse_button_type_enum iWheelMod;
-                    if (iSpeedMultiplier < 0)
-                        iWheelMod = xm_wheel_down;
-                    else
-                        iWheelMod = xm_wheel_up;
+                        int iSpeedMultiplier = (lvStabPalmPos.y - _lvPinchPalmReference.y);
+                        mouse_button_type_enum iWheelMod;
+                        if (iSpeedMultiplier < 0)
+                            iWheelMod = xm_wheel_down;
+                        else
+                            iWheelMod = xm_wheel_up;
 
-                    for(int i = 0; i < (abs(iSpeedMultiplier) > 0); i++)
-                        xmouse::mouse_button_click(iWheelMod);
+                        qDebug() << "pinch - " << iSpeedMultiplier;
+                        if(abs(iSpeedMultiplier) != 0)
+                        {
+                            AudioDialog->addRelativeAudioLevel(iSpeedMultiplier);
+                            _lvPinchPalmReference = lvStabPalmPos;
+                        }
+//                        for(int i = 0; i < (abs(iSpeedMultiplier) > 0); i++)
+//                            xmouse::mouse_button_click(iWheelMod);
                     }
                 }
             }
 
             if (hand.pinchStrength() < 0.2)
-                bPinch = false;
+                _bPinch = false;
         }
 
-        bStillProcessing = false;
+        _bStillProcessing = false;
     }
     else
     {
-        bStillProcessing = false;
-        iHandActive = -1;
-        bHandKeyRot = false;
-        bThumbKeyRot= false;
-        iGenericCounter = 0;
+        _bStillProcessing = false;
+        _iHandActive = -1;
+        _bHandKeyRot = false;
+        _bThumbKeyRot= false;
+        _iGenericCounter = 0;
     }
 }
 
-void logic::Leap_FingerSetup(FingerList Fingers)
+void logic::leapFingerSetup(FingerList Fingers)
 {
-    iFingersExtended  = 0;
+    _iFingersExtended  = 0;
 
     foreach(Finger finger, Fingers)
     {
-        if(ScriptEngine->LeapMouseConfig.Track_Mods.bEnable &&
-                        ScriptEngine->LeapMouseConfig.iTrack_Type == LEAP_MOUSE_TRACK_FINGER &&
-                        ScriptEngine->LeapMouseConfig.Track_Mods.bExtended == finger.isExtended() &&
-                        ScriptEngine->LeapMouseConfig.Track_Mods.iFinger == finger.type()) {
-            if(ScriptEngine->LeapMouseConfig.Track_Mods.iHand == finger.hand().isLeft())
-                ScriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
+        if(scriptEngine->LeapMouseConfig.Track_Mods.bEnable &&
+                scriptEngine->LeapMouseConfig.iTrack_Type == LEAP_MOUSE_TRACK_FINGER &&
+                scriptEngine->LeapMouseConfig.Track_Mods.bExtended == finger.isExtended() &&
+                scriptEngine->LeapMouseConfig.Track_Mods.iFinger == finger.type())
+        {
+            if(scriptEngine->LeapMouseConfig.Track_Mods.iHand == finger.hand().isLeft())
+                scriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
 
-            else if(ScriptEngine->LeapMouseConfig.Track_Mods.iHand - 1 ==  finger.hand().isRight())
-                ScriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
+            else if(scriptEngine->LeapMouseConfig.Track_Mods.iHand - 1 ==  finger.hand().isRight())
+                scriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
         }
         // Get thumb status
         if (finger.type() == 0)
-            bThumbExtended = finger.isExtended();
+            _bThumbExtended = finger.isExtended();
 
         // Get other fingers status
         if (finger.type() != 0)
         {
             // Correlate index to extended state, for gestures
-            bFingersExtended[finger.type()-1] = finger.isExtended();
+            _bFingersExtended[finger.type()-1] = finger.isExtended();
             //            qDebug() << "fin - "  << bFingersExtended[0] << bFingersExtended[1] << bFingersExtended[2] << bFingersExtended[3] << bFingersExtended[4];
 
             // Obtain total number of extended fingers
             if (finger.isExtended())
-                iFingersExtended ++;
+                _iFingersExtended ++;
 
             // This code excerpt here works 100% fine
             // It tracks index finger (when extended) and maps cursor to it
@@ -231,8 +240,9 @@ void logic::Leap_FingerSetup(FingerList Fingers)
     }
 }
 
-void logic::Leap_Gestures(GestureList Gestures, Hand hand)
+void logic::leapGestures(GestureList Gestures, Hand hand)
 {
+    return;
     for(Leap::GestureList::const_iterator gl = Gestures.begin(); gl != Gestures.end(); gl++)
     {
 
@@ -240,7 +250,7 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
         {
         case Gesture::TYPE_CIRCLE:
         {
-            if(qlMacroBlocks[4].bEnabled && iFingersExtended == 1)
+            if(qlMacroBlocks[4].bEnabled && _iFingersExtended == 1)
             {
                 CircleGesture gesture = CircleGesture(*gl);
                 bool bDirection = gesture.pointable().direction().angleTo(gesture.normal()) <= Leap::PI/2;// ? "clockwise" : "counterclockwise";
@@ -250,17 +260,17 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
                 if(bDirection) // clockwise
                 {
                     if (gesture.progress() > 1.)
-                        iModeLock = ScriptEngine->runScript("circle_clockwise");
+                        iModeLock = scriptEngine->runScript("circle_clockwise");
                 }
                 else // counterclockwise
                 {
                     if (gesture.progress() > 1.)
-                        iModeLock = ScriptEngine->runScript("circle_counterclockwise");
+                        iModeLock = scriptEngine->runScript("circle_counterclockwise");
                 }
-                Timer->AddToQueue(qlMacroBlocks[4], iModeLock);
+                _timer->AddToQueue(qlMacroBlocks[4], iModeLock);
             }
         }
-            break;
+        break;
 
         case Gesture::TYPE_SWIPE:
         {
@@ -279,41 +289,41 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
                     return;
                 else
                 {
-                    ScriptEngine->preScript("FingerMod", iFingersExtended);
+                    scriptEngine->preScript("FingerMod", _iFingersExtended);
                     if(hand.palmNormal().x > 0.50)
-                        iModeLock = ScriptEngine->runScript("swipe_right");
+                        iModeLock = scriptEngine->runScript("swipe_right");
                     if (hand.palmNormal().x < -0.80)
-                        iModeLock = ScriptEngine->runScript("swipe_left");
+                        iModeLock = scriptEngine->runScript("swipe_left");
                     //                                if(gesture.direction().y > 0.50)
                     //                                    iModeLock = ScriptEngine->runScript("swipe_up");
                     //                                if (gesture.direction().y < -0.50)
                     //                                    iModeLock = ScriptEngine->runScript("swipe_down");
                 }
-                Timer->AddToQueue(qlMacroBlocks[5], iModeLock);
+                _timer->AddToQueue(qlMacroBlocks[5], iModeLock);
             }
         }
-            break;
+        break;
 
         case Gesture::TYPE_KEY_TAP:
         {
             KeyTapGesture gesture = KeyTapGesture(*gl);
-            if(iHandActive > LEAP_HAND_BOTH)
+            if(_iHandActive > LEAP_HAND_BOTH)
             {
-                iHandActive = gesture.hands().frontmost().isLeft() ? LEAP_HAND_BOTH_LEFT : LEAP_HAND_BOTH_RIGHT;
-                ScriptEngine->preScript("HandMod", iHandActive);
+                _iHandActive = gesture.hands().frontmost().isLeft() ? LEAP_HAND_BOTH_LEFT : LEAP_HAND_BOTH_RIGHT;
+                scriptEngine->preScript("HandMod", _iHandActive);
             }
 
 //            if(Macro->isMacroAvailable())
             if(qlMacroBlocks[6].bEnabled)
             {
                 qDebug() << gesture.pointable().id() ;
-                ScriptEngine->preScript("FingerMod", gesture.pointable().id() % 10);
-                int iModeLock = ScriptEngine->runScript("finger_tap");
-                Timer->AddToQueue(qlMacroBlocks[6], iModeLock);
+                scriptEngine->preScript("FingerMod", gesture.pointable().id() % 10);
+                int iModeLock = scriptEngine->runScript("finger_tap");
+                _timer->AddToQueue(qlMacroBlocks[6], iModeLock);
 //                Macro->macroLock(iModeLock);
             }
         }
-            break;
+        break;
 
         case Gesture::TYPE_SCREEN_TAP:
             break;

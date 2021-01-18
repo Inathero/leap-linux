@@ -10,6 +10,7 @@
 #include "timer.h"
 #include "scriptengine.h"
 
+#include "AudioProgressBarDialog.h"
 using namespace Leap;
 
 
@@ -19,35 +20,37 @@ class logic : public QObject
 public:
     explicit logic(QObject *parent = 0);
 
-    scriptengine * ScriptEngine;
+    scriptengine * scriptEngine;
 signals:
 
 public slots:
-    void Leap_Hands         (Leap::HandList Hands);
-    void Leap_FingerSetup   (Leap::FingerList Fingers);
-    void Leap_Gestures      (Leap::GestureList Gestures, Leap::Hand hand);
+    void leapHands         (Leap::HandList Hands);
+    void leapFingerSetup   (Leap::FingerList Fingers);
+    void leapGestures      (Leap::GestureList Gestures, Leap::Hand hand);
 private:
-    inline void logic_hand_debug(Leap::Hand hand);
+    inline void logicHandDebug(Leap::Hand hand);
 
     QList<macro_block_struct> qlMacroBlocks;
 
-    bool bHandKeyRot = false;
-    bool bThumbKeyRot = false;
-    bool bFingersExtended[4];
-    int iFingersExtended;
-    bool bThumbExtended;
-    bool bPinch;
-    bool bDebugLeftFist;
-    bool bStillProcessing;
-    int iHandActive;
+    bool _bHandKeyRot = false;
+    bool _bThumbKeyRot = false;
+    bool _bFingersExtended[4];
+    int _iFingersExtended;
+    bool _bThumbExtended;
+    bool _bPinch;
+    bool _bDebugLeftFist;
+    bool _bStillProcessing;
+    int _iHandActive;
 
-    const int iTempPinchFrequency = 20;
-    const int iTempPinchModifier = 10;
-    int iGenericCounter;
+    const int _iTempPinchFrequency = 20;
+    const int _iTempPinchModifier = 10;
+    int _iGenericCounter;
 
-    timer * Timer;
+    timer * _timer;
 
-    Leap::Vector lvPinchPalmReference;
+    Leap::Vector _lvPinchPalmReference;
+
+    AudioProgressBarDialog * AudioDialog;
 };
 
 #endif // LOGIC_H

@@ -12,6 +12,7 @@ timer::timer(QObject *parent) : QObject(parent)
 
 void timer::AddToQueue(macro_block_struct &macro_block, int iMilliseconds)
 {
+    return;
     qDebug() << "timer::AddToQueue:"<<iMilliseconds;
     macro_block.bEnabled = false;
     queue_struct qStruct(macro_block);
@@ -23,7 +24,7 @@ void timer::AddToQueue(macro_block_struct &macro_block, int iMilliseconds)
 //        qlMaster.append(qStruct);
 //    }
 //    else
-        qlMaster.append(qStruct);
+    qlMaster.append(qStruct);
 }
 
 void timer::ThreadLoop()
