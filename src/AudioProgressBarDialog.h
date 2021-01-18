@@ -2,8 +2,10 @@
 #define AUDIOPROGRESSBARDIALOG_H
 
 #include <QDialog>
+#include <QDebug>
 #include <QScreen>
 #include <QTimer>
+#include <QProcess>
 
 namespace Ui
 {
@@ -22,11 +24,13 @@ public slots:
     void setAudioLevel(int value, int max = 100);
 private slots:
     void hideDialog();
+    void getVolumeLevel();
 private:
     Ui::AudioProgressBarDialog *ui;
     int _desktopHeight;
     int _desktopWidth;
     QTimer * _hiddenTimer;
+    QTimer * _getAudioLevelTimer;
 };
 
 #endif // AUDIOPROGRESSBARDIALOG_H
