@@ -21,6 +21,11 @@ public:
     explicit logic(QObject *parent = 0);
 
     scriptengine * scriptEngine;
+
+    AudioProgressBarDialog * getAudioDialog()
+    {
+        return _AudioDialog;
+    }
 signals:
 
 public slots:
@@ -50,7 +55,7 @@ private:
 
     Leap::Vector _lvPinchPalmReference;
 
-    AudioProgressBarDialog * AudioDialog;
+    AudioProgressBarDialog * _AudioDialog;
     bool _bFistToggle;
 };
 

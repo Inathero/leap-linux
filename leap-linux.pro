@@ -23,6 +23,8 @@ SOURCES += main.cpp\
     logic.cpp \
     scriptengine.cpp \
     src/AudioProgressBarDialog.cpp \
+    src/AudioSinkDialog.cpp \
+    src/Settings.cpp \
     timer.cpp
 
 HEADERS  += mainwindow.h \
@@ -32,6 +34,8 @@ HEADERS  += mainwindow.h \
     scriptengine.h \
     mouseenums.h \
     leapmouseconfig.h \
+    src/AudioSinkDialog.h \
+    src/Settings.h \
     timer.h
 
 unix: HEADERS += xkeys.h \
@@ -45,7 +49,8 @@ win32: SOURCES += winkeys.cpp \
                   winmouse.cpp
 
 FORMS    += mainwindow.ui \
-    src/AudioProgressBarDialog.ui
+    src/AudioProgressBarDialog.ui \
+    src/AudioSinkDialog.ui
 
 unix: LIBS += -L$$PWD/leap/lib/x64 -lLeap -L/usr/X11R6/lib -lX11 -lXtst
 unix: INCLUDEPATH += $$PWD/leap/include $$PWD/leap/util

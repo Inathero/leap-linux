@@ -16,9 +16,12 @@
 #include "listener.h"
 #include "Leap.h"
 
+#include "AudioSinkDialog.h"
+
 using namespace Leap;
 
-namespace Ui {
+namespace Ui
+{
 class MainWindow;
 }
 
@@ -41,6 +44,7 @@ private:
     QTimer * Leap_Poller;
     QMenu * myMenu;
     QSystemTrayIcon * sTray;
+    AudioSinkDialog * _AudioSinkDialog;
 
 };
 

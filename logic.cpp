@@ -10,7 +10,7 @@ logic::logic(QObject *parent) : QObject(parent)
     _iGenericCounter = 0;
     _timer = new timer;
 
-    AudioDialog = new AudioProgressBarDialog;
+    _AudioDialog = new AudioProgressBarDialog;
     for (int i = 0; i < 7; i++)
     {
         macro_block_struct a;
@@ -175,7 +175,7 @@ void logic::leapHands(Leap::HandList Hands)
                         qDebug() << "pinch - " << iSpeedMultiplier;
                         if(abs(iSpeedMultiplier) != 0)
                         {
-                            AudioDialog->setRelativeAudioLevel(iSpeedMultiplier);
+                            _AudioDialog->setRelativeAudioLevel(iSpeedMultiplier);
                             _lvPinchPalmReference = lvStabPalmPos;
                         }
 //                        for(int i = 0; i < (abs(iSpeedMultiplier) > 0); i++)
@@ -187,7 +187,7 @@ void logic::leapHands(Leap::HandList Hands)
             if(_iFingersExtended == 0 && !_bFistToggle)
             {
                 _bFistToggle = true;
-                AudioDialog->toggleMute();
+                _AudioDialog->toggleMute();
             }
             else if (_bFistToggle && _iFingersExtended != 0)
                 _bFistToggle = false;

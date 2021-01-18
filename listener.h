@@ -22,6 +22,7 @@ public:
 
     void onPoll();
 
+    logic * Logic;
 signals:
     void StartPolling();
     void StopPolling();
@@ -30,7 +31,6 @@ public slots:
 private slots:
     void Leap_ControllerStatus();
 private:
-    logic * Logic;
     Controller * Leap_Controller;
     QTimer * LeapListenTimer;
     int iPreviousFrameID;

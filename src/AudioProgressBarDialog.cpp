@@ -18,6 +18,7 @@ AudioProgressBarDialog::AudioProgressBarDialog(QWidget *parent) :
 
 //    _getAudioLevelTimer = new QTimer(this);
 //    connect(_getAudioLevelTimer, &QTimer::timeout, this, &AudioProgressBarDialog::getVolumeLevel);
+    updateSink();
     getVolumeLevel();
 //    _getAudioLevelTimer->start(30000);
 }
@@ -48,7 +49,7 @@ void AudioProgressBarDialog::setRelativeAudioLevel(int difference)
     _hiddenTimer->start();
     QProcess *p = new QProcess;
     connect(p,static_cast<void (QProcess::*)(int)>(&QProcess::finished), p, &QProcess::deleteLater);
-    p->start("pactl", QStringList() << "set-sink-volume" << "jack_out" << (difference > 0 ? "+" : "") + QString::number(difference) + "%");
+    p->start("pactl", QStringList() << "set-sink-volume" << _sink << (difference > 0 ? "+" : "") + QString::number(difference) + "%");
 }
 
 void AudioProgressBarDialog::setAudioLevel(int value, int max)
@@ -71,9 +72,15 @@ void AudioProgressBarDialog::toggleMute()
 //                _muteBlock = false;
 //            });
         });
-        p->start("pactl", QStringList() << "set-sink-mute" << "jack_out" << "toggle");
+        p->start("pactl", QStringList() << "set-sink-mute" << _sink << "toggle");
     }
 
+}
+
+void AudioProgressBarDialog::updateSink()
+{
+    _sink = Settings::loadSetting("sink").toString();
+    qDebug() << this << "Sink - " << _sink;
 }
 
 void AudioProgressBarDialog::hideDialog()
@@ -89,5 +96,5 @@ void AudioProgressBarDialog::getVolumeLevel()
         setAudioLevel(p->readAllStandardOutput().simplified().toInt(), 150);
         p->deleteLater();
     });
-    p->start("pamixer", QStringList() << "--get-volume");
+    p->start("pamixer", QStringList() << "--sink" << _sink << "--get-volume");
 }

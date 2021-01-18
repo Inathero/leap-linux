@@ -9,11 +9,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     Leap_Poller = new QTimer;
     Listener = new listener();
+    _AudioSinkDialog = new AudioSinkDialog;
+    connect(_AudioSinkDialog, &AudioSinkDialog::newAudioSink, this, [=](QString sink)
+    {
+        Settings::saveSetting("sink", sink);
+        Listener->Logic->getAudioDialog()->updateSink();
+    });
 
     myMenu = new QMenu;
+    myMenu->addAction("Set Audio Sink");
     myMenu->addAction("Exit");
     connect(myMenu, SIGNAL(triggered(QAction*)), this, SLOT(trayAction(QAction *)));
-
     sTray = new QSystemTrayIcon(QIcon(":/icons/discord_ok.png"));
     sTray->setToolTip("Leap for Linux");
     sTray->setContextMenu(myMenu);
@@ -46,4 +52,8 @@ void MainWindow::trayAction(QAction *tAction)
 {
     if(tAction->text() == "Exit")
         exit(0);
+    else if (tAction->text() == "Set Audio Sink")
+    {
+        _AudioSinkDialog->show();
+    }
 }

@@ -7,6 +7,8 @@
 #include <QTimer>
 #include <QProcess>
 
+#include "Settings.h"
+
 namespace Ui
 {
 class AudioProgressBarDialog;
@@ -23,6 +25,7 @@ public slots:
     void setRelativeAudioLevel(int difference);
     void setAudioLevel(int value, int max = 100);
     void toggleMute();
+    void updateSink();
 private slots:
     void hideDialog();
     void getVolumeLevel();
@@ -33,6 +36,7 @@ private:
     QTimer * _hiddenTimer;
     QTimer * _getAudioLevelTimer;
     bool _muteBlock = false;
+    QString _sink;
 };
 
 #endif // AUDIOPROGRESSBARDIALOG_H
