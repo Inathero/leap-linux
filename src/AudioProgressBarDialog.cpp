@@ -16,10 +16,10 @@ AudioProgressBarDialog::AudioProgressBarDialog(QWidget *parent) :
     connect(_hiddenTimer, &QTimer::timeout, this, &AudioProgressBarDialog::hideDialog);
     _hiddenTimer->setInterval(2000);
 
-    _getAudioLevelTimer = new QTimer(this);
-    connect(_getAudioLevelTimer, &QTimer::timeout, this, &AudioProgressBarDialog::getVolumeLevel);
+//    _getAudioLevelTimer = new QTimer(this);
+//    connect(_getAudioLevelTimer, &QTimer::timeout, this, &AudioProgressBarDialog::getVolumeLevel);
     getVolumeLevel();
-    _getAudioLevelTimer->start(15000);
+//    _getAudioLevelTimer->start(30000);
 }
 
 AudioProgressBarDialog::~AudioProgressBarDialog()
@@ -29,19 +29,23 @@ AudioProgressBarDialog::~AudioProgressBarDialog()
 
 void AudioProgressBarDialog::setRelativeAudioLevel(int difference)
 {
-    ui->progressBar->setValue(ui->progressBar->value() + difference);
-
-    ui->label->setText(QString::number(ui->progressBar->value()));
     if(!this->isVisible())
     {
+        getVolumeLevel();
         this->show();
         this->setGeometry(_desktopWidth - this->width(),
                           _desktopHeight - this->height(),
                           this->width(),
                           this->height());
     }
+
+    int newValue = ui->progressBar->value() + difference;
+    if(newValue > 150 || newValue < 0) return;
+
+    ui->progressBar->setValue(newValue);
+
+    ui->label->setText(QString::number(newValue));
     _hiddenTimer->start();
-//    qDebug() << QString::number(difference) + "%";
     QProcess *p = new QProcess;
     connect(p,static_cast<void (QProcess::*)(int)>(&QProcess::finished), p, &QProcess::deleteLater);
     p->start("pactl", QStringList() << "set-sink-volume" << "jack_out" << (difference > 0 ? "+" : "") + QString::number(difference) + "%");
@@ -55,17 +59,17 @@ void AudioProgressBarDialog::setAudioLevel(int value, int max)
 
 void AudioProgressBarDialog::toggleMute()
 {
-    if(!_muteBlock)
+//    if(!_muteBlock)
     {
-        _muteBlock = true;
+//        _muteBlock = true;
         QProcess *p = new QProcess;
         connect(p,static_cast<void (QProcess::*)(int)>(&QProcess::finished), p, [=]()
         {
             p->deleteLater();
-            QTimer::singleShot(1500, this, [=]()
-            {
-                _muteBlock = false;
-            });
+//            QTimer::singleShot(1500, this, [=]()
+//            {
+//                _muteBlock = false;
+//            });
         });
         p->start("pactl", QStringList() << "set-sink-mute" << "jack_out" << "toggle");
     }

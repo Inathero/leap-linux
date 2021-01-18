@@ -51,6 +51,7 @@ private:
     Leap::Vector _lvPinchPalmReference;
 
     AudioProgressBarDialog * AudioDialog;
+    bool _bFistToggle;
 };
 
 #endif // LOGIC_H

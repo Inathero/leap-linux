@@ -153,7 +153,7 @@ void logic::leapHands(Leap::HandList Hands)
 
 
             // pinch
-            if (hand.pinchStrength() > 0.8)
+            if (hand.pinchStrength() > 0.5)
             {
                 Leap::Vector lvStabPalmPos = hand.stabilizedPalmPosition();
                 if(!_bPinch)
@@ -184,10 +184,13 @@ void logic::leapHands(Leap::HandList Hands)
                 }
             }
             // Fist
-            if(_iFingersExtended == 0)
+            if(_iFingersExtended == 0 && !_bFistToggle)
             {
+                _bFistToggle = true;
                 AudioDialog->toggleMute();
             }
+            else if (_bFistToggle && _iFingersExtended != 0)
+                _bFistToggle = false;
 
             if (hand.pinchStrength() < 0.2)
                 _bPinch = false;
@@ -201,6 +204,7 @@ void logic::leapHands(Leap::HandList Hands)
         _iHandActive = -1;
         _bHandKeyRot = false;
         _bThumbKeyRot= false;
+        _bFistToggle = false;
         _iGenericCounter = 0;
     }
 }

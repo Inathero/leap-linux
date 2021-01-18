@@ -45,5 +45,5 @@ void MainWindow::Leap_StopPolling()
 void MainWindow::trayAction(QAction *tAction)
 {
     if(tAction->text() == "Exit")
-    exit(0);
+        exit(0);
 }
