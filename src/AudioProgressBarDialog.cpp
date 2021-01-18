@@ -27,7 +27,7 @@ AudioProgressBarDialog::~AudioProgressBarDialog()
     delete ui;
 }
 
-void AudioProgressBarDialog::addRelativeAudioLevel(int difference)
+void AudioProgressBarDialog::setRelativeAudioLevel(int difference)
 {
     ui->progressBar->setValue(ui->progressBar->value() + difference);
 
@@ -43,14 +43,33 @@ void AudioProgressBarDialog::addRelativeAudioLevel(int difference)
     _hiddenTimer->start();
 //    qDebug() << QString::number(difference) + "%";
     QProcess *p = new QProcess;
-    p->start("pactl", QStringList() << "set-sink-volume" << "jack_out" << (difference > 0 ? "+" : "") + QString::number(difference) + "%");
     connect(p,static_cast<void (QProcess::*)(int)>(&QProcess::finished), p, &QProcess::deleteLater);
+    p->start("pactl", QStringList() << "set-sink-volume" << "jack_out" << (difference > 0 ? "+" : "") + QString::number(difference) + "%");
 }
 
 void AudioProgressBarDialog::setAudioLevel(int value, int max)
 {
     ui->progressBar->setMaximum(max);
     ui->progressBar->setValue(value);
+}
+
+void AudioProgressBarDialog::toggleMute()
+{
+    if(!_muteBlock)
+    {
+        _muteBlock = true;
+        QProcess *p = new QProcess;
+        connect(p,static_cast<void (QProcess::*)(int)>(&QProcess::finished), p, [=]()
+        {
+            p->deleteLater();
+            QTimer::singleShot(1500, this, [=]()
+            {
+                _muteBlock = false;
+            });
+        });
+        p->start("pactl", QStringList() << "set-sink-mute" << "jack_out" << "toggle");
+    }
+
 }
 
 void AudioProgressBarDialog::hideDialog()

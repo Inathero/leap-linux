@@ -50,7 +50,7 @@ void logic::leapHands(Leap::HandList Hands)
 
             logicHandDebug(hand);
 
-//            leapFingerSetup(hand.fingers());
+            leapFingerSetup(hand.fingers());
 
 //            if (hand.isLeft() && _iFingersExtended == 0 && !_bDebugLeftFist)
 //            {
@@ -175,13 +175,18 @@ void logic::leapHands(Leap::HandList Hands)
                         qDebug() << "pinch - " << iSpeedMultiplier;
                         if(abs(iSpeedMultiplier) != 0)
                         {
-                            AudioDialog->addRelativeAudioLevel(iSpeedMultiplier);
+                            AudioDialog->setRelativeAudioLevel(iSpeedMultiplier);
                             _lvPinchPalmReference = lvStabPalmPos;
                         }
 //                        for(int i = 0; i < (abs(iSpeedMultiplier) > 0); i++)
 //                            xmouse::mouse_button_click(iWheelMod);
                     }
                 }
+            }
+            // Fist
+            if(_iFingersExtended == 0)
+            {
+                AudioDialog->toggleMute();
             }
 
             if (hand.pinchStrength() < 0.2)
@@ -206,17 +211,17 @@ void logic::leapFingerSetup(FingerList Fingers)
 
     foreach(Finger finger, Fingers)
     {
-        if(scriptEngine->LeapMouseConfig.Track_Mods.bEnable &&
-                scriptEngine->LeapMouseConfig.iTrack_Type == LEAP_MOUSE_TRACK_FINGER &&
-                scriptEngine->LeapMouseConfig.Track_Mods.bExtended == finger.isExtended() &&
-                scriptEngine->LeapMouseConfig.Track_Mods.iFinger == finger.type())
-        {
-            if(scriptEngine->LeapMouseConfig.Track_Mods.iHand == finger.hand().isLeft())
-                scriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
+//        if(scriptEngine->LeapMouseConfig.Track_Mods.bEnable &&
+//                scriptEngine->LeapMouseConfig.iTrack_Type == LEAP_MOUSE_TRACK_FINGER &&
+//                scriptEngine->LeapMouseConfig.Track_Mods.bExtended == finger.isExtended() &&
+//                scriptEngine->LeapMouseConfig.Track_Mods.iFinger == finger.type())
+//        {
+//            if(scriptEngine->LeapMouseConfig.Track_Mods.iHand == finger.hand().isLeft())
+//                scriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
 
-            else if(scriptEngine->LeapMouseConfig.Track_Mods.iHand - 1 ==  finger.hand().isRight())
-                scriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
-        }
+//            else if(scriptEngine->LeapMouseConfig.Track_Mods.iHand - 1 ==  finger.hand().isRight())
+//                scriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
+//        }
         // Get thumb status
         if (finger.type() == 0)
             _bThumbExtended = finger.isExtended();

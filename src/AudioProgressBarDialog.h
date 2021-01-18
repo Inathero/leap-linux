@@ -20,8 +20,9 @@ public:
     ~AudioProgressBarDialog();
 
 public slots:
-    void addRelativeAudioLevel(int difference);
+    void setRelativeAudioLevel(int difference);
     void setAudioLevel(int value, int max = 100);
+    void toggleMute();
 private slots:
     void hideDialog();
     void getVolumeLevel();
@@ -31,6 +32,7 @@ private:
     int _desktopWidth;
     QTimer * _hiddenTimer;
     QTimer * _getAudioLevelTimer;
+    bool _muteBlock = false;
 };
 
 #endif // AUDIOPROGRESSBARDIALOG_H
