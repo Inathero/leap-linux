@@ -21,8 +21,8 @@ logic::logic(QObject *parent) : QObject(parent)
 inline void logic::logic_hand_debug(Hand hand)
 {
 //    qDebug() <<  hand.pinchStrength();
-//         qDebug() << hand.palmNormal().toString().c_str() << " : " << hand.pinchStrength() << iFingersExtended;
-    // qDebug() << hand.grabStrength() << " : " << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius(); // qDebug() << hand.palmVelocity().magnitude() <<  ", " << hand.palmNormal().toString().c_str(
+//    qDebug() << hand.palmNormal().toString().c_str() << " : " << hand.pinchStrength() << iFingersExtended;
+//    qDebug() << hand.grabStrength() << " : " << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius(); // qDebug() << hand.palmVelocity().magnitude() <<  ", " << hand.palmNormal().toString().c_str(
 }
 
 // z < -0.5
@@ -163,15 +163,15 @@ void logic::Leap_Hands(Leap::HandList Hands)
                 {
                     if(iGenericCounter % iTempPinchFrequency == 0)
                     {
-                    int iSpeedMultiplier = (lvStabPalmPos.y - lvPinchPalmReference.y) / iTempPinchModifier;
-                    mouse_button_type_enum iWheelMod;
-                    if (iSpeedMultiplier < 0)
-                        iWheelMod = xm_wheel_down;
-                    else
-                        iWheelMod = xm_wheel_up;
+                        int iSpeedMultiplier = (lvStabPalmPos.y - lvPinchPalmReference.y) / iTempPinchModifier;
+                        mouse_button_type_enum iWheelMod;
+                        if (iSpeedMultiplier < 0)
+                            iWheelMod = xm_wheel_down;
+                        else
+                            iWheelMod = xm_wheel_up;
 
-                    for(int i = 0; i < (abs(iSpeedMultiplier) > 0); i++)
-                        xmouse::mouse_button_click(iWheelMod);
+                        for(int i = 0; i < (abs(iSpeedMultiplier) > 0); i++)
+                            xmouse::mouse_button_click(iWheelMod);
                     }
                 }
             }
@@ -199,9 +199,10 @@ void logic::Leap_FingerSetup(FingerList Fingers)
     foreach(Finger finger, Fingers)
     {
         if(ScriptEngine->LeapMouseConfig.Track_Mods.bEnable &&
-                        ScriptEngine->LeapMouseConfig.iTrack_Type == LEAP_MOUSE_TRACK_FINGER &&
-                        ScriptEngine->LeapMouseConfig.Track_Mods.bExtended == finger.isExtended() &&
-                        ScriptEngine->LeapMouseConfig.Track_Mods.iFinger == finger.type()) {
+                ScriptEngine->LeapMouseConfig.iTrack_Type == LEAP_MOUSE_TRACK_FINGER &&
+                ScriptEngine->LeapMouseConfig.Track_Mods.bExtended == finger.isExtended() &&
+                ScriptEngine->LeapMouseConfig.Track_Mods.iFinger == finger.type())
+        {
             if(ScriptEngine->LeapMouseConfig.Track_Mods.iHand == finger.hand().isLeft())
                 ScriptEngine->debug(finger.stabilizedTipPosition().x, finger.stabilizedTipPosition().y);
 
@@ -260,7 +261,7 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
                 Timer->AddToQueue(qlMacroBlocks[4], iModeLock);
             }
         }
-            break;
+        break;
 
         case Gesture::TYPE_SWIPE:
         {
@@ -292,7 +293,7 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
                 Timer->AddToQueue(qlMacroBlocks[5], iModeLock);
             }
         }
-            break;
+        break;
 
         case Gesture::TYPE_KEY_TAP:
         {
@@ -313,7 +314,7 @@ void logic::Leap_Gestures(GestureList Gestures, Hand hand)
 //                Macro->macroLock(iModeLock);
             }
         }
-            break;
+        break;
 
         case Gesture::TYPE_SCREEN_TAP:
             break;
