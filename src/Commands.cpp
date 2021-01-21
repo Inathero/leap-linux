@@ -25,9 +25,9 @@ void Commands::runCommand(QString command)
         if(s.commandName == command)
         {
             QStringList copy = s.commandProcess;
-            if(copy.size() > 1)
+            db "Command - " << command;
+            if(copy.size() > 0)
             {
-                db "Command - " << command;
                 QString process = copy.takeFirst();
                 p->start(process, copy);
             }

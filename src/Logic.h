@@ -61,6 +61,7 @@ private:
     int _iFingerStart;
     bool _bProcessDelay = true;
     int _iCircleRotations ;
+    bool _bFist = false;
     QTimer * _timerGestureUnlock;
 };
 

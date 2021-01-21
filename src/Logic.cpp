@@ -195,13 +195,13 @@ void Logic::processLeapHands(Leap::HandList Hands)
                     }
                 }
             }
-            // Fist
-            if(_iFingersExtended == 0 && !_bFistToggle && hand.stabilizedPalmPosition().y > 220)
+            // high Fist
+            if(!_bFistToggle && hand.stabilizedPalmPosition().y > 250 && hand.grabStrength() > 0.99f)
             {
                 _bFistToggle = true;
                 _AudioDialog->toggleMute();
             }
-            else if (_bFistToggle && _iFingersExtended != 0)
+            else if (_bFistToggle && hand.grabStrength() < 0.01f)
                 _bFistToggle = false;
 
             if (hand.pinchStrength() < 0.2)
@@ -224,6 +224,7 @@ void Logic::processLeapHands(Leap::HandList Hands)
 void Logic::processLeapFingers(FingerList Fingers)
 {
     _iFingersExtended  = 0;
+//    auto sum = 0;
 
     foreach(Finger finger, Fingers)
     {
@@ -244,7 +245,22 @@ void Logic::processLeapFingers(FingerList Fingers)
             if (finger.isExtended())
                 _iFingersExtended ++;
         }
+
+//        auto meta = finger.bone(Bone::TYPE_METACARPAL).direction();
+//        auto proxi = finger.bone(Bone::TYPE_PROXIMAL).direction();
+//        auto inter = finger.bone(Bone::TYPE_INTERMEDIATE).direction();
+//        auto dMetaProxi = meta.dot(proxi);
+//        auto dProxiInter = proxi.dot(inter);
+//        sum += dMetaProxi;
+//        sum += dProxiInter;
+
+
     }
+//    sum = sum/10;
+//    if(sum<=0.5 && _iFingersExtended==0)
+//        _bFist= true;
+//    else
+//        _bFist= false;
 }
 
 void Logic::processLeapGestures(GestureList Gestures, Hand hand)
