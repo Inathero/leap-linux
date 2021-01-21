@@ -19,6 +19,7 @@ INCLUDEPATH += src \
             src/Utilities
 
 SOURCES += src/main.cpp\
+    src/Commands.cpp \
         src/mainwindow.cpp \
     src/Listener.cpp \
     src/Logic.cpp \
@@ -27,6 +28,7 @@ SOURCES += src/main.cpp\
     src/Settings.cpp
 
 HEADERS  += src/mainwindow.h \
+    src/Commands.h \
     src/Listener.h \
     src/Logic.h \  \
     src/AudioProgressBarDialog.h \
@@ -47,3 +49,6 @@ win32: DEPENDPATH += $$PWD/leap/lib/x86/orion
 
 RESOURCES += \
     resources.qrc
+
+DISTFILES += \
+    script/commands.txt

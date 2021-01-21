@@ -58,12 +58,17 @@ void MainWindow::trayAction(QAction *tAction)
     {
         _AudioSinkDialog->show();
     }
+    else if (tAction->text() == "Reload Commands")
+    {
+        _Logic->reloadCommandsFromTray();
+    }
 }
 
 void MainWindow::createTray()
 {
     _trayMenu = new QMenu;
     _trayMenu->addAction("Set Audio Sink");
+    _trayMenu->addAction("Reload Commands");
     _trayMenu->addAction("Exit");
     connect(_trayMenu, SIGNAL(triggered(QAction*)), this, SLOT(trayAction(QAction *)));
     _tray = new QSystemTrayIcon(QIcon(":/icons/discord_ok.png"));

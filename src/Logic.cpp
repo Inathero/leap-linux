@@ -1,19 +1,25 @@
 #include "Logic.h"
+#include "Debug.h"
 
 
 Logic::Logic(QObject *parent) : QObject(parent)
 {
-    _bDebugLeftFist = false;
     _bPinch = false;
     _iGenericCounter = 0;
 
     _AudioDialog = new AudioProgressBarDialog;
-
+    _timerGestureUnlock = new QTimer;
+    _timerGestureUnlock->setInterval(500);
+    connect(_timerGestureUnlock, &QTimer::timeout, this, [=]()
+    {
+        _Commands.unlockGestures();
+    });
 }
 
 inline void Logic::logicHandDebug(Hand hand)
 {
 //    qDebug() <<  hand.pinchStrength();
+//    db hand.palmNormal().x;
 //         qDebug() << hand.palmNormal().toString().c_str() << " : " << hand.pinchStrength() << iFingersExtended;
     // qDebug() << hand.grabStrength() << " : " << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius(); // qDebug() << hand.palmVelocity().magnitude() <<  ", " << hand.palmNormal().toString().c_str(
 }
@@ -27,18 +33,39 @@ void Logic::processLeapHands(Leap::HandList Hands)
 //    if(!Hands.isEmpty() && !_bStillProcessing)
     if(!Hands.isEmpty())
     {
+        // Delay prevents gestures and commands from running
+        // while user puts hand into field.
+        // Also prevents random stuff from activating commands
+        if(_bProcessDelay)
+        {
+            QTimer::singleShot(500, this, [this]()
+            {
+                _bProcessDelay = false;
+            });
+        }
 //        _iGenericCounter ++;
         for (auto hand : Hands)
         {
-            //        Hand hand = Hands.frontmost();
-            _bStillProcessing = true;
 
             //            qDebug() << "HAND:" << iHandActive;
 //            scriptEngine->preScript("HandMod", _iHandActive);
 
-//            logicHandDebug(hand);
+            logicHandDebug(hand);
 
             processLeapFingers(hand.fingers());
+
+            if(abs(hand.palmNormal().x) < 0.1 && !_bFlatToVerticalPalm && _iFingersExtended > 3)
+                _bFlatToVerticalPalm = true;
+            if(hand.palmNormal().x < -0.9 && _bFlatToVerticalPalm)
+            {
+                _bFlatToVerticalPalm = false;
+
+                _Commands.runCommand("flat_palm_to_vertical");
+//                QProcess *p = new QProcess;
+//                connect(p,static_cast<void (QProcess::*)(int)>(&QProcess::finished), p, &QProcess::deleteLater);
+//                p->start("mpc", QStringList() << "toggle");
+
+            }
 
 //            if (hand.isLeft() && _iFingersExtended == 0 && !_bDebugLeftFist)
 //            {
@@ -58,7 +85,8 @@ void Logic::processLeapHands(Leap::HandList Hands)
 //                {
 //                    int iModeLock = scriptEngine->runScript("alms_giver");
 //                    _timer->AddToQueue(qlMacroBlocks[0], iModeLock);
-//                    return;
+//                    return;willneff
+
 //                }
 //            }
 //            // hand_key
@@ -141,7 +169,7 @@ void Logic::processLeapHands(Leap::HandList Hands)
 
 
             // pinch
-            if (hand.pinchStrength() > 0.5)
+            if (hand.pinchStrength() > 0.7)
             {
                 Leap::Vector lvStabPalmPos = hand.stabilizedPalmPosition();
                 if(!_bPinch)
@@ -156,7 +184,7 @@ void Logic::processLeapHands(Leap::HandList Hands)
                         int iSpeedMultiplier = (lvStabPalmPos.y - _lvPinchPalmReference.y);
 
 
-                        qDebug() << "pinch - " << lvStabPalmPos.y;
+//                        qDebug() << "pinch - " << lvStabPalmPos.y;
                         if(abs(iSpeedMultiplier) != 0)
                         {
                             _AudioDialog->setRelativeAudioLevel(iSpeedMultiplier);
@@ -180,15 +208,15 @@ void Logic::processLeapHands(Leap::HandList Hands)
                 _bPinch = false;
         }
 
-        _bStillProcessing = false;
     }
     else
     {
-        _bStillProcessing = false;
         _iHandActive = -1;
         _bHandKeyRot = false;
         _bThumbKeyRot= false;
         _bFistToggle = false;
+        _bFlatToVerticalPalm = false;
+        _bProcessDelay = true;
         _iGenericCounter = 0;
     }
 }
@@ -201,7 +229,10 @@ void Logic::processLeapFingers(FingerList Fingers)
     {
         // Get thumb status
         if (finger.type() == 0)
+        {
             _bThumbExtended = finger.isExtended();
+            _iFingerStart = finger.id();
+        }
 
         // Get other fingers status
         if (finger.type() != 0)
@@ -218,56 +249,111 @@ void Logic::processLeapFingers(FingerList Fingers)
 
 void Logic::processLeapGestures(GestureList Gestures, Hand hand)
 {
-    return;
+    if(_bProcessDelay) return;
     for(Leap::GestureList::const_iterator gl = Gestures.begin(); gl != Gestures.end(); gl++)
     {
 
+        if((*gl).state() == Gesture::STATE_STOP)
+        {
+            // Some gestures, like swipe, should only be called once
+            // Unfortauntely, this stop state is called multiple times.
+            // Setting it on a timer prolongs reset if called multiple times
+            _timerGestureUnlock->start();
+        }
         switch((*gl).type())
         {
         case Gesture::TYPE_CIRCLE:
         {
             CircleGesture gesture = CircleGesture(*gl);
             bool bDirection = gesture.pointable().direction().angleTo(gesture.normal()) <= Leap::PI/2;// ? "clockwise" : "counterclockwise";
-            int iModeLock = 0;
 
-            //                        qDebug()<<gesture.progress();
+            // New circle rotations will always start at 0
+            // so lets use this as the reset event
+            if(floor(gesture.progress()) < 0.9)
+            {
+//                db "reset circle";
+                _iCircleRotations = 0;
+            }
+
             if(bDirection) // clockwise
             {
+                _Commands.runCommand("circle_clockwise");
+                if(_iCircleRotations < floor(gesture.progress()))
+                {
+//                    db  (gesture.progress()) << " - " <<  _iCircleRotations;
+                    _iCircleRotations ++;
+                    _Commands.runCommand("circle_clockwise_full_rotation");
+                }
+
             }
             else // counterclockwise
             {
+                _Commands.runCommand("circle_counter_clockwise");
+                if(_iCircleRotations < floor(gesture.progress()))
+                {
+//                    db  (gesture.progress()) << " - " <<  _iCircleRotations;
+                    _iCircleRotations ++;
+                    _Commands.runCommand("circle_counter_clockwise_full_rotation");
+                }
             }
         }
         break;
 
         case Gesture::TYPE_SWIPE:
         {
-            //            if(iHandActive > LEAP_HAND_BOTH)
-            //            {
-            //             iHandActive = hand.isLeft() ? LEAP_HAND_BOTH_LEFT : LEAP_HAND_BOTH_RIGHT;
-            //             qDebug() << "JANMD"<<iHandActive;
-            //                ScriptEngine->preScript("HandMod", iHandActive);
-            //            }
             SwipeGesture gesture = SwipeGesture(*gl);
-            int iModeLock = 0;
-            //                        qDebug() << "swiupe: " << gesture.direction().x <<", " << Macro->isMacroAvailable();
-
-//                    if(hand.palmNormal().x > 0.50)
-//                        iModeLock = scriptEngine->runScript("swipe_right");
-//                    if (hand.palmNormal().x < -0.80)
-//                        iModeLock = scriptEngine->runScript("swipe_left");
-
+            if(gesture.direction().x < -0.9)
+                _Commands.runCommand("swipe_left");
+            else if(gesture.direction().x  > 0.9)
+                _Commands.runCommand("swipe_right");
+            else if(gesture.direction().y  > 0.9)
+                _Commands.runCommand("swipe_up");
+            else if(gesture.direction().y < -0.9)
+                _Commands.runCommand("swipe_down");
+            else if(gesture.direction().x < -0.45)
+            {
+                if(gesture.direction().y > 0.45)
+                    _Commands.runCommand("swipe_leftup");
+                if(gesture.direction().y < -0.45)
+                    _Commands.runCommand("swipe_leftdown");
+            }
+            else if(gesture.direction().x > 0.45)
+            {
+                if(gesture.direction().y > 0.45)
+                    _Commands.runCommand("swipe_rightup");
+                if(gesture.direction().y < -0.45)
+                    _Commands.runCommand("swipe_rightdown");
+            }
         }
         break;
 
         case Gesture::TYPE_KEY_TAP:
         {
             KeyTapGesture gesture = KeyTapGesture(*gl);
+            switch(gesture.pointable().id() - _iFingerStart)
+            {
+            case 0:
+                _Commands.runCommand("thumb_finger_tap");
+                break;
+            case 1:
+                _Commands.runCommand("index_finger_tap");
+                break;
+            case 2:
+                _Commands.runCommand("middle_finger_tap");
+                break;
+            case 3:
+                _Commands.runCommand("ring_finger_tap");
+                break;
+            case 4:
+                _Commands.runCommand("pinkie_finger_tap");
+                break;
+            }
 
         }
         break;
 
         case Gesture::TYPE_SCREEN_TAP:
+            db "screen tap";
             break;
         case Gesture::TYPE_INVALID:
             break;

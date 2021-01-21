@@ -34,8 +34,11 @@ void LeapListener::leapControllerStatus()
     // This is first connection
     if(!_Controller->isConnected() && !(_iInitialConnectFlags & FLAG_INITIAL_CONNECT))
     {
-        _leapListenTimer->setInterval(3000);
-        qWarning() << "Leap Initialization: Controller Not Found. Trying again in three (3) seconds.";
+        _leapListenTimer->setInterval(500);
+
+        qWarning() << "Leap Initialization: Controller Not Found. Trying again in 500 miliseconds.";
+        delete _Controller;
+        _Controller = new Controller;
         return;
     }
     // If we lost connection during usage, after initial connection
@@ -44,6 +47,9 @@ void LeapListener::leapControllerStatus()
         _iInitialConnectFlags |= FLAG_RECONNECT;
         emit stopPolling();
         qWarning() << "WARNING: Lost connection to Leap Controller Device. Retrying Connection in five (5) seconds.";
+        delete _Controller;
+        _Controller = new Controller;
+        _leapListenTimer->setInterval(500);
         return;
     }
     // Controller is connected

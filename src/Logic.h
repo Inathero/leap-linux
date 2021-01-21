@@ -9,6 +9,7 @@
 #include "Leap.h"
 
 #include "AudioProgressBarDialog.h"
+#include "Commands.h"
 using namespace Leap;
 
 
@@ -23,6 +24,12 @@ public:
     {
         return _AudioDialog;
     }
+
+    void reloadCommandsFromTray()
+    {
+        _Commands.reloadCommands();
+    }
+
 signals:
 
 public slots:
@@ -32,6 +39,7 @@ public slots:
 private:
     inline void logicHandDebug(Leap::Hand hand);
 
+    Commands _Commands;
 
     bool _bHandKeyRot = false;
     bool _bThumbKeyRot = false;
@@ -39,9 +47,8 @@ private:
     int _iFingersExtended;
     bool _bThumbExtended;
     bool _bPinch;
-    bool _bDebugLeftFist;
-    bool _bStillProcessing;
     int _iHandActive;
+    bool _bFlatToVerticalPalm = false;
 
     const int _iTempPinchFrequency = 20;
     const int _iTempPinchModifier = 10;
@@ -51,6 +58,10 @@ private:
 
     AudioProgressBarDialog * _AudioDialog;
     bool _bFistToggle;
+    int _iFingerStart;
+    bool _bProcessDelay = true;
+    int _iCircleRotations ;
+    QTimer * _timerGestureUnlock;
 };
 
 #endif // LOGIC_H
