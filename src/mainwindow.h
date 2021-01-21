@@ -13,9 +13,9 @@
 #include <QMenu>
 
 
-#include "listener.h"
+#include "Listener.h"
 #include "Leap.h"
-
+#include "Logic.h"
 #include "AudioSinkDialog.h"
 
 using namespace Leap;
@@ -39,11 +39,13 @@ public slots:
 
     void trayAction(QAction * tAction);
 private:
+    void createTray();
     Ui::MainWindow *ui;
-    listener * Listener;
-    QTimer * Leap_Poller;
-    QMenu * myMenu;
-    QSystemTrayIcon * sTray;
+    LeapListener * _LeapListener;
+    Logic * _Logic;
+    QTimer * _leapPoller;
+    QMenu * _trayMenu;
+    QSystemTrayIcon * _tray;
     AudioSinkDialog * _AudioSinkDialog;
 
 };

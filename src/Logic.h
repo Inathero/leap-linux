@@ -7,20 +7,17 @@
 #include <QApplication>
 
 #include "Leap.h"
-#include "timer.h"
-#include "scriptengine.h"
 
 #include "AudioProgressBarDialog.h"
 using namespace Leap;
 
 
-class logic : public QObject
+class Logic : public QObject
 {
     Q_OBJECT
 public:
-    explicit logic(QObject *parent = 0);
+    explicit Logic(QObject *parent = 0);
 
-    scriptengine * scriptEngine;
 
     AudioProgressBarDialog * getAudioDialog()
     {
@@ -29,13 +26,12 @@ public:
 signals:
 
 public slots:
-    void leapHands         (Leap::HandList Hands);
-    void leapFingerSetup   (Leap::FingerList Fingers);
-    void leapGestures      (Leap::GestureList Gestures, Leap::Hand hand);
+    void processLeapHands         (Leap::HandList Hands);
+    void processLeapFingers   (Leap::FingerList Fingers);
+    void processLeapGestures      (Leap::GestureList Gestures, Leap::Hand hand);
 private:
     inline void logicHandDebug(Leap::Hand hand);
 
-    QList<macro_block_struct> qlMacroBlocks;
 
     bool _bHandKeyRot = false;
     bool _bThumbKeyRot = false;
@@ -50,8 +46,6 @@ private:
     const int _iTempPinchFrequency = 20;
     const int _iTempPinchModifier = 10;
     int _iGenericCounter;
-
-    timer * _timer;
 
     Leap::Vector _lvPinchPalmReference;
 

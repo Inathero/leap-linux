@@ -18,38 +18,22 @@ CONFIG += c++11
 INCLUDEPATH += src \
             src/Utilities
 
-SOURCES += main.cpp\
-        mainwindow.cpp \
-    listener.cpp \
-    logic.cpp \
-    scriptengine.cpp \
+SOURCES += src/main.cpp\
+        src/mainwindow.cpp \
+    src/Listener.cpp \
+    src/Logic.cpp \
     src/AudioProgressBarDialog.cpp \
     src/AudioSinkDialog.cpp \
-    src/Settings.cpp \
-    timer.cpp
+    src/Settings.cpp
 
-HEADERS  += mainwindow.h \
-    listener.h \
-    logic.h \  \
+HEADERS  += src/mainwindow.h \
+    src/Listener.h \
+    src/Logic.h \  \
     src/AudioProgressBarDialog.h \
-    scriptengine.h \
-    mouseenums.h \
-    leapmouseconfig.h \
     src/AudioSinkDialog.h \
-    src/Settings.h \
-    timer.h
+    src/Settings.h
 
-unix: HEADERS += xkeys.h \
-                xmouse.h
-unix: SOURCES += xkeys.cpp \
-                xmouse.cpp
-
-win32: HEADERS += winkeys.h \
-                  winmouse.h
-win32: SOURCES += winkeys.cpp \
-                  winmouse.cpp
-
-FORMS    += mainwindow.ui \
+FORMS    += src/mainwindow.ui \
     src/AudioProgressBarDialog.ui \
     src/AudioSinkDialog.ui
 
