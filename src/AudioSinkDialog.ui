@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>215</width>
-    <height>122</height>
+    <width>244</width>
+    <height>128</height>
    </rect>
   </property>
   <property name="font">
@@ -27,7 +27,7 @@
       </font>
      </property>
      <property name="text">
-      <string>Enter Audio SInk Below
+      <string>Select Audio SInk Below
 (pacmd list-sinks)</string>
      </property>
      <property name="alignment">
@@ -41,6 +41,9 @@
       <string/>
      </property>
     </widget>
+   </item>
+   <item>
+    <widget class="QComboBox" name="comboBox"/>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

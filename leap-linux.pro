@@ -15,7 +15,8 @@ TEMPLATE = app
 
 CONFIG += c++11
 
-INCLUDEPATH += src
+INCLUDEPATH += src \
+            src/Utilities
 
 SOURCES += main.cpp\
         mainwindow.cpp \

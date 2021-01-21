@@ -48,7 +48,7 @@ void logic::leapHands(Leap::HandList Hands)
             //            qDebug() << "HAND:" << iHandActive;
 //            scriptEngine->preScript("HandMod", _iHandActive);
 
-            logicHandDebug(hand);
+//            logicHandDebug(hand);
 
             leapFingerSetup(hand.fingers());
 
@@ -172,7 +172,7 @@ void logic::leapHands(Leap::HandList Hands)
                         else
                             iWheelMod = xm_wheel_up;
 
-                        qDebug() << "pinch - " << iSpeedMultiplier;
+                        qDebug() << "pinch - " << lvStabPalmPos.y;
                         if(abs(iSpeedMultiplier) != 0)
                         {
                             _AudioDialog->setRelativeAudioLevel(iSpeedMultiplier);
@@ -184,7 +184,7 @@ void logic::leapHands(Leap::HandList Hands)
                 }
             }
             // Fist
-            if(_iFingersExtended == 0 && !_bFistToggle)
+            if(_iFingersExtended == 0 && !_bFistToggle && hand.stabilizedPalmPosition().y > 220)
             {
                 _bFistToggle = true;
                 _AudioDialog->toggleMute();

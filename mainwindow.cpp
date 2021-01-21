@@ -10,6 +10,7 @@ MainWindow::MainWindow(QWidget *parent) :
     Leap_Poller = new QTimer;
     Listener = new listener();
     _AudioSinkDialog = new AudioSinkDialog;
+    _AudioSinkDialog->setSink(Settings::loadSetting("sink").toString());
     connect(_AudioSinkDialog, &AudioSinkDialog::newAudioSink, this, [=](QString sink)
     {
         Settings::saveSetting("sink", sink);
