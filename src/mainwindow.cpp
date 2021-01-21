@@ -62,6 +62,12 @@ void MainWindow::trayAction(QAction *tAction)
     {
         _Logic->reloadCommandsFromTray();
     }
+    else if (tAction->text() == "Visualizer")
+    {
+        QProcess *p = new QProcess;
+        connect(p,static_cast<void (QProcess::*)(int)>(&QProcess::finished), p, &QProcess::deleteLater);
+        p->start("/usr/bin/Visualizer");
+    }
 }
 
 void MainWindow::createTray()
@@ -69,6 +75,7 @@ void MainWindow::createTray()
     _trayMenu = new QMenu;
     _trayMenu->addAction("Set Audio Sink");
     _trayMenu->addAction("Reload Commands");
+    _trayMenu->addAction("Visualizer");
     _trayMenu->addAction("Exit");
     connect(_trayMenu, SIGNAL(triggered(QAction*)), this, SLOT(trayAction(QAction *)));
     _tray = new QSystemTrayIcon(QIcon(":/icons/discord_ok.png"));
