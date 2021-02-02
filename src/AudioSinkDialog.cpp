@@ -16,6 +16,8 @@ AudioSinkDialog::~AudioSinkDialog()
 
 void AudioSinkDialog::setSink(QString s)
 {
+    if(!s.isEmpty())
+        _lastSink = s;
     QProcess * p = new QProcess;
     connect(p,&QProcess::readyReadStandardOutput, p, [=]()
     {
@@ -25,8 +27,8 @@ void AudioSinkDialog::setSink(QString s)
         while(it.hasNext())
         {
             auto reg = it.next();
-            if(reg.captured(1) == s)
-                ui->comboBox->insertItem(0, s);
+            if(reg.captured(1) == _lastSink)
+                ui->comboBox->insertItem(0, _lastSink);
             else
                 ui->comboBox->addItem(reg.captured(1));
         }

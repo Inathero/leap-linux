@@ -10,13 +10,11 @@ void Commands::runCommand(QString command)
 {
     if(command.contains("swipe"))
     {
-//        db "contains";
         if(_bAllowGestures)
             _bAllowGestures = false;
         else return;
     }
 
-//    db "past";
     QProcess *p = new QProcess;
     connect(p,static_cast<void (QProcess::*)(int)>(&QProcess::finished), p, &QProcess::deleteLater);
 

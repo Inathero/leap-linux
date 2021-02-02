@@ -21,7 +21,7 @@ public:
     explicit AudioSinkDialog(QWidget *parent = nullptr);
     ~AudioSinkDialog();
 
-    void setSink(QString s);
+    void setSink(QString s = QString());
 
 private slots:
     void on_buttonBox_accepted();
@@ -30,6 +30,7 @@ private slots:
 
 private:
     Ui::AudioSinkDialog *ui;
+    QString _lastSink;
 };
 
 #endif // AUDIOSINKDIALOG_H

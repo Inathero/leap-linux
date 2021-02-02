@@ -19,7 +19,7 @@ Logic::Logic(QObject *parent) : QObject(parent)
 inline void Logic::logicHandDebug(Hand hand)
 {
 //    qDebug() <<  hand.pinchStrength();
-//    db hand.palmNormal().x;
+//    db abs(hand.palmNormal().x);
 //         qDebug() << hand.palmNormal().toString().c_str() << " : " << hand.pinchStrength() << iFingersExtended;
     // qDebug() << hand.grabStrength() << " : " << hand.palmNormal().toString().c_str() << " : " << hand.sphereRadius(); // qDebug() << hand.palmVelocity().magnitude() <<  ", " << hand.palmNormal().toString().c_str(
 }
@@ -51,6 +51,10 @@ void Logic::processLeapHands(Leap::HandList Hands)
 //            scriptEngine->preScript("HandMod", _iHandActive);
 
             logicHandDebug(hand);
+
+            // Max heigh tested until model gets inaccurate
+            if(hand.palmPosition().y >= 250.)
+                continue;
 
             processLeapFingers(hand.fingers());
 
@@ -169,7 +173,7 @@ void Logic::processLeapHands(Leap::HandList Hands)
 
 
             // pinch
-            if (hand.pinchStrength() > 0.7)
+            if (hand.pinchStrength() > 0.5 && abs(hand.palmNormal().x) < 0.7)
             {
                 Leap::Vector lvStabPalmPos = hand.stabilizedPalmPosition();
                 if(!_bPinch)
@@ -196,7 +200,7 @@ void Logic::processLeapHands(Leap::HandList Hands)
                 }
             }
             // high Fist
-            if(!_bFistToggle && hand.stabilizedPalmPosition().y > 250 && hand.grabStrength() > 0.99f)
+            if(!_bFistToggle && hand.stabilizedPalmPosition().y > 150 && hand.grabStrength() > 0.99f && hand.palmPosition().z < 100.)
             {
                 _bFistToggle = true;
                 _AudioDialog->toggleMute();

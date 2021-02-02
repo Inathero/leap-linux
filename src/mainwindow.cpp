@@ -56,6 +56,7 @@ void MainWindow::trayAction(QAction *tAction)
         exit(0);
     else if (tAction->text() == "Set Audio Sink")
     {
+        _AudioSinkDialog->setSink();
         _AudioSinkDialog->show();
     }
     else if (tAction->text() == "Reload Commands")
